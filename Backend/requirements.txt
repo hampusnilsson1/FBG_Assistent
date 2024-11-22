@@ -1,0 +1,9 @@
+requests
+tiktoken
+python-dotenv
+openai==0.28.0
+qdrant-client
+Flask
+flask-cors
+flask-limiter
+stanza

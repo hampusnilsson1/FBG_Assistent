@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chatbot FBG</title>
+    <link rel="stylesheet" href="General.css" />
+    <link rel="stylesheet" href="bot-style.css" />
+  </head>
+
+  <body>
+    <div id="chat-container">
+      <div id="header-view">
+        <div id="left-header">
+          <div class="chat-icon-container">
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/6134/6134346.png"
+              alt=""
+              class="chat-icon"
+            />
+          </div>
+          <h5 class="default-text" id="bot-name">FBG Assistenten</h5>
+        </div>
+        <span uk-icon="icon: chevron-down" id="header-icon"></span>
+      </div>
+      <div id="chat-wrapper">
+        <p class="default-text" id="disclaimer">
+          <small
+            >AI Assistenten kan begå misstag, information hämtas ifrån vår
+            hemsida.
+          </small>
+        </p>
+        <div id="message-container"></div>
+      </div>
+      <form action="" id="answer-view">
+        <span uk-icon="icon: file-edit; ratio: 2" id="clear-chat-button"></span>
+        <input
+          type="text"
+          name="user-answer"
+          id="user-answer"
+          placeholder="Skriv din fråga här."
+          autocomplete="off"
+          maxlength="200"
+        />
+        <input type="button" name="submit-btn" id="submit-btn" value="Skicka" />
+      </form>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/showdown/dist/showdown.min.js"></script>
+    <script src="chat.js" defer></script>
+  </body>
+</html>
