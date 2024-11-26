@@ -326,12 +326,12 @@ def get_result(
         question_cost += calculate_cost(full_response, "gpt-4o", is_input=False)
         full_response_no_emojis = remove_emojis(full_response)
         user_input_anonymized = check_personal_info(user_input)
-        
+        user_input_anonym_no_emoji = remove_emojis(user_input_anonymized)
         if chat_id:
             print("Använder: ", chat_id)
             message_data = {
                 "chat_id": chat_id,
-                "prompt": user_input_anonymized,
+                "prompt": user_input_anonym_no_emoji,
                 "response": full_response_no_emojis,
             }
             message_response = requests.post(
