@@ -192,9 +192,8 @@
   height: 15px;
   color: #999999;
   width: 15px;
-  margin: auto 0 auto 12px;
+  margin: auto 6px auto 6px;
   transition: color 125ms;
-  background-color: rgb(112, 112, 112); /*TEMP För att se i editorn*/
 }
 .copy-button:hover {
   cursor: pointer;

@@ -8,7 +8,7 @@ const messageContainer = document.getElementById("message-container");
 let reset_message_on = false;
 
 // Append the start message
-createBotMessage("Hejsan! Har du någon fråga du skulle vilja ha besvarad?")
+createBotMessage("Hejsan! Har du någon fråga du skulle vilja ha besvarad?");
 
 loadChatFromSession();
 
@@ -72,7 +72,9 @@ async function sendAndPrintAnswer() {
 
       clearUserAndSurroundings();
 
-      createBotMessage("Servern verkar ha problem just nu. Försök gärna igen senare.")
+      createBotMessage(
+        "Servern verkar ha problem just nu. Försök gärna igen senare."
+      );
 
       activateUserInput(true);
     }
@@ -269,6 +271,7 @@ function showConfirmationScreen(onConfirm) {
     button_no.onclick = function () {
       screen.style.display = "none";
       turnActiveAll(true);
+      activateUserInput(true);
     };
   } else {
     screen.style.display = "flex";
@@ -406,6 +409,9 @@ function addRatingSystem(
   ratingContainer.className = "rating-container";
   ratingContainer.dataset.starValue = "0";
 
+  /// Add copy button
+  addCopyIcon(ratingContainer, answer);
+
   for (let i = 1; i <= 5; i++) {
     const star = document.createElement("span");
     star.className = "star inactive-star";
@@ -413,8 +419,7 @@ function addRatingSystem(
     star.dataset.value = i;
     ratingContainer.appendChild(star);
   }
-  // Add copy button
-  addCopyIcon(ratingContainer, answer);
+
   if (startFeedbackValue) {
     ratingContainer.dataset.feedbackValue = startFeedbackValue;
   } else {
@@ -666,7 +671,7 @@ function clearChat() {
   chat_container.innerHTML = "";
   delete chat_container.dataset.chat_id;
 
-  createBotMessage("Hejsan! Har du någon fråga du skulle vilja ha besvarad?")
+  createBotMessage("Hejsan! Har du någon fråga du skulle vilja ha besvarad?");
   activateUserInput(true);
 
   const reset_message = document.getElementById("reset-message");
