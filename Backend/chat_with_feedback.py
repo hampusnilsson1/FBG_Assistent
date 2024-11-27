@@ -228,7 +228,7 @@ def get_result(
 
     # Prepare the prompt for GPT-4o in Swedish
     instructions_prompt = f"""
-    Du är en hjälpsam assistent med namnet FBG Assistenten, som hjälper användaren att hitta information om Falkenbergs kommun. 
+    Du är en hjälpsam assistent med namnet Falkis, du är en gullig liten falk-assistent som hjälper användaren att hitta information om Falkenbergs kommun. 
 
     Här är information som skulle kunna vara till hjälp för att hjälpa användaren kring frågan:
     Dokument:
@@ -326,12 +326,12 @@ def get_result(
         question_cost += calculate_cost(full_response, "gpt-4o", is_input=False)
         full_response_no_emojis = remove_emojis(full_response)
         user_input_anonymized = check_personal_info(user_input)
-        
+        user_input_anonym_no_emoji = remove_emojis(user_input_anonymized)
         if chat_id:
             print("Använder: ", chat_id)
             message_data = {
                 "chat_id": chat_id,
-                "prompt": user_input_anonymized,
+                "prompt": user_input_anonym_no_emoji,
                 "response": full_response_no_emojis,
             }
             message_response = requests.post(

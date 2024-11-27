@@ -8,7 +8,7 @@ const messageContainer = document.getElementById("message-container");
 let reset_message_on = false;
 
 // Append the start message
-createBotMessage("Hejsan! Har du någon fråga du skulle vilja ha besvarad?")
+createBotMessage("Hejsan! Har du någon fråga du skulle vilja ha besvarad?");
 
 loadChatFromSession();
 
@@ -53,6 +53,7 @@ async function sendAndPrintAnswer() {
 
   if (inputValue !== "") {
     activateUserInput(false);
+    turnActiveAll(false);
     try {
       const piiDetected = await checkPII(inputValue);
       console.log(piiDetected);
@@ -72,9 +73,12 @@ async function sendAndPrintAnswer() {
 
       clearUserAndSurroundings();
 
-      createBotMessage("Servern verkar ha problem just nu. Försök gärna igen senare.")
+      createBotMessage(
+        "Servern verkar ha problem just nu. Försök gärna igen senare."
+      );
 
       activateUserInput(true);
+      turnActiveAll(true);
     }
   }
 }
@@ -85,10 +89,16 @@ function sendQuestion(inputText) {
   loadUserText(inputValue);
 
   clearUserAndSurroundings();
-
-  getBotAnswer(inputValue, () => {
+  try {
+    getBotAnswer(inputValue, () => {
+      activateUserInput(true);
+      turnActiveAll(true);
+    });
+  } catch (error) {
+    console.log("Misslyckades att hämta svar!", error);
     activateUserInput(true);
-  });
+    turnActiveAll(true);
+  };
 }
 
 // Function to get bot's answer
@@ -228,7 +238,6 @@ async function checkPII(userInput) {
 function showConfirmationScreen(onConfirm) {
   let screen = document.getElementById("confirmation-screen");
   if (!screen) {
-    turnActiveAll(false);
     screen = document.createElement("div");
     screen.id = "confirmation-screen";
     screen.style.display = "flex";
@@ -269,6 +278,7 @@ function showConfirmationScreen(onConfirm) {
     button_no.onclick = function () {
       screen.style.display = "none";
       turnActiveAll(true);
+      activateUserInput(true);
     };
   } else {
     screen.style.display = "flex";
@@ -304,7 +314,7 @@ function createBotMessage(initialText) {
   const chatIconContainer = document.createElement("div");
   chatIconContainer.className = "chat-icon-container";
   const chatIcon = document.createElement("img");
-  chatIcon.src = "https://cdn-icons-png.flaticon.com/512/6134/6134346.png";
+  chatIcon.src = "Falkis.png";
   chatIcon.alt = "";
   chatIcon.className = "chat-icon";
   chatIconContainer.appendChild(chatIcon);
@@ -316,7 +326,7 @@ function createBotMessage(initialText) {
   messageDiv.className = "bot-message";
   const botName = document.createElement("h5");
   botName.className = "default-text fine-bot-name";
-  botName.textContent = "FBG Assistent";
+  botName.textContent = "Falkis";
   const botText = document.createElement("b");
   botText.className = "default-text bot-text";
 
@@ -406,6 +416,9 @@ function addRatingSystem(
   ratingContainer.className = "rating-container";
   ratingContainer.dataset.starValue = "0";
 
+  /// Add copy button
+  addCopyIcon(ratingContainer, answer);
+
   for (let i = 1; i <= 5; i++) {
     const star = document.createElement("span");
     star.className = "star inactive-star";
@@ -413,8 +426,7 @@ function addRatingSystem(
     star.dataset.value = i;
     ratingContainer.appendChild(star);
   }
-  // Add copy button
-  addCopyIcon(ratingContainer, answer);
+
   if (startFeedbackValue) {
     ratingContainer.dataset.feedbackValue = startFeedbackValue;
   } else {
@@ -666,7 +678,7 @@ function clearChat() {
   chat_container.innerHTML = "";
   delete chat_container.dataset.chat_id;
 
-  createBotMessage("Hejsan! Har du någon fråga du skulle vilja ha besvarad?")
+  createBotMessage("Hejsan! Har du någon fråga du skulle vilja ha besvarad?");
   activateUserInput(true);
 
   const reset_message = document.getElementById("reset-message");
@@ -776,7 +788,7 @@ function openCloseBot(doAnimation) {
         chatContainer.style.height = "56px";
         showHeaderIcon(false);
         setTimeout(() => {
-          chatContainer.style.width = "210px";
+          chatContainer.style.width = "170px";
         }, delayTime);
         isUp = false;
       }
@@ -791,7 +803,7 @@ function openCloseBot(doAnimation) {
       chatContainer.style.height = "56px";
       showHeaderIcon(false);
       setTimeout(() => {
-        chatContainer.style.width = "210px";
+        chatContainer.style.width = "170px";
       }, delayTime);
       isUp = false;
     }
