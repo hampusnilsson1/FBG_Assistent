@@ -1,4 +1,427 @@
-// **Initialization Code**
+<?php
+
+defined('_JEXEC') or die;
+?>
+
+<div id="recommender">
+   <style>
+  #chat-container {
+    height: 100%;
+    position: fixed;
+    right: 0px;
+    bottom: 0px;
+    width: 210px;
+    /* Sätt tillbaka till 210px vid start annars 450px*/
+    height: 56px;
+    /* Sätt tillbaka till 56px vid start annars 470px*/
+    display: flex;
+    flex-direction: column;
+    column-gap: 0px;
+    justify-content: space-between;
+    border-radius: 5px;
+    background-color: rgb(247, 247, 247);
+    transition: height 0.5s ease, width 0.5s ease;
+    z-index: 1050;
+  }
+
+  .inactive-el {
+    pointer-events: none;
+  }
+
+  /* Confirmation Screen */
+  #confirmation-screen {
+    position: absolute;
+    flex-direction: column;
+    background-color: hsl(0, 0%, 90%);
+    border-radius: 10px;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.342);
+    width: 50%;
+    margin: auto;
+    bottom: 50%;
+    left: 50%;
+    transform: translate(-50%, 25%);
+  }
+
+  #confirm-header {
+    background-color: rgb(76, 148, 206);
+    color: white;
+    padding: 3%;
+  }
+
+  #confirmation-screen p {
+    margin: 0;
+    padding: 2% 3%;
+  }
+
+  #button-div {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    margin-top: 8px;
+    padding-bottom: 5%;
+  }
+
+  #button-div button {
+    padding: 2%;
+    width: 45px;
+    border-radius: 4px;
+    border-width: 1px;
+    border-style: solid;
+    box-shadow: 2px 3px 3px rgba(0, 0, 0, 0.116);
+  }
+
+  #confirm-yes {
+    border-color: #47b5f9;
+    color: rgb(255, 255, 255);
+    background-color: #47b5f9;
+    transition: all 0.125s ease;
+  }
+
+  #confirm-yes:hover {
+    border-color: rgb(20, 158, 218);
+    background-color: #36affa;
+  }
+
+  #confirm-no {
+    border-color: rgb(0, 159, 227);
+    color: rgb(0, 159, 227);
+    background-color: rgba(255, 255, 255, 0);
+    transition: all 0.125s ease;
+  }
+
+  #confirm-no:hover {
+    border-color: rgb(4, 137, 194);
+    color: rgb(4, 137, 194);
+  }
+
+  #button-div button:hover {
+    cursor: pointer;
+  }
+
+  /* Header */
+  #header-view {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 0 8px 0 8px;
+    background-color: rgb(61, 64, 91);
+    border-radius: 5px 5px 0 0;
+    cursor: pointer;
+    transition: background-color 0.1s ease;
+  }
+
+  #header-view:hover {
+    background-color: rgb(47, 50, 74);
+  }
+
+  #left-header {
+    display: flex;
+    column-gap: 5px;
+  }
+
+  #header-icon {
+    flex: 0 0 20px;
+    border: 0px;
+    border-radius: 5px;
+    height: 20px;
+    color: white;
+    margin: auto 9px auto;
+    transition: background-color 0.125s ease;
+    transition: opacity 500ms, visibility 500ms;
+  }
+
+  .chat-icon-container {
+    width: 40px;
+    height: 40px;
+    margin: 8px 5px;
+    object-fit: cover;
+  }
+
+  .chat-icon {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+  }
+
+  .default-text {
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 300;
+    height: auto;
+    margin: auto 0 auto;
+  }
+
+  #bot-name {
+    color: white;
+    margin: auto 8px auto 0;
+    font-size: 16px;
+  }
+
+  /* Chat */
+  #disclaimer {
+    color: gray;
+    margin: 0;
+    text-align: center;
+    padding-bottom: 4px;
+  }
+
+  #message-container {
+    padding: 0px 15px 0 10px;
+    overflow-x: hidden;
+  }
+
+  #chat-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    height: 100%;
+    padding: 5px 0 5px 0;
+    overflow-y: auto;
+  }
+
+  /* Bot Chat */
+  .bot-container {
+    width: 100%;
+    margin-top: 10px;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .bot-message {
+    height: auto;
+    width: auto;
+    display: flex;
+    flex-direction: column;
+    margin-right: 20px;
+  }
+
+  .fine-bot-name {
+    color: rgb(175, 175, 175);
+    width: auto;
+    font-size: 12px;
+  }
+
+  .bot-text {
+    padding: 10px 10px 10px 10px;
+    border-radius: 7px;
+    background-color: #e6ebf1;
+    width: 100%;
+    max-width: 365px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: pre-line;
+    min-height: 18.4px;
+  }
+
+  .bot-text * {
+    margin: 0;
+  }
+
+  .copy-button {
+    display: inline-block;
+    position: relative;
+    height: 15px;
+    color: #999999;
+    width: 15px;
+    margin: auto 6px auto 6px;
+    transition: color 125ms;
+  }
+
+  .copy-button:hover {
+    cursor: pointer;
+    color: #adadad;
+  }
+
+  .copy-button:active {
+    color: #838383;
+  }
+
+  .copy-message {
+    position: absolute;
+    visibility: hidden;
+    opacity: 0;
+    bottom: 100%;
+    left: 50%;
+    font-size: 12px;
+    color: rgba(0, 0, 0, 0.74);
+    transform: translate(-50%, -50%);
+    background-color: rgba(243, 243, 243, 0.877);
+    border-radius: 3px;
+    padding: 2px;
+    transition: opacity 50ms, visibility 50ms;
+  }
+
+  .copy-message:hover {
+    cursor: default;
+  }
+
+  /* User Chat */
+  .user-container {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+    margin-left: 70px;
+  }
+
+  .user-text {
+    padding: 10px;
+    border-radius: 7px;
+    color: white;
+    background-color: #47b6f9;
+    width: auto;
+    max-width: 365px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: pre-line;
+    min-height: 18.4px;
+  }
+
+  /* Reset Message */
+  #reset-message {
+    color: rgb(187, 187, 187);
+    display: flex;
+    justify-content: center;
+  }
+
+  /* User Answer */
+  #clear-chat-button {
+    flex: 0 0 20px;
+    border: 0px;
+    border-radius: 5px;
+    height: 20px;
+    padding: 10px;
+    margin: auto;
+    background-color: rgb(240, 240, 240);
+    transition: background-color 0.125s ease;
+  }
+
+  #clear-chat-button:hover {
+    background-color: rgb(228, 228, 228);
+    cursor: pointer;
+  }
+
+  #answer-view {
+    display: flex;
+    column-gap: 5px;
+    justify-content: stretch;
+    padding: 5px 15px 15px 15px;
+  }
+
+  #user-answer {
+    border: 1px solid rgb(221, 221, 221);
+    border-radius: 5px;
+    padding: 10px;
+    flex: 1 1 auto;
+    font-size: 15px;
+    flex-shrink: 1000;
+  }
+
+  #user-answer:focus {
+    outline: none;
+  }
+
+  #submit-btn {
+    height: auto;
+    flex: 0 0 50px;
+    background-color: #1f4e99;
+    color: white;
+    border: 1px solid rgb(20, 51, 101);
+    border-radius: 5px;
+  }
+
+  #submit-btn:hover {
+    cursor: pointer;
+    background-color: #184387;
+  }
+
+  /* Feedback star text */
+  .feedback-box {
+    display: flex;
+    align-items: end;
+    column-gap: 5px;
+  }
+
+  .star:hover {
+    cursor: pointer;
+  }
+
+  .active-star {
+    color: gold;
+  }
+
+  .inactive-star {
+    color: #ccc;
+  }
+
+  .feedback-text {
+    resize: none;
+    height: 64px;
+    border-color: rgb(221, 221, 221);
+    padding: 5px;
+    border-radius: 5px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 300;
+  }
+
+  .feedback-text:hover {
+    outline: none;
+  }
+
+  .feedback-text:focus {
+    outline: none;
+  }
+
+  .feedback-btn {
+    height: 39px;
+    width: auto;
+    background-color: #47b6f9;
+    color: white;
+    border: 1px solid rgb(221, 221, 221);
+    border-radius: 5px;
+  }
+
+  .feedback-btn:hover {
+    cursor: pointer;
+    background-color: #64c0f8;
+  }
+
+  .feedback-thank-text {
+    color: rgb(172, 172, 172);
+    font-size: 13px;
+    margin-top: 0;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+</style>
+
+<div id="chat-container">
+  <div id="header-view">
+    <div id="left-header">
+      <div class="chat-icon-container">
+        <img src="https://kommun.falkenberg.se/images/ai_falken.png" alt="" class="chat-icon" />
+      </div>
+      <h5 class="default-text" id="bot-name">Falkis</h5>
+    </div>
+    <span uk-icon="icon: chevron-down" id="header-icon"></span>
+  </div>
+  <div id="chat-wrapper">
+    <p class="default-text" id="disclaimer">
+      <small>AI Assistenten kan begå misstag, information hämtas ifrån vår
+        hemsida.
+      </small>
+    </p>
+    <div id="message-container"></div>
+  </div>
+  <form action="" id="answer-view">
+    <span uk-icon="icon: file-edit; ratio: 2" id="clear-chat-button"></span>
+    <input type="text" name="user-answer" id="user-answer" placeholder="Skriv din fråga här." autocomplete="off"
+      maxlength="200" />
+    <input type="button" name="submit-btn" id="submit-btn" value="Skicka" />
+  </form>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/showdown/dist/showdown.min.js"></script>
+<script>
+  // **Initialization Code**
 // -----------------------
 
 let isUp = loadIsUp();
@@ -310,7 +733,7 @@ function createBotMessage(initialText) {
   const chatIconContainer = document.createElement("div");
   chatIconContainer.className = "chat-icon-container";
   const chatIcon = document.createElement("img");
-  chatIcon.src = "Falkis.png";
+  chatIcon.src = "https://kommun.falkenberg.se/images/ai_falken.png";
   chatIcon.alt = "";
   chatIcon.className = "chat-icon";
   chatIconContainer.appendChild(chatIcon);
@@ -810,3 +1233,5 @@ function openCloseBot(doAnimation) {
   }
   saveIsUp(isUp);
 }
+</script>
+</div>

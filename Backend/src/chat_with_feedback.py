@@ -163,7 +163,7 @@ def check_personal_info(text, contain=False):
 
     doc = nlp(result)
     for ent in doc.entities:
-        if ent.type in ["PER", "ORG", "LOC"]:
+        if ent.type in ["PER"]:
             result = result.replace(ent.text, f"[REDACTED {ent.type}]")
     print(result)
     # If contain = True then return if found or not
