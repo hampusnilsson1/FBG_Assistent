@@ -156,13 +156,9 @@ function getBotAnswer(user_question, callback) {
       function read() {
         reader.read().then(({ done, value }) => {
           if (done) {
-            console.log(result);
             pushMessageToSession(user_question, result, chat_id);
             addRatingSystem(botMessageElement, user_question, result);
 
-            if (sources) {
-              console.log("Källor: ", sources);
-            }
             callback();
             return;
           }

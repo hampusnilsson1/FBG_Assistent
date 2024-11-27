@@ -11,12 +11,13 @@ from qdrant_client import QdrantClient
 from flask import Flask, request, jsonify, Response, stream_with_context
 from flask_cors import CORS
 from flask_limiter import Limiter
+from asgiref.wsgi import WsgiToAsgi
 
 import stanza
 import warnings
 
-api_keys_path = "API_KEYS.env"
-STANZA_MODEL_PATH = "stanza_resources" # Eventuellt ändra denna för docker
+api_keys_path = "../data/API_KEYS.env"
+STANZA_MODEL_PATH = "../data/stanza_resources"  # Eventuellt ändra denna för docker
 
 
 def load_api_key(key_variable):
@@ -144,10 +145,12 @@ def remove_emojis(text):
 
 # Ladda ner och initiera svenska modellen, ignorera orelevanta varningar.
 warnings.filterwarnings("ignore", category=FutureWarning)
-if not os.path.exists(f"{STANZA_MODEL_PATH}/sv"): # Osäker på var denna sparar i docker?
-    stanza.download("sv",model_dir=STANZA_MODEL_PATH)
-    
-nlp = stanza.Pipeline("sv",model_dir=STANZA_MODEL_PATH)
+if not os.path.exists(
+    f"{STANZA_MODEL_PATH}/sv"
+):  # Osäker på var denna sparar i docker?
+    stanza.download("sv", model_dir=STANZA_MODEL_PATH)
+
+nlp = stanza.Pipeline("sv", model_dir=STANZA_MODEL_PATH)
 
 
 def check_personal_info(text, contain=False):
@@ -169,7 +172,7 @@ def check_personal_info(text, contain=False):
             return True
         else:
             return False
-    
+
     # If not contain then return the new text
     return result
 
@@ -177,7 +180,7 @@ def check_personal_info(text, contain=False):
 # Start
 def get_result(
     user_input, user_history, chat_id, MAX_INPUT_CHAR
-):  # PII - CODEX Kolla upp, PII DETECT. Säkring av personuppgifter i backend.
+):
     question_cost = 0
     # Loopa igenom user_historys alla frågor.
     user_input_combo = ""
@@ -213,7 +216,7 @@ def get_result(
 
     user_embedding = generate_embeddings(query_text_out)
     question_cost += calculate_cost(query_text_out, "text-embedding-3-large")
-    
+
     search_results = search_collection(qdrant_client, collection_name, user_embedding)
     similar_texts = [
         {
@@ -268,7 +271,7 @@ def get_result(
 
     print("Källor:")
     for source in sources:
-        print(source["url"],source["score"])
+        print(source["url"], source["score"])
 
     messages = [{"role": "system", "content": instructions_prompt}]
     for (
@@ -284,10 +287,7 @@ def get_result(
     question_cost += calculate_cost(json.dumps(messages))
 
     if not chat_id or not user_history:
-        print(
-            "Hittade inte chat_id eller user_history så skapas ny chatt",
-            chat_id
-        )
+        print("Hittade inte chat_id eller user_history så skapas ny chatt", chat_id)
         chat_data = {}
         post_response = requests.post(
             chat_api_url, json=chat_data, headers=headers, params=params
@@ -390,6 +390,7 @@ CORS(app)
 # Begränasar antalet requests
 limiter = Limiter(app=app, key_func=lambda: "global", storage_uri="memory://")
 
+asgi_app = WsgiToAsgi(app)
 
 # Kontroll av user_input
 @app.route("/check_pii", methods=["POST"])
@@ -399,9 +400,9 @@ def check_pii():
         return jsonify({"error": "Ingen användarinput inmatad"}), 400
 
     user_input = str(data["user_input"])
-    print("Input:",user_input)
-    pii_detected = check_personal_info(user_input,contain=True)
-    print("Detected?:",pii_detected)
+    print("Input:", user_input)
+    pii_detected = check_personal_info(user_input, contain=True)
+    print("Detected?:", pii_detected)
     return jsonify({"pii_detected": pii_detected}), 200
 
 
@@ -421,9 +422,9 @@ def generate():
             user_history = history_list[-12:]
         else:
             user_history = history_list
-            
+
         chat_id = data["chat_id"]
-        
+
         generator = get_result(user_input, user_history, chat_id, 1000)
     else:
         generator = get_result(user_input, [], None, 1000)
@@ -487,4 +488,4 @@ def send_feedback():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, port=3003)
+    app.run(debug=True, host="0.0.0.0", port=3003)

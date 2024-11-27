@@ -4,10 +4,8 @@
     position: fixed;
     right: 0px;
     bottom: 0px;
-    width: 210px;
-    /* Sätt tillbaka till 210px vid start annars 450px*/
-    height: 56px;
-    /* Sätt tillbaka till 56px vid start annars 470px*/
+    width: 210px; /* Sätt tillbaka till 210px vid start annars 450px*/
+    height: 56px; /* Sätt tillbaka till 56px vid start annars 470px*/
     display: flex;
     flex-direction: column;
     column-gap: 0px;
@@ -17,11 +15,9 @@
     transition: height 0.5s ease, width 0.5s ease;
     z-index: 1050;
   }
-
   .inactive-el {
     pointer-events: none;
   }
-
   /* Confirmation Screen */
   #confirmation-screen {
     position: absolute;
@@ -35,18 +31,15 @@
     left: 50%;
     transform: translate(-50%, 25%);
   }
-
   #confirm-header {
     background-color: rgb(76, 148, 206);
     color: white;
     padding: 3%;
   }
-
   #confirmation-screen p {
     margin: 0;
     padding: 2% 3%;
   }
-
   #button-div {
     display: flex;
     flex-direction: row;
@@ -54,38 +47,34 @@
     margin-top: 8px;
     padding-bottom: 5%;
   }
-
   #button-div button {
     padding: 2%;
     width: 45px;
     border-radius: 4px;
     border-width: 1px;
     border-style: solid;
-    background-color: rgba(255, 255, 255, 0);
+    box-shadow: 2px 3px 3px rgba(0, 0, 0, 0.116);
   }
-
   #confirm-yes {
-    border-color: rgb(0, 159, 227);
-    color: rgb(0, 159, 227);
+    border-color: #47b5f9;
+    color: rgb(255, 255, 255);
+    background-color: #47b5f9;
     transition: all 0.125s ease;
   }
-
   #confirm-yes:hover {
+    border-color: rgb(20, 158, 218);
+    background-color: #36affa;
+  }
+  #confirm-no {
+    border-color: rgb(0, 159, 227);
+    color: rgb(0, 159, 227);
+    background-color: rgba(255, 255, 255, 0);
+    transition: all 0.125s ease;
+  }
+  #confirm-no:hover {
     border-color: rgb(4, 137, 194);
     color: rgb(4, 137, 194);
   }
-
-  #confirm-no {
-    border-color: rgb(204, 81, 81);
-    color: rgb(204, 81, 81);
-    transition: all 0.125s ease;
-  }
-
-  #confirm-no:hover {
-    border-color: rgb(192, 40, 40);
-    color: rgb(192, 40, 40);
-  }
-
   #button-div button:hover {
     cursor: pointer;
   }
@@ -101,16 +90,13 @@
     cursor: pointer;
     transition: background-color 0.1s ease;
   }
-
   #header-view:hover {
     background-color: rgb(91, 156, 209);
   }
-
   #left-header {
     display: flex;
     column-gap: 5px;
   }
-
   #header-icon {
     flex: 0 0 20px;
     border: 0px;
@@ -128,32 +114,22 @@
     margin: 8px 5px;
     object-fit: cover;
   }
-
   .chat-icon {
     width: 100%;
     height: 100%;
     border-radius: 50%;
-    background-color: white;
   }
-
-  .icon-border {
-    border: 2px solid rgb(187, 214, 214);
-    border-radius: 50%;
-  }
-
   .default-text {
     font-family: Arial, Helvetica, sans-serif;
     font-weight: 300;
     height: auto;
     margin: auto 0 auto;
   }
-
   #bot-name {
     color: white;
-    margin: auto 0;
-    font-size: 14px;
+    margin: auto 8px auto 0;
+    font-size: 16px;
   }
-
   /* Chat */
   #disclaimer {
     color: gray;
@@ -161,12 +137,10 @@
     text-align: center;
     padding-bottom: 4px;
   }
-
   #message-container {
     padding: 0px 15px 0 10px;
     overflow-x: hidden;
   }
-
   #chat-wrapper {
     display: flex;
     flex-direction: column;
@@ -184,7 +158,6 @@
     flex-direction: row;
     align-items: flex-start;
   }
-
   .bot-message {
     height: auto;
     width: auto;
@@ -192,13 +165,11 @@
     flex-direction: column;
     margin-right: 20px;
   }
-
   .fine-bot-name {
     color: rgb(175, 175, 175);
     width: auto;
     font-size: 12px;
   }
-
   .bot-text {
     padding: 10px 10px 10px 10px;
     border-radius: 7px;
@@ -210,11 +181,9 @@
     white-space: pre-line;
     min-height: 18.4px;
   }
-
   .bot-text * {
     margin: 0;
   }
-
   .copy-button {
     display: inline-block;
     position: relative;
@@ -224,16 +193,13 @@
     margin: auto 6px auto 6px;
     transition: color 125ms;
   }
-
   .copy-button:hover {
     cursor: pointer;
     color: #adadad;
   }
-
   .copy-button:active {
     color: #838383;
   }
-
   .copy-message {
     position: absolute;
     visibility: hidden;
@@ -248,7 +214,6 @@
     padding: 2px;
     transition: opacity 50ms, visibility 50ms;
   }
-
   .copy-message:hover {
     cursor: default;
   }
@@ -261,7 +226,6 @@
     justify-content: end;
     margin-left: 70px;
   }
-
   .user-text {
     padding: 10px;
     border-radius: 7px;
@@ -274,7 +238,6 @@
     white-space: pre-line;
     min-height: 18.4px;
   }
-
   /* Reset Message */
   #reset-message {
     color: rgb(187, 187, 187);
@@ -293,19 +256,16 @@
     background-color: rgb(240, 240, 240);
     transition: background-color 0.125s ease;
   }
-
   #clear-chat-button:hover {
     background-color: rgb(228, 228, 228);
     cursor: pointer;
   }
-
   #answer-view {
     display: flex;
     column-gap: 5px;
     justify-content: stretch;
     padding: 5px 15px 15px 15px;
   }
-
   #user-answer {
     border: 1px solid rgb(221, 221, 221);
     border-radius: 5px;
@@ -314,11 +274,9 @@
     font-size: 15px;
     flex-shrink: 1000;
   }
-
   #user-answer:focus {
     outline: none;
   }
-
   #submit-btn {
     height: auto;
     flex: 0 0 50px;
@@ -327,7 +285,6 @@
     border: 1px solid rgb(221, 221, 221);
     border-radius: 5px;
   }
-
   #submit-btn:hover {
     cursor: pointer;
     background-color: #64c0f8;
@@ -339,11 +296,9 @@
     align-items: end;
     column-gap: 5px;
   }
-
   .star:hover {
     cursor: pointer;
   }
-
   .active-star {
     color: gold;
   }
@@ -351,7 +306,6 @@
   .inactive-star {
     color: #ccc;
   }
-
   .feedback-text {
     resize: none;
     height: 64px;
@@ -361,15 +315,12 @@
     font-family: Arial, Helvetica, sans-serif;
     font-weight: 300;
   }
-
   .feedback-text:hover {
     outline: none;
   }
-
   .feedback-text:focus {
     outline: none;
   }
-
   .feedback-btn {
     height: 39px;
     width: auto;
@@ -378,12 +329,10 @@
     border: 1px solid rgb(221, 221, 221);
     border-radius: 5px;
   }
-
   .feedback-btn:hover {
     cursor: pointer;
     background-color: #64c0f8;
   }
-
   .feedback-thank-text {
     color: rgb(172, 172, 172);
     font-size: 13px;
@@ -396,24 +345,30 @@
   <div id="header-view">
     <div id="left-header">
       <div class="chat-icon-container">
-        <img src="https://cdn-icons-png.flaticon.com/512/6134/6134346.png" alt="" class="chat-icon" />
+        <img src="Falkis.png" alt="" class="chat-icon" />
       </div>
-      <h5 class="default-text" id="bot-name">FBG Assistenten</h5>
+      <h5 class="default-text" id="bot-name">Falkis</h5>
     </div>
     <span uk-icon="icon: chevron-down" id="header-icon"></span>
   </div>
   <div id="chat-wrapper">
     <p class="default-text" id="disclaimer">
-      <small>AI Assistenten kan begå misstag, information hämtas ifrån vår
-        hemsida.
+      <small
+        >AI Assistenten kan begå misstag, information hämtas ifrån vår hemsida.
       </small>
     </p>
     <div id="message-container"></div>
   </div>
   <form action="" id="answer-view">
     <span uk-icon="icon: file-edit; ratio: 2" id="clear-chat-button"></span>
-    <input type="text" name="user-answer" id="user-answer" placeholder="Skriv din fråga här." autocomplete="off"
-      maxlength="200" />
+    <input
+      type="text"
+      name="user-answer"
+      id="user-answer"
+      placeholder="Skriv din fråga här."
+      autocomplete="off"
+      maxlength="200"
+    />
     <input type="button" name="submit-btn" id="submit-btn" value="Skicka" />
   </form>
 </div>
@@ -474,6 +429,7 @@
 
     if (inputValue !== "") {
       activateUserInput(false);
+      turnActiveAll(false);
       try {
         const piiDetected = await checkPII(inputValue);
         console.log(piiDetected);
@@ -498,6 +454,7 @@
         );
 
         activateUserInput(true);
+        turnActiveAll(true);
       }
     }
   }
@@ -508,10 +465,16 @@
     loadUserText(inputValue);
 
     clearUserAndSurroundings();
-
-    getBotAnswer(inputValue, () => {
+    try {
+      getBotAnswer(inputValue, () => {
+        activateUserInput(true);
+        turnActiveAll(true);
+      });
+    } catch (error) {
+      console.log("Misslyckades att hämta svar!", error);
       activateUserInput(true);
-    });
+      turnActiveAll(true);
+    }
   }
 
   // Function to get bot's answer
@@ -569,13 +532,9 @@
         function read() {
           reader.read().then(({ done, value }) => {
             if (done) {
-              console.log(result);
               pushMessageToSession(user_question, result, chat_id);
               addRatingSystem(botMessageElement, user_question, result);
 
-              if (sources) {
-                console.log("Källor: ", sources);
-              }
               callback();
               return;
             }
@@ -651,7 +610,6 @@
   function showConfirmationScreen(onConfirm) {
     let screen = document.getElementById("confirmation-screen");
     if (!screen) {
-      turnActiveAll(false);
       screen = document.createElement("div");
       screen.id = "confirmation-screen";
       screen.style.display = "flex";
@@ -728,7 +686,7 @@
     const chatIconContainer = document.createElement("div");
     chatIconContainer.className = "chat-icon-container";
     const chatIcon = document.createElement("img");
-    chatIcon.src = "https://cdn-icons-png.flaticon.com/512/6134/6134346.png";
+    chatIcon.src = "Falkis.png";
     chatIcon.alt = "";
     chatIcon.className = "chat-icon";
     chatIconContainer.appendChild(chatIcon);
@@ -740,7 +698,7 @@
     messageDiv.className = "bot-message";
     const botName = document.createElement("h5");
     botName.className = "default-text fine-bot-name";
-    botName.textContent = "FBG Assistent";
+    botName.textContent = "Falkis";
     const botText = document.createElement("b");
     botText.className = "default-text bot-text";
 
@@ -915,7 +873,13 @@
   }
 
   // Function to toggle feedback box
-  function toggleFeedbackBox(container, question, answer, newRating, oldRating) {
+  function toggleFeedbackBox(
+    container,
+    question,
+    answer,
+    newRating,
+    oldRating
+  ) {
     const feedbackSent = Number(container.dataset.feedbackValue);
 
     if (feedbackSent !== 1) {
@@ -1030,7 +994,8 @@
       // Update Existing
       if (feedback_state !== null)
         chatHistory[existingEntryIndex].feedback_state = feedback_state;
-      if (nr_stars !== null) chatHistory[existingEntryIndex].nr_stars = nr_stars;
+      if (nr_stars !== null)
+        chatHistory[existingEntryIndex].nr_stars = nr_stars;
     } else {
       // Add new
       const newEntry = { question, answer };
@@ -1202,7 +1167,7 @@
           chatContainer.style.height = "56px";
           showHeaderIcon(false);
           setTimeout(() => {
-            chatContainer.style.width = "210px";
+            chatContainer.style.width = "170px";
           }, delayTime);
           isUp = false;
         }
@@ -1217,7 +1182,7 @@
         chatContainer.style.height = "56px";
         showHeaderIcon(false);
         setTimeout(() => {
-          chatContainer.style.width = "210px";
+          chatContainer.style.width = "170px";
         }, delayTime);
         isUp = false;
       }

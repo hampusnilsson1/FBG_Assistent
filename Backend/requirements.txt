@@ -7,3 +7,5 @@ Flask
 flask-cors
 flask-limiter
 stanza
+uvicorn
+asgiref

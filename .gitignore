@@ -1,5 +1,5 @@
 
 *.env
-/Backend/stanza_resources
-Backend/Individual_first_LOGG.txt
-Backend/Individual_LOGG.txt
+/Backend/data/stanza_resources
+Backend/data/Individual_first_LOGG.txt
+Backend/data/Individual_LOGG.txt

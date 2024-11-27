@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 import streamlit as st
 from qdrant_client import QdrantClient
 from qdrant_client.http.models import VectorParams, Distance
-from openai import OpenAI
+import openai
 
 # Constants
 QDRANT_URL = 'https://qdrant.utvecklingfalkenberg.se'
@@ -16,7 +16,7 @@ EMBEDDING_MODEL = "text-embedding-3-large"  # Using the larger model
 BATCH_SIZE = 1000
 SLEEP_TIME = 1
 VECTOR_SIZE = 3072  # Updated vector size for large embeddings
-COLLECTION_NAME = 'FalkenbergsKommunsHemsida_1000char_chunks'
+COLLECTION_NAME = 'FalkenbergsKommunsHemsida'
 
 def generate_uuid(chunk):
     hash_object = hashlib.md5(chunk.encode())
@@ -37,12 +37,12 @@ def chunk_text(text, chunk_size, overlap):
     return chunks
 
 # Main execution starts here
-load_dotenv()
-qdrant_api_key = os.getenv('qdrant_api_key')
-openai_api_key = os.getenv('openai_api_key')
+load_dotenv(dotenv_path="../data/API_KEYS.env")
+qdrant_api_key = os.getenv("QDRANT_API_KEY")
+openai_api_key = os.getenv("OPENAI_API_KEY")
 
 qdrant_client = QdrantClient(url=QDRANT_URL, port=QDRANT_PORT, https=True, api_key=qdrant_api_key)
-openai_client = OpenAI(api_key=openai_api_key)
+openai.api_key = openai_api_key
 
 try:
     qdrant_client.get_collection(COLLECTION_NAME)
@@ -56,12 +56,11 @@ with open('scraped_data.json', 'r', encoding='utf-8') as file:
 
 all_chunks = []
 for item in data:
-        text_chunks = chunk_text(item['texts'], 1000, 200)
+        text_chunks = chunk_text(item['texts'], 4000, 300)
         num_chunks = len(text_chunks)
         for index, chunk in enumerate(text_chunks):
             chunk_data = {
                 'url': item['url'],
-                'last_modified': item.get('last_modified', 'Unknown'),
                 'title': item['title'],
                 'chunk': chunk,
                 'chunk_info': f'Chunk {index + 1} of {num_chunks}'
@@ -73,7 +72,7 @@ upserted_documents_count = 0
 for batch_start in range(0, len(all_chunks), BATCH_SIZE):
     batch_data = all_chunks[batch_start:batch_start + BATCH_SIZE]
     batch = [item['chunk'] for item in batch_data]
-    response = openai_client.embeddings.create(model=EMBEDDING_MODEL, input=batch)
+    response = openai.Embedding.create(model=EMBEDDING_MODEL, input=batch)
     batch_embeddings = [e.embedding for e in response.data]
 
     for i, chunk in enumerate(batch):
@@ -85,8 +84,7 @@ for batch_start in range(0, len(all_chunks), BATCH_SIZE):
                 "id": doc_uuid,
                 "vector": embeddings,
                 "payload": {
-                    "url": batch_data[i]['url'], 
-                    "last_modified": batch_data[i]['last_modified'], 
+                    "url": batch_data[i]['url'],  # This still assumes 'item' is in scope
                     "title": batch_data[i]['title'],
                     "chunk": chunk
                 }
