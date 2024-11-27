@@ -485,9 +485,7 @@ async function sendAndPrintAnswer() {
         showConfirmationScreen(() => {
           sendQuestion(inputText, submitBtn);
         });
-        console.log("Nått speciellt hittat");
       } else {
-        console.log("Inget speciellt");
         sendQuestion(inputText, submitBtn);
       }
     } catch (error) {
@@ -541,7 +539,6 @@ function getBotAnswer(user_question, callback) {
     loadingIndex++;
   }, 300);
 
-  console.log(user_question, user_history, chat_id);
   fetch("https://falkisapi.utvecklingfalkenberg.se/generate", {
     method: "POST",
     headers: {
@@ -589,15 +586,10 @@ function getBotAnswer(user_question, callback) {
           const chunk = decoder.decode(value, { stream: true });
           receivedText += chunk;
           if (initialJsonDone != true) {
-            console.log(
-              "Nu vid första iterationen ska splittas: ",
-              receivedText
-            );
             const separator = "\n<END_OF_JSON>\n";
             const separatorIndex = receivedText.indexOf(separator);
             if (separatorIndex !== -1) {
               const jsonStr = receivedText.slice(0, separatorIndex);
-              console.log("Sträng ", jsonStr);
               try {
                 const json = JSON.parse(jsonStr);
 
@@ -612,11 +604,9 @@ function getBotAnswer(user_question, callback) {
               } catch (e) {
                 console.error("Kunde inte parsa JSON-data:", e);
               }
-              console.log("Json Parsed done:", initialJsonDone);
               receivedText = receivedText.slice(
                 separatorIndex + separator.length
               );
-              console.log("Resterande text: ", receivedText);
               result += receivedText;
               receivedText = "";
               updateBotMessageElement(botMessageElement, result);
@@ -993,7 +983,6 @@ async function submitFeedback(user_rating, user_feedback) {
   feedbackData.user_rating = user_rating;
   if (user_feedback) feedbackData.user_feedback = user_feedback;
 
-  console.log(feedbackData);
   fetch("https://falkisapi.utvecklingfalkenberg.se/feedback", {
     method: "POST",
     headers: {
@@ -1082,7 +1071,6 @@ function loadConvToOpenAIJson() {
     user_history.push({ role: "user", content: item.question });
     user_history.push({ role: "assistant", content: item.answer });
   });
-  console.log(user_history);
   return user_history;
 }
 
@@ -1192,7 +1180,6 @@ function openCloseBot(doAnimation) {
   }
   let windowWidth = document.documentElement.clientWidth;
   let windowHeight = window.innerHeight;
-  console.log(windowWidth, windowHeight);
   if (allowClickHeader) {
     allowClickHeader = false;
     if (windowWidth < 450) {
@@ -1233,5 +1220,6 @@ function openCloseBot(doAnimation) {
   }
   saveIsUp(isUp);
 }
+
 </script>
 </div>
