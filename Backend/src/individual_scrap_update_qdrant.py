@@ -32,13 +32,13 @@ COLLECTION_NAME = "FalkenbergsKommunsHemsida"
 # LOGGING------------------
 # Konfigurera logging för att skriva till en fil
 logging.basicConfig(
-    filename="../data/individual_LOGG.txt", level=logging.INFO, format="%(message)s"
+    filename="../data/individual_LOGG.txt", level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s",
 )
 
 # Skapa en handler för att också skriva till konsolen
 console = logging.StreamHandler()
 console.setLevel(logging.INFO)
-formatter = logging.Formatter("%(message)s")
+formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
 console.setFormatter(formatter)
 logging.getLogger("").addHandler(console)
 
@@ -152,7 +152,7 @@ def get_page_details(url, driver):
                 "source_url": url,
             }
         )
-
+    print("Returnerar",results[0])
     return results
 
 
@@ -190,7 +190,7 @@ def process_item_qdrant(item):
     logging.info("Dividing to chunks Done")
     logging.info("Embedding chunks")
     embeddings, chunk_cost_SEK = create_embeddings(chunks)
-    logging.info("Embedding chunks Done This cost: ", chunk_cost_SEK, "SEK")
+    logging.info(f"Embedding chunks Done. This cost: {chunk_cost_SEK} SEK")
     logging.info("Uploading Embeddings")
     upsert_to_qdrant(chunks, embeddings)
     logging.info("Uploading Embeddings Done")
@@ -201,6 +201,7 @@ def process_item_qdrant(item):
 def delete_qdrant_embedd(new_item):
     # Med "new_item" ta bort gamla datapunkter med samma url.
     new_item_url = new_item["url"]
+    print("Hämtat", new_item_url)
 
     qdrant_filter = models.Filter(
         must=[
@@ -209,8 +210,14 @@ def delete_qdrant_embedd(new_item):
             )
         ]
     )
+    print("Filtret: ",qdrant_filter)
 
-    qdrant_client.delete(collection_name=COLLECTION_NAME, filter=qdrant_filter)
+    points_selector = models.FilterSelector(filter=qdrant_filter)
+
+    qdrant_client.delete(
+        collection_name=COLLECTION_NAME,
+        points_selector=points_selector
+    )
 
 
 ## 3. Dela in texten i chunks/batches indexerade och formaterade
@@ -279,9 +286,12 @@ def upsert_to_qdrant(chunks, embeddings):
             },
         )
 
-        logging.info("Chunk uppladdas: ", doc_uuid, "URL", chunk["url"])
+        logging.info(f"Chunk uppladdas: {doc_uuid}, URL: {chunk['url']}")
         points.append(point)
-    qdrant_client.upsert(collection_name=COLLECTION_NAME, points=points)
+    try:
+        qdrant_client.upsert(collection_name=COLLECTION_NAME, points=points)
+    except Exception as e:
+        logging.error(f"Upsert failed: {e}")
 
 
 # Main function, Update a url and its pdfs(For multiusage setup driver outside)
@@ -296,6 +306,7 @@ def update_url_qdrant(url):
 
     # Delete old datapoint in database
     try:
+        print("Försöker ta bort",page_data[0])
         delete_qdrant_embedd(page_data[0])
         logging.info("Deleted current point in database")
     except:
@@ -304,7 +315,7 @@ def update_url_qdrant(url):
     for data_point in page_data:
         total_update_cost_SEK += process_item_qdrant(data_point)
 
-    logging.info("Total Qdrant URL Update Cost =", total_update_cost_SEK, "SEK")
+    logging.info(f"Total Qdrant URL Update Cost = {total_update_cost_SEK} SEK")
     return total_update_cost_SEK
 
 
