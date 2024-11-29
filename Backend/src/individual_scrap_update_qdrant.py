@@ -2,6 +2,7 @@ import os
 import time
 import uuid
 import hashlib
+from datetime import datetime
 from dotenv import load_dotenv
 from qdrant_client import QdrantClient
 from qdrant_client.http import models
@@ -81,6 +82,10 @@ def calculate_cost_sek(texts, model="text-embedding-3-large"):
 def setup_driver():
     service = Service(ChromeDriverManager().install())
     options = webdriver.ChromeOptions()
+    options.add_argument("--log-level=3")  # Sätter loggnivån till "FATAL"
+    options.add_argument("--disable-usb")  # Inaktiverar USB-funktionalitet
+    options.add_argument("--disable-extensions")
+    options.add_argument("--disable-dev-shm-usage")
     options.headless = True  # Kör i headless-läge
     driver = webdriver.Chrome(service=service, options=options)
     return driver
@@ -189,7 +194,7 @@ def process_item_qdrant(item):
     logging.info("Dividing to chunks Done")
     logging.info("Embedding chunks")
     embeddings, chunk_cost_SEK = create_embeddings(chunks)
-    logging.info(f"Embedding chunks Done. This cost: {chunk_cost_SEK} SEK")
+    logging.info(f"Embedding chunks Done")
     logging.info("Uploading Embeddings")
     upsert_to_qdrant(chunks, embeddings)
     logging.info("Uploading Embeddings Done")
@@ -272,6 +277,8 @@ def upsert_to_qdrant(chunks, embeddings):
     points = []
     for i, chunk in enumerate(chunks):
         doc_uuid = generate_uuid(chunk["chunk"])
+        update_time = datetime.now()
+        update_date= update_time.date()
         point = PointStruct(
             id=doc_uuid,
             vector=embeddings[i],
@@ -280,6 +287,7 @@ def upsert_to_qdrant(chunks, embeddings):
                 "title": chunk["title"],
                 "chunk": chunk["chunk"],
                 "chunk_info": chunk["chunk_info"],
+                "update_date": update_date
             },
         )
 
@@ -293,7 +301,6 @@ def upsert_to_qdrant(chunks, embeddings):
 
 # Main function, Update a url and its pdfs(For multiusage setup driver outside)
 def update_url_qdrant(url):
-    driver = setup_driver()
     sitemap_url = (
         "https://kommun.falkenberg.se/index.php?option=com_jmap&view=sitemap&format=xml"
     )
@@ -324,6 +331,9 @@ qdrant_client = QdrantClient(
     url=QDRANT_URL, port=QDRANT_PORT, https=True, api_key=qdrant_api_key
 )
 openai.api_key = openai_api_key
+
+## WebDriver 
+driver = setup_driver()
 
 # Skapa collection eller hämta till client
 try:
