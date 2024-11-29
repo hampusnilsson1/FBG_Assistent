@@ -300,7 +300,7 @@ function createBotMessage(initialText) {
   const chatIconContainer = document.createElement("div");
   chatIconContainer.className = "chat-icon-container";
   const chatIcon = document.createElement("img");
-  chatIcon.src = "Falkis.png";
+  chatIcon.src = "FalkisTrans.png";
   chatIcon.alt = "";
   chatIcon.className = "chat-icon";
   chatIconContainer.appendChild(chatIcon);
