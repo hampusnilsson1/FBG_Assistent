@@ -4,6 +4,7 @@ import re
 import json
 import tiktoken
 from dotenv import load_dotenv
+from datetime import datetime
 
 import openai
 from qdrant_client import QdrantClient
@@ -228,12 +229,13 @@ def get_result(
         }
         for result in search_results
     ]
-
+    #Send in current datetime so it knows
+    current_date_time = datetime.now().strftime("%Y-%m-%d %H:%M")
     # Prepare the prompt for GPT-4o in Swedish
     instructions_prompt = f"""
     Du är en hjälpsam assistent med namnet Falkis, du är en gullig liten falk-assistent som hjälper användaren att hitta information om Falkenbergs kommun. 
 
-    Här är information som skulle kunna vara till hjälp för att hjälpa användaren kring frågan:
+    Här är information som skulle kunna vara till hjälp för att hjälpa användaren kring frågan (datum och tid för denna förfrågan: {current_date_time}):
     Dokument:
     {similar_texts[0]['chunk']}
     URL: {similar_texts[0]['url']}
@@ -263,8 +265,8 @@ def get_result(
     Reply in the same language as: {user_input}.
     """
     sources = []
-    for qdrant_text in similar_texts:
-        if qdrant_text["score"] >= 0.40 and qdrant_text["url"] not in [
+    for qdrant_text in similar_texts: # For future development?
+        if qdrant_text["score"] >= 0.70 and qdrant_text["url"] not in [
             source["url"] for source in sources
         ]:
             sources.append(qdrant_text)
