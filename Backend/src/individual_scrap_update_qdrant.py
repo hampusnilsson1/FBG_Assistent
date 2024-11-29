@@ -152,7 +152,6 @@ def get_page_details(url, driver):
                 "source_url": url,
             }
         )
-    print("Returnerar",results[0])
     return results
 
 
@@ -201,7 +200,6 @@ def process_item_qdrant(item):
 def delete_qdrant_embedd(new_item):
     # Med "new_item" ta bort gamla datapunkter med samma url.
     new_item_url = new_item["url"]
-    print("Hämtat", new_item_url)
 
     qdrant_filter = models.Filter(
         must=[
@@ -210,7 +208,6 @@ def delete_qdrant_embedd(new_item):
             )
         ]
     )
-    print("Filtret: ",qdrant_filter)
 
     points_selector = models.FilterSelector(filter=qdrant_filter)
 
@@ -306,9 +303,8 @@ def update_url_qdrant(url):
 
     # Delete old datapoint in database
     try:
-        print("Försöker ta bort",page_data[0])
         delete_qdrant_embedd(page_data[0])
-        logging.info("Deleted current point in database")
+        logging.info("Deleted current points in database")
     except:
         logging.info("Deleting failed, List is empty!")
 
