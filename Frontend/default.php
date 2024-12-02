@@ -41,7 +41,7 @@ defined('_JEXEC') or die;
   }
 
   #confirm-header {
-    background-color: rgb(76, 148, 206);
+    background-color: rgb(61, 64, 91);
     color: white;
     padding: 3%;
   }
