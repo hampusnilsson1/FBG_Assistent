@@ -33,7 +33,7 @@ COLLECTION_NAME = "FalkenbergsKommunsHemsida"
 # LOGGING------------------
 # Konfigurera logging för att skriva till en fil
 logging.basicConfig(
-    filename="../data/individual_LOGG.txt", level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s",
+    filename="../data/update_logg.txt", level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s",
 )
 
 # Skapa en handler för att också skriva till konsolen
@@ -277,8 +277,7 @@ def upsert_to_qdrant(chunks, embeddings):
     points = []
     for i, chunk in enumerate(chunks):
         doc_uuid = generate_uuid(chunk["chunk"])
-        update_time = datetime.now()
-        update_date= update_time.date()
+        update_time = datetime.now().replace(microsecond=0)
         point = PointStruct(
             id=doc_uuid,
             vector=embeddings[i],
@@ -287,7 +286,7 @@ def upsert_to_qdrant(chunks, embeddings):
                 "title": chunk["title"],
                 "chunk": chunk["chunk"],
                 "chunk_info": chunk["chunk_info"],
-                "update_date": update_date
+                "update_date": update_time
             },
         )
 
