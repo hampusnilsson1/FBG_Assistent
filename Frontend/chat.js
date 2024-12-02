@@ -8,7 +8,7 @@ const messageContainer = document.getElementById("message-container");
 let reset_message_on = false;
 
 // Append the start message
-createBotMessage("Hejsan! Har du någon fråga du skulle vilja ha besvarad?");
+createBotMessage("Hejsan! Vad kan jag hjälpa till med?");
 
 loadChatFromSession();
 
@@ -662,7 +662,7 @@ function clearChat() {
   chat_container.innerHTML = "";
   delete chat_container.dataset.chat_id;
 
-  createBotMessage("Hejsan! Har du någon fråga du skulle vilja ha besvarad?");
+  createBotMessage("Hejsan! Vad kan jag hjälpa till med?");
   activateUserInput(true);
 
   const reset_message = document.getElementById("reset-message");
@@ -771,7 +771,7 @@ function openCloseBot(doAnimation) {
         chatContainer.style.height = "56px";
         showHeaderIcon(false);
         setTimeout(() => {
-          chatContainer.style.width = "170px";
+          chatContainer.style.width = "200px";
         }, delayTime);
         isUp = false;
       }
@@ -786,7 +786,7 @@ function openCloseBot(doAnimation) {
       chatContainer.style.height = "56px";
       showHeaderIcon(false);
       setTimeout(() => {
-        chatContainer.style.width = "170px";
+        chatContainer.style.width = "200px";
       }, delayTime);
       isUp = false;
     }

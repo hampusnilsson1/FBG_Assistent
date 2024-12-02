@@ -3,7 +3,7 @@
   position: fixed;
   right: 0px;
   bottom: 0px;
-  width: 210px; /* Sätt tillbaka till 210px vid start annars 450px*/
+  width: 200px; /* Sätt tillbaka till 210px vid start annars 450px*/
   height: 56px; /* Sätt tillbaka till 56px vid start annars 470px*/
   display: flex;
   flex-direction: column;
@@ -31,7 +31,7 @@
   transform: translate(-50%, 25%);
 }
 #confirm-header {
-  background-color: rgb(76, 148, 206);
+  background-color: rgb(61, 64, 91);
   color: white;
   padding: 3%;
 }
@@ -55,24 +55,24 @@
   box-shadow: 2px 3px 3px rgba(0, 0, 0, 0.116);
 }
 #confirm-yes {
-  border-color: #47b5f9;
+  border-color: #1090a1;
   color: rgb(255, 255, 255);
-  background-color: #47b5f9;
+  background-color: #1090a1;
   transition: all 0.125s ease;
 }
 #confirm-yes:hover {
-  border-color: rgb(20, 158, 218);
-  background-color: #36affa;
+  border-color: #0f8392;
+  background-color: #0f8392;
 }
 #confirm-no {
-  border-color: rgb(0, 159, 227);
-  color: rgb(0, 159, 227);
+  border-color: #1090a1;
+  color: #1090a1;
   background-color: rgba(255, 255, 255, 0);
   transition: all 0.125s ease;
 }
 #confirm-no:hover {
-  border-color: rgb(4, 137, 194);
-  color: rgb(4, 137, 194);
+  border-color: #0c7280;
+  color: #0c7280;
 }
 #button-div button:hover {
   cursor: pointer;
@@ -84,13 +84,13 @@
   flex-direction: row;
   justify-content: space-between;
   padding: 0 8px 0 8px;
-  background-color: rgb(76, 148, 206);
+  background-color: rgb(61, 64, 91);
   border-radius: 5px 5px 0 0;
   cursor: pointer;
   transition: background-color 0.1s ease;
 }
 #header-view:hover {
-  background-color: rgb(91, 156, 209);
+  background-color: rgb(47, 50, 74);
 }
 #left-header {
   display: flex;
@@ -230,7 +230,7 @@
   padding: 10px;
   border-radius: 7px;
   color: white;
-  background-color: #47b6f9;
+  background-color: #0f8c9d;
   width: auto;
   max-width: 365px;
   word-wrap: break-word;
@@ -280,14 +280,15 @@
 #submit-btn {
   height: auto;
   flex: 0 0 50px;
-  background-color: #47b6f9;
+  background-color: #0f8c9d;
   color: white;
-  border: 1px solid rgb(221, 221, 221);
+  border: 1px solid rgb(138, 138, 138);
   border-radius: 5px;
+  transition: background-color 125ms;
 }
 #submit-btn:hover {
   cursor: pointer;
-  background-color: #64c0f8;
+  background-color: #0d7583;
 }
 
 /* Feedback star text */

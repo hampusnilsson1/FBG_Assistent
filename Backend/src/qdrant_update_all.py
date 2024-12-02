@@ -22,6 +22,7 @@ def update_qdrant_since(update_since):
         namespace = {"ns": "http://www.sitemaps.org/schemas/sitemap/0.9"}
 
         urls = []
+        urls_no_lastmod = []
         for url in root.findall("ns:url", namespace):
             loc = url.find("ns:loc", namespace).text
             lastmod_elem = url.find("ns:lastmod", namespace)
@@ -40,19 +41,27 @@ def update_qdrant_since(update_since):
                     print(f"Felaktigt datumformat i lastmod {lastmod}: {e}")
             else:
                 #print(f"Ingen lastmod hittad för URL {loc}, uppdaterar/lägger till denna ändå.")
-                urls.append(
+                urls_no_lastmod.append(
                     {
                         "url": loc,
                         #"lastmod": lastmod,
                     }
                 )
-        print("Försöker uppdatera från",update_since,"finns",len(urls),"Stycken uppdaterade sidor")
+        if urls_no_lastmod:
+            print("Start",len(urls))
+            print("Start nomod",len(urls_no_lastmod))
+            apply_no_lastmod = input(f"{len(urls_no_lastmod)} Sidor utan lastmod hittades. Vill du lägga till dessa också? (y/n)")
+            if apply_no_lastmod.lower() == "y":
+                urls += urls_no_lastmod
+        
+        print("Försöker uppdatera från",update_since,"finns",len(urls),"stycken uppdaterade sidor")
         are_u_sure = input("Är du säker på att starta uppdateringen, (y/n)")
-        if urls and are_u_sure == "y":
+        if urls and are_u_sure.lower() == "y":
             total_update_sek = 0
             for url in urls:
                 total_update_sek += update_url_qdrant(url["url"])
-            print("Total Kostnad för alla uppdateringar:",total_update_sek)
+            individual_scrap_update_qdrant.setupLogging("../data/Price_logg.txt")
+            individual_scrap_update_qdrant.logging(f"Total Kostnad för uppdateringar:",total_update_sek,"SEK")
 
 individual_scrap_update_qdrant
 update_date = input("Skriv datum du vill artiklar som ändrats efter ska uppdateras.(´YYYY-MM-DD´)")        

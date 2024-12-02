@@ -3,17 +3,15 @@
 defined('_JEXEC') or die;
 ?>
 
-<div id="recommender">
+<div id="assistant">
    <style>
   #chat-container {
     height: 100%;
     position: fixed;
     right: 0px;
     bottom: 0px;
-    width: 210px;
-    /* Sätt tillbaka till 210px vid start annars 450px*/
+    width: 200px;
     height: 56px;
-    /* Sätt tillbaka till 56px vid start annars 470px*/
     display: flex;
     flex-direction: column;
     column-gap: 0px;
@@ -71,27 +69,27 @@ defined('_JEXEC') or die;
   }
 
   #confirm-yes {
-    border-color: #47b5f9;
+    border-color: #1090a1;
     color: rgb(255, 255, 255);
-    background-color: #47b5f9;
+    background-color: #1090a1;
     transition: all 0.125s ease;
   }
 
   #confirm-yes:hover {
-    border-color: rgb(20, 158, 218);
-    background-color: #36affa;
+    border-color: #0f8392;
+    background-color: #0f8392;
   }
 
   #confirm-no {
-    border-color: rgb(0, 159, 227);
-    color: rgb(0, 159, 227);
+    border-color: #1090a1;
+    color: #1090a1;
     background-color: rgba(255, 255, 255, 0);
     transition: all 0.125s ease;
   }
 
   #confirm-no:hover {
-    border-color: rgb(4, 137, 194);
-    color: rgb(4, 137, 194);
+    border-color: #0c7280;
+    color: #0c7280;
   }
 
   #button-div button:hover {
@@ -269,7 +267,7 @@ defined('_JEXEC') or die;
     padding: 10px;
     border-radius: 7px;
     color: white;
-    background-color: #47b6f9;
+    background-color: #0f8c9d;
     width: auto;
     max-width: 365px;
     word-wrap: break-word;
@@ -325,15 +323,16 @@ defined('_JEXEC') or die;
   #submit-btn {
     height: auto;
     flex: 0 0 50px;
-    background-color: #1f4e99;
+    background-color: #0f8c9d;
     color: white;
-    border: 1px solid rgb(20, 51, 101);
+    border: 1px solid rgb(138, 138, 138);
     border-radius: 5px;
+    transition: background-color 125ms;
   }
 
   #submit-btn:hover {
     cursor: pointer;
-    background-color: #184387;
+    background-color: #0d7583;
   }
 
   /* Feedback star text */
@@ -401,15 +400,13 @@ defined('_JEXEC') or die;
       <div class="chat-icon-container">
         <img src="https://kommun.falkenberg.se/images/ai_falken.png" alt="" class="chat-icon" />
       </div>
-      <h5 class="default-text" id="bot-name">Falkis</h5>
+      <h5 class="default-text" id="bot-name">Fråga Falkis</h5>
     </div>
     <span uk-icon="icon: chevron-down" id="header-icon"></span>
   </div>
   <div id="chat-wrapper">
     <p class="default-text" id="disclaimer">
-      <small>AI Assistenten kan begå misstag, information hämtas ifrån vår
-        hemsida.
-      </small>
+      <small>AI kan begå misstag. Kontrollera viktig information. <a href="https://kommun.falkenberg.se/om-kommunen/om-webbplatsen/om-falkis">Läs mer</a></small>
     </p>
     <div id="message-container"></div>
   </div>
@@ -423,7 +420,7 @@ defined('_JEXEC') or die;
 <script src="https://cdn.jsdelivr.net/npm/showdown/dist/showdown.min.js"></script>
 <script>
   // **Initialization Code**
-// -----------------------
+// ----------HN-----------
 
 let isUp = loadIsUp();
 let allowClickHeader = true;
@@ -432,7 +429,7 @@ const messageContainer = document.getElementById("message-container");
 let reset_message_on = false;
 
 // Append the start message
-createBotMessage("Hejsan! Har du någon fråga du skulle vilja ha besvarad?");
+createBotMessage("Hejsan! Vad kan jag hjälpa till med?");
 
 loadChatFromSession();
 
@@ -486,7 +483,9 @@ async function sendAndPrintAnswer() {
         showConfirmationScreen(() => {
           sendQuestion(inputText, submitBtn);
         });
+        console.log("Nått speciellt hittat");
       } else {
+        console.log("Inget speciellt");
         sendQuestion(inputText, submitBtn);
       }
     } catch (error) {
@@ -540,6 +539,7 @@ function getBotAnswer(user_question, callback) {
     loadingIndex++;
   }, 300);
 
+  console.log(user_question, user_history, chat_id);
   fetch("https://falkisapi.utvecklingfalkenberg.se/generate", {
     method: "POST",
     headers: {
@@ -587,10 +587,15 @@ function getBotAnswer(user_question, callback) {
           const chunk = decoder.decode(value, { stream: true });
           receivedText += chunk;
           if (initialJsonDone != true) {
+            console.log(
+              "Nu vid första iterationen ska splittas: ",
+              receivedText
+            );
             const separator = "\n<END_OF_JSON>\n";
             const separatorIndex = receivedText.indexOf(separator);
             if (separatorIndex !== -1) {
               const jsonStr = receivedText.slice(0, separatorIndex);
+              console.log("Sträng ", jsonStr);
               try {
                 const json = JSON.parse(jsonStr);
 
@@ -605,9 +610,11 @@ function getBotAnswer(user_question, callback) {
               } catch (e) {
                 console.error("Kunde inte parsa JSON-data:", e);
               }
+              console.log("Json Parsed done:", initialJsonDone);
               receivedText = receivedText.slice(
                 separatorIndex + separator.length
               );
+              console.log("Resterande text: ", receivedText);
               result += receivedText;
               receivedText = "";
               updateBotMessageElement(botMessageElement, result);
@@ -628,7 +635,7 @@ function getBotAnswer(user_question, callback) {
     .catch((error) => {
       console.error("Error:", error);
       clearInterval(loadingInterval);
-      errormessage = "Nått gick fel! Jag kunde inte hitta något svar på det.";
+      errormessage = "Något gick fel! Jag kunde inte hitta något svar på det.";
       updateBotMessageElement(botMessageElement, errormessage);
       pushMessageToSession(user_question, errormessage);
       callback();
@@ -984,6 +991,7 @@ async function submitFeedback(user_rating, user_feedback) {
   feedbackData.user_rating = user_rating;
   if (user_feedback) feedbackData.user_feedback = user_feedback;
 
+  console.log(feedbackData);
   fetch("https://falkisapi.utvecklingfalkenberg.se/feedback", {
     method: "POST",
     headers: {
@@ -1072,6 +1080,7 @@ function loadConvToOpenAIJson() {
     user_history.push({ role: "user", content: item.question });
     user_history.push({ role: "assistant", content: item.answer });
   });
+  console.log(user_history);
   return user_history;
 }
 
@@ -1086,7 +1095,7 @@ function clearChat() {
   chat_container.innerHTML = "";
   delete chat_container.dataset.chat_id;
 
-  createBotMessage("Hejsan! Har du någon fråga du skulle vilja ha besvarad?");
+  createBotMessage("Hejsan! Vad kan jag hjälpa till med?");
   activateUserInput(true);
 
   const reset_message = document.getElementById("reset-message");
@@ -1181,6 +1190,7 @@ function openCloseBot(doAnimation) {
   }
   let windowWidth = document.documentElement.clientWidth;
   let windowHeight = window.innerHeight;
+  console.log(windowWidth, windowHeight);
   if (allowClickHeader) {
     allowClickHeader = false;
     if (windowWidth < 450) {
@@ -1195,7 +1205,7 @@ function openCloseBot(doAnimation) {
         chatContainer.style.height = "56px";
         showHeaderIcon(false);
         setTimeout(() => {
-          chatContainer.style.width = "170px";
+          chatContainer.style.width = "200px";
         }, delayTime);
         isUp = false;
       }
@@ -1210,7 +1220,7 @@ function openCloseBot(doAnimation) {
       chatContainer.style.height = "56px";
       showHeaderIcon(false);
       setTimeout(() => {
-        chatContainer.style.width = "170px";
+        chatContainer.style.width = "200px";
       }, delayTime);
       isUp = false;
     }
@@ -1221,6 +1231,5 @@ function openCloseBot(doAnimation) {
   }
   saveIsUp(isUp);
 }
-
 </script>
 </div>
