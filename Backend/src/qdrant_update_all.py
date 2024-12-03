@@ -22,8 +22,7 @@ logging.basicConfig(
 )
 
 
-# Modes: add_datadates, update_datadates
-def update_qdrant_since(update_since, mode):
+def update_qdrant_since(update_since):
     update_since_datetime = datetime.strptime(update_since, "%Y-%m-%d")
     url = (
         "https://kommun.falkenberg.se/index.php?option=com_jmap&view=sitemap&format=xml"
@@ -71,15 +70,21 @@ def update_qdrant_since(update_since, mode):
                             # Om datum finns i databas
                             if update_date_str is not None:
                                 try:
-                                    update_date = datetime.strptime(
-                                        update_date_str, "%Y-%m-%dT%H:%M:%SZ"
+                                    update_date = datetime.strptime(  ## Senaste sätt som det sparas i databas
+                                        update_date_str, "%Y-%m-%dT%H:%M:%S"
                                     )
                                     print("Första formatet")
                                 except:
-                                    update_date = datetime.strptime(
-                                        update_date_str, "%Y-%m-%d"
-                                    )
-                                    print("Andra formatet")
+                                    try:
+                                        update_date = datetime.strptime(  ## Gammalt sätt som det sparades i databas
+                                            update_date_str, "%Y-%m-%d"
+                                        )
+                                        print("Andra formatet")
+                                    except:
+                                        update_date = datetime.strptime(  ## Format för att yttligare säkra. Lastmod format.
+                                            update_date_str, "%Y-%m-%dT%H:%M:%SZ"
+                                        )
+                                        print("Tredje formatet")
 
                                 print(
                                     f"Update_date är {update_date} och Last Modified-date är {lastmod_datetime}"
@@ -196,4 +201,4 @@ qdrant_client = QdrantClient(
 update_date = input(
     "Skriv datum du vill artiklar som ändrats efter ska uppdateras.(´YYYY-MM-DD´)"
 )
-update_qdrant_since(update_date, mode="update_datadates")
+update_qdrant_since(update_date)
