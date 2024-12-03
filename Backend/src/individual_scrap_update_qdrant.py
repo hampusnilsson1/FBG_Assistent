@@ -33,7 +33,9 @@ COLLECTION_NAME = "FalkenbergsKommunsHemsida"
 # LOGGING------------------
 # Konfigurera logging för att skriva till en fil
 logging.basicConfig(
-    filename="../data/update_logg.txt", level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s",
+    filename="../data/update_logg.txt",
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s",
 )
 
 # Skapa en handler för att också skriva till konsolen
@@ -160,33 +162,6 @@ def get_page_details(url, driver):
     return results
 
 
-def get_url_details(target_url, sitemap_url, driver):
-    # Fetch and parse the sitemap
-    xml_data = fetch_sitemap(sitemap_url)
-    root = ET.fromstring(xml_data)
-    ns = {"sitemaps": "http://www.sitemaps.org/schemas/sitemap/0.9"}
-
-    # Search for the specific URL in the sitemap
-    last_modified = None
-    for url_elem in root.findall(".//sitemaps:url", ns):
-        loc_elem = url_elem.find("sitemaps:loc", ns)
-        if loc_elem is not None and loc_elem.text == target_url:
-            lastmod_elem = url_elem.find("sitemaps:lastmod", ns)
-            last_modified = (
-                lastmod_elem.text
-                if lastmod_elem is not None
-                else "No Last Modified Found"
-            )
-            break
-
-    # Fetch page details (title and texts)
-    page_data = get_page_details(target_url, driver)
-    for data_point in page_data:
-        data_point["last_modified"] = last_modified
-
-    return page_data
-
-
 # Processa en datapunkt
 def process_item_qdrant(item):
     logging.info("Dividing to chunks")
@@ -207,18 +182,21 @@ def delete_qdrant_embedd(new_item):
     new_item_url = new_item["url"]
 
     qdrant_filter = models.Filter(
-        must=[
+        should=[
             models.FieldCondition(
                 key="url", match=models.MatchValue(value=new_item_url)
-            )
+            ),
+            models.FieldCondition(
+                key="source_url",
+                match=models.MatchValue(value=new_item_url),
+            ),
         ]
     )
 
     points_selector = models.FilterSelector(filter=qdrant_filter)
 
     qdrant_client.delete(
-        collection_name=COLLECTION_NAME,
-        points_selector=points_selector
+        collection_name=COLLECTION_NAME, points_selector=points_selector
     )
 
 
@@ -234,6 +212,9 @@ def get_item_chunks(item):
             "chunk": chunk,
             "chunk_info": f"Chunk {index + 1} of {num_chunks}",
         }
+        if "source_url" in item:
+            chunk_data["source_url"] = item["source_url"]
+
         all_chunks.append(chunk_data)
     return all_chunks
 
@@ -278,16 +259,20 @@ def upsert_to_qdrant(chunks, embeddings):
     for i, chunk in enumerate(chunks):
         doc_uuid = generate_uuid(chunk["chunk"])
         update_time = datetime.now().replace(microsecond=0)
+        payload = {
+            "url": chunk["url"],
+            "title": chunk["title"],
+            "chunk": chunk["chunk"],
+            "chunk_info": chunk["chunk_info"],
+            "update_date": update_time,
+        }
+        if "source_url" in chunk:
+            payload["source_url"] = chunk["source_url"]
+            
         point = PointStruct(
             id=doc_uuid,
             vector=embeddings[i],
-            payload={
-                "url": chunk["url"],
-                "title": chunk["title"],
-                "chunk": chunk["chunk"],
-                "chunk_info": chunk["chunk_info"],
-                "update_date": update_time
-            },
+            payload=payload
         )
 
         logging.info(f"Chunk uppladdas: {doc_uuid}, URL: {chunk['url']}")
@@ -300,12 +285,9 @@ def upsert_to_qdrant(chunks, embeddings):
 
 # Main function, Update a url and its pdfs(For multiusage setup driver outside)
 def update_url_qdrant(url):
-    sitemap_url = (
-        "https://kommun.falkenberg.se/index.php?option=com_jmap&view=sitemap&format=xml"
-    )
     total_update_cost_SEK = 0
 
-    page_data = get_url_details(url, sitemap_url, driver)
+    page_data = get_page_details(url, driver)
 
     # Delete old datapoint in database
     try:
@@ -331,7 +313,7 @@ qdrant_client = QdrantClient(
 )
 openai.api_key = openai_api_key
 
-## WebDriver 
+## WebDriver
 driver = setup_driver()
 
 # Skapa collection eller hämta till client

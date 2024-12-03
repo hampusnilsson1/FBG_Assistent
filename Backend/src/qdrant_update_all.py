@@ -64,7 +64,7 @@ def update_qdrant_since(update_since, mode):
                             limit=1,
                             scroll_filter=filter_condition,
                         )
-                        # Om Det är en uppdatering      - UPDATE,
+                        # Om Den finns i databas
                         if result[0]:
                             datapoint = result[0][0]
                             update_date_str = datapoint.payload.get("update_date")
@@ -82,7 +82,7 @@ def update_qdrant_since(update_since, mode):
                                     print("Andra formatet")
 
                                 print(
-                                    f"Update_date är {update_date} och Last Modifieddate är {lastmod_datetime}"
+                                    f"Update_date är {update_date} och Last Modified-date är {lastmod_datetime}"
                                 )
                                 # Lägg till då det är en ändring efter förra uppladdningen
                                 if update_date < lastmod_datetime:
@@ -114,6 +114,7 @@ def update_qdrant_since(update_since, mode):
                                     "lastmod": lastmod,
                                 }
                             )
+                            continue
 
                 except ValueError as e:
                     print(f"Felaktigt datumformat i update_date {update_date}: {e}")
@@ -121,6 +122,7 @@ def update_qdrant_since(update_since, mode):
             else:
                 print("Ingen lastmod i sitemap")
                 urls_no_lastmod.append({"url": loc})
+                continue
 
         # Options Vad man vill uppdatera/Lägga till i qdrant databasen
         add_urls(
@@ -147,11 +149,11 @@ def update_qdrant_since(update_since, mode):
         # Uppdatera tillagda.
         if urls:
             print(
-                "Försöker uppdatera från",
+                "Uppdaterar efter",
                 update_since,
-                "finns",
+                ", finns",
                 len(urls),
-                "stycken uppdaterade sidor",
+                "stycken uppdaterade sidor.",
             )
             are_u_sure = input("Är du säker på att starta uppdateringen, (y/n)")
             if urls and are_u_sure.lower() == "y":
