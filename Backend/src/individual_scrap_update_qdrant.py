@@ -147,19 +147,36 @@ def get_page_details(url, driver):
     pdf_links = soup.find_all("a", href=re.compile(r"\.pdf$", re.IGNORECASE))
     for link in pdf_links:
         pdf_url = link["href"]
-        if pdf_url.startswith("/"):
-            pdf_url = "https://kommun.falkenberg.se" + pdf_url
+        if "evolution" not in pdf_url:  # Om det inte är en evolution gör som innan
+            if pdf_url.startswith("/"):
+                pdf_url = "https://kommun.falkenberg.se" + pdf_url
 
-        pdf_text = fetch_pdf_content(pdf_url)
-        results.append(
-            {
-                "url": pdf_url,
-                "title": link.text.strip() or "No title",
-                "texts": pdf_text,
-                "source_url": url,
-            }
-        )
+            pdf_text = fetch_pdf_content(pdf_url)
+            results.append(
+                {
+                    "url": pdf_url,
+                    "title": link.text.strip() or "No title",
+                    "texts": pdf_text,
+                    "source_url": url,
+                }
+            )
     return results
+
+
+def get_pdf_detail(pdf_url, title=None):
+    if pdf_url.startswith("/"):
+        pdf_url = "https://kommun.falkenberg.se" + pdf_url
+
+    pdf_text = fetch_pdf_content(pdf_url)
+    result = {
+        "url": pdf_url,
+        "texts": pdf_text,
+    }
+    if title != None:
+        result["title"] = title
+    else:
+        result["title"] = "No title"
+    return [result]
 
 
 # Processa en datapunkt
@@ -180,21 +197,38 @@ def process_item_qdrant(item):
 def delete_qdrant_embedd(new_item):
     # Med "new_item" ta bort gamla datapunkter med samma url.
     new_item_url = new_item["url"]
-
-    qdrant_filter = models.Filter(
-        should=[
+    # Har den ingen source_url så tas den bort
+    default_url_filter = models.Filter(
+        must=[
+            models.IsEmptyCondition(is_empty=models.PayloadField(key="source_url")),
             models.FieldCondition(
                 key="url", match=models.MatchValue(value=new_item_url)
-            ),
-            models.FieldCondition(
-                key="source_url",
-                match=models.MatchValue(value=new_item_url),
             ),
         ]
     )
 
-    points_selector = models.FilterSelector(filter=qdrant_filter)
+    # Har den source_url så får den inte innehålla evolution
+    pdf_not_old_evolution_filter = models.Filter(
+        must_not=[
+            models.IsEmptyCondition(is_empty=models.PayloadField(key="source_url")),
+            models.FieldCondition(
+                key="url", match=models.MatchText(text="evolution")
+            ),
+        ],
+        must=[
+            models.FieldCondition(
+                key="source_url", match=models.MatchValue(value=new_item_url)
+            ),
+        ],
+    )
 
+    # Kombinera ett ska stämma
+    qdrant_filter = models.Filter(
+        should=[default_url_filter, pdf_not_old_evolution_filter]
+    )
+
+    points_selector = models.FilterSelector(filter=qdrant_filter)
+    
     qdrant_client.delete(
         collection_name=COLLECTION_NAME, points_selector=points_selector
     )
@@ -268,12 +302,8 @@ def upsert_to_qdrant(chunks, embeddings):
         }
         if "source_url" in chunk:
             payload["source_url"] = chunk["source_url"]
-            
-        point = PointStruct(
-            id=doc_uuid,
-            vector=embeddings[i],
-            payload=payload
-        )
+
+        point = PointStruct(id=doc_uuid, vector=embeddings[i], payload=payload)
 
         logging.info(f"Chunk uppladdas: {doc_uuid}, URL: {chunk['url']}")
         points.append(point)
@@ -284,10 +314,12 @@ def upsert_to_qdrant(chunks, embeddings):
 
 
 # Main function, Update a url and its pdfs(For multiusage setup driver outside)
-def update_url_qdrant(url):
+def update_url_qdrant(url, evolution_pdf=False, pdf_title=None):
     total_update_cost_SEK = 0
-
-    page_data = get_page_details(url, driver)
+    if not evolution_pdf:
+        page_data = get_page_details(url, driver)
+    else:
+        page_data = get_pdf_detail(url, pdf_title)
 
     # Delete old datapoint in database
     try:
@@ -296,7 +328,10 @@ def update_url_qdrant(url):
     except:
         logging.info("Deleting failed, List is empty!")
 
+    point_count = 0
     for data_point in page_data:
+        point_count += 1
+        logging.info(f"{point_count} av {len(page_data)}")
         total_update_cost_SEK += process_item_qdrant(data_point)
 
     logging.info(f"Total Qdrant URL Update Cost = {total_update_cost_SEK} SEK")
@@ -324,5 +359,3 @@ except Exception:
     qdrant_client.recreate_collection(
         collection_name=COLLECTION_NAME, vectors_config=vectors_config
     )
-
-# update_url_qdrant("URL_HERE")

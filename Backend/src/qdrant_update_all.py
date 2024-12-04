@@ -5,6 +5,7 @@ import xml.etree.ElementTree as ET
 from datetime import datetime
 from dotenv import load_dotenv
 from qdrant_client import QdrantClient
+from qdrant_client.http import models
 from qdrant_client.http.models import Filter, FieldCondition, MatchValue
 
 # Funktion hämtas från fil
@@ -20,6 +21,73 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
 )
+
+
+def get_evolution_pdf_update(sitemap_url):
+    # Hämta alla evolution pdfer i databasen
+    qdrant_filter = models.Filter(
+        must=[
+            models.FieldCondition(key="url", match=models.MatchText(text="evolution"))
+        ]
+    )
+
+    obj_qdrant_pdfs, next_page_offset = qdrant_client.scroll(
+        collection_name=COLLECTION_NAME,
+        limit=100,
+        scroll_filter=qdrant_filter,
+    )
+    
+    while next_page_offset is not None:
+        new_points, next_page_offset = qdrant_client.scroll(
+            collection_name=COLLECTION_NAME,
+            scroll_filter=qdrant_filter,
+            limit=100,
+            offset=next_page_offset
+        )
+        obj_qdrant_pdfs.extend(new_points)
+        
+    qdrant_pdfs = []
+    if obj_qdrant_pdfs[0]:
+        for pdf in obj_qdrant_pdfs:
+            url = pdf.payload.get("url")
+            version = pdf.payload.get("version")
+            if not version:
+                version = "0.1"
+            qdrant_pdfs.append({"url": url, "version":version})
+    
+    # Hämta alla existerande evolution pdfer i sitemap
+    response = requests.get(sitemap_url)
+    
+    if response.status_code == 200:
+        data = response.json()
+        print(data)
+        
+        evolution_pdfs = []
+        for item in data["data"]:
+            version = item["version"]
+            url = item["url"]
+            title = item["name"]
+            if version and url:
+                evolution_pdfs.append({"url": url, "version": version, "title": title})
+        
+        
+        qdrant_urls = set(pdf["url"] for pdf in qdrant_pdfs)
+        evolution_urls = set(pdf["url"] for pdf in evolution_pdfs)
+
+        # Find URLs to remove
+        urls_to_remove = qdrant_urls - evolution_urls
+        #REMOVE THESE FROM DATABASE?
+        
+        # Lägg till nya som inte finns i databasen
+        
+        #Uppdatera om de finns annan version
+        for ev_pdf in evolution_pdfs:
+            if ev_pdf["url"] in qdrant_pdfs["url"] and ev_pdf["version"] != qdrant_pdfs["version"]:
+                #Ta bort gammal
+                #Ladda in nya
+                update_url_qdrant(ev_pdf["url"],evolution_pdf=True,)
+                
+
 
 
 def update_qdrant_since(update_since):
@@ -86,12 +154,14 @@ def update_qdrant_since(update_since):
                                         )
                                         print("Tredje formatet")
 
-                                print(
+                                logging.info(
                                     f"Update_date är {update_date} och Last Modified-date är {lastmod_datetime}"
                                 )
                                 # Lägg till då det är en ändring efter förra uppladdningen
                                 if update_date < lastmod_datetime:
-                                    print("Hittade sida vid behov av uppdatering.")
+                                    logging.info(
+                                        "Hittade sida vid behov av uppdatering."
+                                    )
                                     update_urls.append(
                                         {
                                             "url": loc,
@@ -101,7 +171,7 @@ def update_qdrant_since(update_since):
                                     continue
                             # Lägg till då den finns i databas men utan datum
                             else:
-                                print("Hittade ingen datum men existerar")
+                                logging.info("Hittade ingen datum men existerar")
                                 urls_no_update_date.append(
                                     {
                                         "url": loc,
@@ -112,7 +182,7 @@ def update_qdrant_since(update_since):
 
                         # Sidan finns inte i databasen
                         else:
-                            print("Finns ingen sida i databasen med denna url.")
+                            logging.info("Finns ingen sida i databasen med denna url.")
                             new_urls.append(
                                 {
                                     "url": loc,
@@ -122,10 +192,12 @@ def update_qdrant_since(update_since):
                             continue
 
                 except ValueError as e:
-                    print(f"Felaktigt datumformat i update_date {update_date}: {e}")
+                    logging.info(
+                        f"Felaktigt datumformat i update_date {update_date}: {e}"
+                    )
             # Finns ingen Datum i Sitemap
             else:
-                print("Ingen lastmod i sitemap")
+                logging.info("Ingen lastmod med denna url i sitemap")
                 urls_no_lastmod.append({"url": loc})
                 continue
 
@@ -156,14 +228,17 @@ def update_qdrant_since(update_since):
             print(
                 "Uppdaterar efter",
                 update_since,
-                ", finns",
+                ",",
                 len(urls),
-                "stycken uppdaterade sidor.",
+                "stycken sidor markerade för uppdatering.",
             )
             are_u_sure = input("Är du säker på att starta uppdateringen, (y/n)")
             if urls and are_u_sure.lower() == "y":
                 total_update_sek = 0
+                url_count = 0
                 for url in urls:
+                    url_count += 1
+                    logging.info(f"Just nu på url nr: {url_count} av {len(urls)}")
                     # Kör update
                     total_update_sek += update_url_qdrant(url["url"])
 
@@ -172,7 +247,7 @@ def update_qdrant_since(update_since):
                     level=logging.INFO,
                     format="%(asctime)s - %(levelname)s - %(message)s",
                 )
-                logging.info(f"Total Kostnad för uppdateringar:, {total_update_sek}SEK")
+                logging.info(f"Total Kostnad för uppdateringar: {total_update_sek}SEK")
 
 
 def add_urls(urls, new_list, message):
@@ -198,6 +273,7 @@ qdrant_client = QdrantClient(
 )
 
 # Functionality
+#get_evolution_pdf_update("https://intranet.falkenberg.se/fbg_apps/services/evolution/documents.php")
 update_date = input(
     "Skriv datum du vill artiklar som ändrats efter ska uppdateras.(´YYYY-MM-DD´)"
 )
