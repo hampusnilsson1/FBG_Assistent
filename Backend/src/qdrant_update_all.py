@@ -23,7 +23,7 @@ logging.basicConfig(
 )
 
 
-def get_evolution_pdf_update(sitemap_url):
+def get_evolution_pdf_update(sitemap_url, remove_nonexist=False):
     # Hämta alla evolution pdfer i databasen
     qdrant_filter = models.Filter(
         must=[
@@ -36,16 +36,16 @@ def get_evolution_pdf_update(sitemap_url):
         limit=100,
         scroll_filter=qdrant_filter,
     )
-    
+
     while next_page_offset is not None:
         new_points, next_page_offset = qdrant_client.scroll(
             collection_name=COLLECTION_NAME,
             scroll_filter=qdrant_filter,
             limit=100,
-            offset=next_page_offset
+            offset=next_page_offset,
         )
         obj_qdrant_pdfs.extend(new_points)
-        
+
     qdrant_pdfs = []
     if obj_qdrant_pdfs[0]:
         for pdf in obj_qdrant_pdfs:
@@ -53,15 +53,15 @@ def get_evolution_pdf_update(sitemap_url):
             version = pdf.payload.get("version")
             if not version:
                 version = "0.1"
-            qdrant_pdfs.append({"url": url, "version":version})
-    
+            qdrant_pdfs.append({"url": url, "version": version})
+
     # Hämta alla existerande evolution pdfer i sitemap
     response = requests.get(sitemap_url)
-    
+
     if response.status_code == 200:
         data = response.json()
         print(data)
-        
+
         evolution_pdfs = []
         for item in data["data"]:
             version = item["version"]
@@ -69,25 +69,60 @@ def get_evolution_pdf_update(sitemap_url):
             title = item["name"]
             if version and url:
                 evolution_pdfs.append({"url": url, "version": version, "title": title})
-        
-        
-        qdrant_urls = set(pdf["url"] for pdf in qdrant_pdfs)
-        evolution_urls = set(pdf["url"] for pdf in evolution_pdfs)
+
+        qdrant_evolution_urls = set(pdf["url"] for pdf in qdrant_pdfs)
+        sitemap_evolution_urls = set(pdf["url"] for pdf in evolution_pdfs)
 
         # Find URLs to remove
-        urls_to_remove = qdrant_urls - evolution_urls
-        #REMOVE THESE FROM DATABASE?
-        
-        # Lägg till nya som inte finns i databasen
-        
-        #Uppdatera om de finns annan version
-        for ev_pdf in evolution_pdfs:
-            if ev_pdf["url"] in qdrant_pdfs["url"] and ev_pdf["version"] != qdrant_pdfs["version"]:
-                #Ta bort gammal
-                #Ladda in nya
-                update_url_qdrant(ev_pdf["url"],evolution_pdf=True,)
-                
+        if remove_nonexist == True:
+            urls_to_remove = qdrant_evolution_urls - sitemap_evolution_urls
+            logging.info(
+                f"Tar bort {len(urls_to_remove)} stycken gamla evolution pdfer."
+            )
+            # TA BORT ALLA EVOLUTION PDFER SOM INTE LÄNGRE FINNS I SITEMAP?
+            qdrant_filter = models.Filter(
+                must=[
+                    models.FieldCondition(
+                        key="url", match=models.MatchAny(any=urls_to_remove)
+                    ),
+                ]
+            )
 
+            points_selector = models.FilterSelector(filter=qdrant_filter)
+
+            qdrant_client.delete(
+                collection_name=COLLECTION_NAME, points_selector=points_selector
+            )
+
+        # Uppdatera om de finns annan version
+        for ev_pdf in evolution_pdfs:
+            if (
+                ev_pdf["url"] in qdrant_pdfs["url"]
+                and ev_pdf["version"] != qdrant_pdfs["version"]
+            ):
+                # Ta bort gammal
+                remove_url_qdrant(ev_pdf["url"])
+                # Uppdatera till den nya
+                update_url_qdrant(
+                    ev_pdf["url"], evolution_pdf=True, pdf_title=ev_pdf["title"]
+                )
+            elif ev_pdf["url"] not in qdrant_pdfs["url"]:
+                # Lägg till ny datapunkt
+                update_url_qdrant(
+                    ev_pdf["url"], evolution_pdf=True, pdf_title=ev_pdf["title"]
+                )
+
+
+def remove_url_qdrant(url):
+    qdrant_filter = models.Filter(
+        must=[models.FieldCondition(key="url", match=models.MatchValue(any=url))]
+    )
+
+    point_selector = models.FilterSelector(filter=qdrant_filter)
+
+    qdrant_client.delete(
+        collection_name=COLLECTION_NAME, points_selector=point_selector
+    )
 
 
 def update_qdrant_since(update_since):
@@ -273,8 +308,21 @@ qdrant_client = QdrantClient(
 )
 
 # Functionality
-#get_evolution_pdf_update("https://intranet.falkenberg.se/fbg_apps/services/evolution/documents.php")
 update_date = input(
     "Skriv datum du vill artiklar som ändrats efter ska uppdateras.(´YYYY-MM-DD´)"
 )
-update_qdrant_since(update_date)
+if update_date:
+    update_qdrant_since(update_date)
+
+evolution_update = input("Vill du uppdatera alla Evolution Pdfer?.(y/n)")
+
+if evolution_update.lower() == "y":
+    remove_old_str = input("Vill du ta bort alla gamla Evolution Pdfer samtidigt?.(y/n)")
+    remove_old = False
+    if remove_old_str.lower() == "y":
+        remove_old = True
+
+    get_evolution_pdf_update(
+        "https://intranet.falkenberg.se/fbg_apps/services/evolution/documents.php",
+        remove_nonexist=remove_old,
+    )

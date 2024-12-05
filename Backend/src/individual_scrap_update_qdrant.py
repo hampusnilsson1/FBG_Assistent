@@ -207,7 +207,7 @@ def delete_qdrant_embedd(new_item):
         ]
     )
 
-    # Har den source_url så får den inte innehålla evolution
+    # Har den source_url som url så får den inte innehålla evolution
     pdf_not_old_evolution_filter = models.Filter(
         must_not=[
             models.IsEmptyCondition(is_empty=models.PayloadField(key="source_url")),
