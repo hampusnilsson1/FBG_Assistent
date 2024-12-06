@@ -106,9 +106,6 @@ def get_evolution_pdf_update(sitemap_url, remove_nonexist=False):
                     if ev_pdf["url"] == qdrant_pdf["url"]
                 ), None
             )
-            if matching_qdrant is None:
-                print("None Värde på qdrant ")
-                continue
             if (
                 any(ev_pdf["url"] == qdrant_pdf["url"] for qdrant_pdf in qdrant_pdfs)
                 and ev_pdf["version"] != matching_qdrant["version"] and ev_pdf["version"] != "0.1"
