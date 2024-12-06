@@ -96,9 +96,21 @@ def get_evolution_pdf_update(sitemap_url, remove_nonexist=False):
 
         # Uppdatera om de finns annan version
         for ev_pdf in evolution_pdfs:
+            if not ev_pdf["url"].endswith(".pdf"):
+                print("Not a PDF")
+                continue
+            
+            matching_qdrant = next(
+                (
+                    qdrant_pdf
+                    for qdrant_pdf in qdrant_pdfs
+                    if ev_pdf["url"] == qdrant_pdf["url"]
+                ), None
+            )
             if (
-                ev_pdf["url"] in qdrant_pdfs["url"]
-                and ev_pdf["version"] != qdrant_pdfs["version"]
+                any(ev_pdf["url"] == qdrant_pdf["url"] for qdrant_pdf in qdrant_pdfs)
+                and ev_pdf["version"] != matching_qdrant["version"],
+                
             ):
                 # Ta bort gammal
                 remove_url_qdrant(ev_pdf["url"])
@@ -106,7 +118,7 @@ def get_evolution_pdf_update(sitemap_url, remove_nonexist=False):
                 update_url_qdrant(
                     ev_pdf["url"], evolution_pdf=True, pdf_title=ev_pdf["title"]
                 )
-            elif ev_pdf["url"] not in qdrant_pdfs["url"]:
+            elif matching_qdrant is None:
                 # Lägg till ny datapunkt
                 update_url_qdrant(
                     ev_pdf["url"], evolution_pdf=True, pdf_title=ev_pdf["title"]
@@ -115,7 +127,7 @@ def get_evolution_pdf_update(sitemap_url, remove_nonexist=False):
 
 def remove_url_qdrant(url):
     qdrant_filter = models.Filter(
-        must=[models.FieldCondition(key="url", match=models.MatchValue(any=url))]
+        must=[models.FieldCondition(key="url", match=models.MatchValue(value=url))]
     )
 
     point_selector = models.FilterSelector(filter=qdrant_filter)
@@ -296,6 +308,25 @@ def add_urls(urls, new_list, message):
         if apply_new_urls.lower() == "y":
             urls += new_list
 
+#Används endast för att rensa de gamla sättet att spara Evolution pdferna(Genom att ta bort kolumnen source_url på dessa datapunkter)
+def clear_source_url_evolution():    
+    filter_condition = models.Filter(
+        must=[
+            models.FieldCondition(
+                key="url",
+                match=models.MatchText(text="evolution")
+            )
+        ]
+    )
+
+    # Kör clear_payload för att ta bort 'source_url' från alla matchande punkter
+    response = qdrant_client.delete_payload(
+        collection_name=COLLECTION_NAME,
+        keys=["source_url"],
+        points=models.FilterSelector(filter=filter_condition)
+    )
+    print(response)
+
 
 ## Main Execution
 
@@ -317,7 +348,9 @@ if update_date:
 evolution_update = input("Vill du uppdatera alla Evolution Pdfer?.(y/n)")
 
 if evolution_update.lower() == "y":
-    remove_old_str = input("Vill du ta bort alla gamla Evolution Pdfer samtidigt?.(y/n)")
+    remove_old_str = input(
+        "Vill du ta bort alla gamla Evolution Pdfer samtidigt?.(y/n)"
+    )
     remove_old = False
     if remove_old_str.lower() == "y":
         remove_old = True
