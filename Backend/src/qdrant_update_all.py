@@ -60,7 +60,6 @@ def get_evolution_pdf_update(sitemap_url, remove_nonexist=False):
 
     if response.status_code == 200:
         data = response.json()
-        print(data)
 
         evolution_pdfs = []
         for item in data["data"]:
@@ -188,18 +187,15 @@ def update_qdrant_since(update_since):
                                     update_date = datetime.strptime(  ## Senaste sätt som det sparas i databas
                                         update_date_str, "%Y-%m-%dT%H:%M:%S"
                                     )
-                                    print("Första formatet")
                                 except:
                                     try:
                                         update_date = datetime.strptime(  ## Gammalt sätt som det sparades i databas
                                             update_date_str, "%Y-%m-%d"
                                         )
-                                        print("Andra formatet")
                                     except:
                                         update_date = datetime.strptime(  ## Format för att yttligare säkra. Lastmod format.
                                             update_date_str, "%Y-%m-%dT%H:%M:%SZ"
                                         )
-                                        print("Tredje formatet")
 
                                 logging.info(
                                     f"Update_date är {update_date} och Last Modified-date är {lastmod_datetime}"
