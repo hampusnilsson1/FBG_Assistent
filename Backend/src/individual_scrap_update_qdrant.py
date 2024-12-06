@@ -163,7 +163,7 @@ def get_page_details(url, driver):
     return results
 
 
-def get_pdf_detail(pdf_url, title=None):
+def get_pdf_detail(pdf_url, title=None, pdf_version = None):
     if pdf_url.startswith("/"):
         pdf_url = "https://kommun.falkenberg.se" + pdf_url
 
@@ -171,6 +171,7 @@ def get_pdf_detail(pdf_url, title=None):
     result = {
         "url": pdf_url,
         "texts": pdf_text,
+        "version": pdf_version,
     }
     if title != None:
         result["title"] = title
@@ -248,6 +249,8 @@ def get_item_chunks(item):
         }
         if "source_url" in item:
             chunk_data["source_url"] = item["source_url"]
+        if "version" in item:
+            chunk_data["version"] = item["version"]
 
         all_chunks.append(chunk_data)
     return all_chunks
@@ -302,6 +305,8 @@ def upsert_to_qdrant(chunks, embeddings):
         }
         if "source_url" in chunk:
             payload["source_url"] = chunk["source_url"]
+        if "version" in chunk:
+            payload["version"] = chunk["version"]
 
         point = PointStruct(id=doc_uuid, vector=embeddings[i], payload=payload)
 
@@ -314,12 +319,13 @@ def upsert_to_qdrant(chunks, embeddings):
 
 
 # Main function, Update a url and its pdfs(For multiusage setup driver outside)
-def update_url_qdrant(url, evolution_pdf=False, pdf_title=None):
+def update_url_qdrant(url, evolution_pdf=False, pdf_title=None, pdf_version = None):
     total_update_cost_SEK = 0
     if not evolution_pdf:
         page_data = get_page_details(url, driver)
     else:
-        page_data = get_pdf_detail(url, pdf_title)
+        page_data = get_pdf_detail(url, pdf_title, pdf_version)
+        
 
     # Delete old datapoint in database
     try:

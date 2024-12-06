@@ -106,22 +106,32 @@ def get_evolution_pdf_update(sitemap_url, remove_nonexist=False):
                     if ev_pdf["url"] == qdrant_pdf["url"]
                 ), None
             )
+            if matching_qdrant is None:
+                print("None Värde på qdrant ")
+                continue
             if (
                 any(ev_pdf["url"] == qdrant_pdf["url"] for qdrant_pdf in qdrant_pdfs)
-                and ev_pdf["version"] != matching_qdrant["version"],
-                
+                and ev_pdf["version"] != matching_qdrant["version"] and ev_pdf["version"] != "0.1"
             ):
+                print("matching_qdrant",matching_qdrant["version"])
+                print("matching_qdrant",type(matching_qdrant["version"]))
+                print("Update")
+                print("ev_pdf",ev_pdf["version"])
+                print("ev_pdf",type(ev_pdf["version"]))
                 # Ta bort gammal
                 remove_url_qdrant(ev_pdf["url"])
                 # Uppdatera till den nya
                 update_url_qdrant(
-                    ev_pdf["url"], evolution_pdf=True, pdf_title=ev_pdf["title"]
+                    ev_pdf["url"], evolution_pdf=True, pdf_title=ev_pdf["title"],pdf_version=ev_pdf["version"]
                 )
             elif matching_qdrant is None:
                 # Lägg till ny datapunkt
+                print("New")
                 update_url_qdrant(
-                    ev_pdf["url"], evolution_pdf=True, pdf_title=ev_pdf["title"]
+                    ev_pdf["url"], evolution_pdf=True, pdf_title=ev_pdf["title"],pdf_version=ev_pdf["version"]
                 )
+            else:
+                print("Ingen uppdatering behövs")
 
 
 def remove_url_qdrant(url):
