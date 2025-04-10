@@ -1,0 +1,12 @@
+python-dotenv
+qdrant-client
+openai==0.28.0
+tiktoken
+beautifulsoup4
+requests
+selenium
+webdriver-manager
+pdfplumber
+flask
+asgiref
+uvicorn
