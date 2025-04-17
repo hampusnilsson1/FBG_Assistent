@@ -14,6 +14,7 @@ from bs4 import BeautifulSoup
 import re
 import requests
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 import pdfplumber
@@ -31,9 +32,18 @@ VECTOR_SIZE = 3072  # Updated vector size for large embeddings
 COLLECTION_NAME = "FalkenbergsKommunsHemsida"
 
 # LOGGING------------------
+log_file = "/app/data/update_logg.txt"
+
+log_dir = os.path.dirname(log_file)
+if not os.path.exists(log_dir):
+    os.makedirs(log_dir)
+
+if not os.path.exists(log_file):
+    open(log_file, "w").close()
+
 # Konfigurera logging för att skriva till en fil
 logging.basicConfig(
-    filename="../data/update_logg.txt",
+    filename=log_file,
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
 )
@@ -81,20 +91,26 @@ def calculate_cost_sek(texts, model="text-embedding-3-large"):
 
 
 ### Scrappa individuell sida och dess pdfer
-def setup_driver():
-    service = Service(ChromeDriverManager().install())
-    options = webdriver.ChromeOptions()
+def setup_driver():  # Bytar till lokal chromedriver
+    chrome_driver_path = "/usr/bin/chromedriver"
+    service = Service(chrome_driver_path)
+    options = Options()
     options.add_argument("--log-level=3")  # Sätter loggnivån till "FATAL"
-    options.add_argument("--disable-usb")  # Inaktiverar USB-funktionalitet
+    options.add_argument("--no-sandbox")  # Bypass OS security model
+    options.add_argument(
+        "--disable-dev-shm-usage"
+    )  # Overcome limited resource problems
+    options.add_argument("--disable-gpu")  # applicable if running on Windows
+    options.add_argument("--headless")  # Run in headless mode
+    options.add_argument("start-maximized")  # Maximize the browser on startup
+    options.add_argument("--disable-infobars")
     options.add_argument("--disable-extensions")
-    options.add_argument("--disable-dev-shm-usage")
-    options.headless = True  # Kör i headless-läge
     driver = webdriver.Chrome(service=service, options=options)
     return driver
 
 
 def fetch_pdf_content(pdf_url):
-    pdf_file_path = "../data/temp.pdf"
+    pdf_file_path = "/app/data/temp.pdf"
     try:
         response = requests.get(pdf_url)
         response.raise_for_status()
@@ -268,12 +284,8 @@ def upsert_to_qdrant(chunks, embeddings):
         }
         if "source_url" in chunk:
             payload["source_url"] = chunk["source_url"]
-            
-        point = PointStruct(
-            id=doc_uuid,
-            vector=embeddings[i],
-            payload=payload
-        )
+
+        point = PointStruct(id=doc_uuid, vector=embeddings[i], payload=payload)
 
         logging.info(f"Chunk uppladdas: {doc_uuid}, URL: {chunk['url']}")
         points.append(point)
@@ -288,7 +300,6 @@ def update_url_qdrant(url):
     total_update_cost_SEK = 0
 
     page_data = get_page_details(url, driver)
-
     # Delete old datapoint in database
     try:
         delete_qdrant_embedd(page_data[0])
@@ -298,13 +309,12 @@ def update_url_qdrant(url):
 
     for data_point in page_data:
         total_update_cost_SEK += process_item_qdrant(data_point)
-
     logging.info(f"Total Qdrant URL Update Cost = {total_update_cost_SEK} SEK")
     return total_update_cost_SEK
 
 
 # Main execution starts here
-load_dotenv(dotenv_path="../data/API_KEYS.env")
+load_dotenv(dotenv_path="/app/data/API_KEYS.env")
 qdrant_api_key = os.getenv("QDRANT_API_KEY")
 openai_api_key = os.getenv("OPENAI_API_KEY")
 

@@ -1,22 +1,35 @@
-FROM python:3.11
+FROM python:3.11-alpine
+ 
+# Installera systemberoenden
+RUN apk add --no-cache \
+    chromium \
+    chromium-chromedriver \
+    bash \
+    curl \
+    ca-certificates \
+    libstdc++ \
+    ttf-freefont
+ 
+# Kopiera API_KEYS.env-filen
+COPY app/data/API_KEYS.env /app/data/API_KEYS.env
 
-# Ange arbetskatalogen som /app
-WORKDIR /app
+COPY app /app
 
-# Kopiera beroenden och installera dem
+# Kopiera och installera beroenden från requirements.txt
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
-RUN apt-get update && apt-get install -y chromium chromium-driver
+# Installera Python-bibliotek
+RUN pip install --no-cache-dir selenium requests
+ 
+# Sätt miljövariabler för Chromium
+ENV CHROME_BIN=/usr/bin/chromium-browser \
+    CHROMEDRIVER_PATH=/usr/bin/chromedriver \
+    PYTHONUNBUFFERED=1
+ 
+# Skapa arbetskatalog
+WORKDIR /app
 
-# Kopiera hela projektet till containern
-COPY . .
-
-# Byt arbetskatalog till src, där Python-skriptet finns
-WORKDIR /app/src
-
-# Exponera port 3003
 EXPOSE 3004
-
-# Starta Python-skriptet
-CMD ["uvicorn", "qdrant_api:asgi_app", "--host", "0.0.0.0", "--port", "3004", "--reload"]
-
+ 
+# Kör scriptet
+CMD ["uvicorn", "qdrant_api:asgi_app", "--host", "0.0.0.0", "--port", "3004"]

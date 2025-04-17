@@ -1,0 +1,12 @@
+services:
+  qdrant:
+    build: .
+    container_name: qdrant_api
+    ports:
+      - "3004:3004"
+    volumes:
+      - ./app:/app # Scripts
+      - ./data:/app/data # Data
+    environment:
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped

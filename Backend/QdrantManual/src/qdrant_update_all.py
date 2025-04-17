@@ -8,15 +8,25 @@ from qdrant_client import QdrantClient
 from qdrant_client.http.models import Filter, FieldCondition, MatchValue
 
 # Funktion hämtas från fil
-import individual_scrap_update_qdrant
 from individual_scrap_update_qdrant import update_url_qdrant
 
 QDRANT_URL = "https://qdrant.utvecklingfalkenberg.se"
 QDRANT_PORT = 443
 COLLECTION_NAME = "FalkenbergsKommunsHemsida"
 
+# LOGGING------------------
+log_file = "../data/price_update.txt"
+
+log_dir = os.path.dirname(log_file)
+if not os.path.exists(log_dir):
+    os.makedirs(log_dir)
+
+if not os.path.exists(log_file):
+    open(log_file, "w").close()
+
+# Konfigurera logging för att skriva till en fil
 logging.basicConfig(
-    filename="../data/Price_update.txt",
+    filename=log_file,
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
 )
@@ -167,11 +177,6 @@ def update_qdrant_since(update_since):
                     # Kör update
                     total_update_sek += update_url_qdrant(url["url"])
 
-                logging.basicConfig(
-                    filename="../data/update_logg.txt",
-                    level=logging.INFO,
-                    format="%(asctime)s - %(levelname)s - %(message)s",
-                )
                 logging.info(f"Total Kostnad för uppdateringar:, {total_update_sek}SEK")
 
 

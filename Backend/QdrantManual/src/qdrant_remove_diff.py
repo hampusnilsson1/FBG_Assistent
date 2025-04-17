@@ -99,7 +99,7 @@ def remove_qdrant_urls(urls):
     qdrant_filter = models.Filter(
         should=[
             models.FieldCondition(key="url", match=models.MatchAny(any=urls)),
-            models.FieldCondition(key="source_url", match=models.MatchAny(any=urls))
+            models.FieldCondition(key="source_url", match=models.MatchAny(any=urls)),
         ]
     )
 
@@ -133,7 +133,7 @@ def main():
         print(f"Antal URL:er hittade i Qdrant: {len(qdrant_urls)}")
         print(f"Antal URL:er i sitemap: {len(sitemap_urls)}")
         print(f"Antal saknade URL:er: {len(missing_urls)}")
-        
+
         agree_remove = input("Är du säker på att du vill ta bort dessa?(y/n)")
         if agree_remove.lower() == "y":
             remove_qdrant_urls(missing_urls)

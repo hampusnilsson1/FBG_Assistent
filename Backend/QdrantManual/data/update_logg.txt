@@ -1,0 +1,689 @@
+2025-04-17 11:12:12,236 - INFO - HTTP Request: GET https://qdrant.utvecklingfalkenberg.se "HTTP/1.1 200 OK"
+2025-04-17 11:12:12,242 - INFO - ====== WebDriver manager ======
+2025-04-17 11:12:15,533 - INFO - Get LATEST chromedriver version for google-chrome
+2025-04-17 11:12:15,662 - INFO - Get LATEST chromedriver version for google-chrome
+2025-04-17 11:12:15,734 - INFO - There is no [win64] chromedriver "135.0.7049.95" for browser google-chrome "135.0.7049" in cache
+2025-04-17 11:12:15,736 - INFO - Get LATEST chromedriver version for google-chrome
+2025-04-17 11:12:15,955 - INFO - WebDriver version 135.0.7049.95 selected
+2025-04-17 11:12:15,966 - INFO - Modern chrome version https://storage.googleapis.com/chrome-for-testing-public/135.0.7049.95/win32/chromedriver-win32.zip
+2025-04-17 11:12:15,967 - INFO - About to download new driver from https://storage.googleapis.com/chrome-for-testing-public/135.0.7049.95/win32/chromedriver-win32.zip
+2025-04-17 11:12:16,046 - INFO - Driver downloading response is 200
+2025-04-17 11:12:19,273 - INFO - Get LATEST chromedriver version for google-chrome
+2025-04-17 11:12:21,457 - INFO - Driver has been saved in cache [C:\Users\hamse\.wdm\drivers\chromedriver\win64\135.0.7049.95]
+2025-04-17 11:12:27,900 - INFO - HTTP Request: GET https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida "HTTP/1.1 200 OK"
+2025-04-17 11:12:28,849 - INFO - HTTP Request: GET https://qdrant.utvecklingfalkenberg.se "HTTP/1.1 200 OK"
+2025-04-17 11:13:34,648 - INFO - HTTP Request: GET https://qdrant.utvecklingfalkenberg.se "HTTP/1.1 200 OK"
+2025-04-17 11:13:34,651 - INFO - ====== WebDriver manager ======
+2025-04-17 11:13:39,102 - INFO - Get LATEST chromedriver version for google-chrome
+2025-04-17 11:13:39,195 - INFO - Get LATEST chromedriver version for google-chrome
+2025-04-17 11:13:39,294 - INFO - Driver [C:\Users\hamse\.wdm\drivers\chromedriver\win64\135.0.7049.95\chromedriver-win32/chromedriver.exe] found in cache
+2025-04-17 11:13:41,267 - INFO - HTTP Request: GET https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida "HTTP/1.1 200 OK"
+2025-04-17 11:13:42,088 - INFO - HTTP Request: GET https://qdrant.utvecklingfalkenberg.se "HTTP/1.1 200 OK"
+2025-04-17 11:14:08,348 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/scroll "HTTP/1.1 200 OK"
+2025-04-17 11:14:08,822 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/scroll "HTTP/1.1 200 OK"
+2025-04-17 11:14:09,236 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/scroll "HTTP/1.1 200 OK"
+2025-04-17 11:14:09,651 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/scroll "HTTP/1.1 200 OK"
+2025-04-17 11:14:10,083 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/scroll "HTTP/1.1 200 OK"
+2025-04-17 11:14:10,521 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/scroll "HTTP/1.1 200 OK"
+2025-04-17 11:14:10,947 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/scroll "HTTP/1.1 200 OK"
+2025-04-17 11:14:11,370 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/scroll "HTTP/1.1 200 OK"
+2025-04-17 11:14:11,800 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/scroll "HTTP/1.1 200 OK"
+2025-04-17 11:14:12,219 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/scroll "HTTP/1.1 200 OK"
+2025-04-17 11:14:12,653 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/scroll "HTTP/1.1 200 OK"
+2025-04-17 11:14:13,094 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/scroll "HTTP/1.1 200 OK"
+2025-04-17 11:14:13,539 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/scroll "HTTP/1.1 200 OK"
+2025-04-17 11:14:14,004 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/scroll "HTTP/1.1 200 OK"
+2025-04-17 11:14:14,453 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/scroll "HTTP/1.1 200 OK"
+2025-04-17 11:14:14,879 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/scroll "HTTP/1.1 200 OK"
+2025-04-17 11:14:15,309 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/scroll "HTTP/1.1 200 OK"
+2025-04-17 11:14:15,755 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/scroll "HTTP/1.1 200 OK"
+2025-04-17 11:14:16,181 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/scroll "HTTP/1.1 200 OK"
+2025-04-17 11:14:16,615 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/scroll "HTTP/1.1 200 OK"
+2025-04-17 11:14:17,049 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/scroll "HTTP/1.1 200 OK"
+2025-04-17 11:14:17,456 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/scroll "HTTP/1.1 200 OK"
+2025-04-17 11:14:17,962 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/scroll "HTTP/1.1 200 OK"
+2025-04-17 11:14:18,387 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/scroll "HTTP/1.1 200 OK"
+2025-04-17 11:14:18,875 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/scroll "HTTP/1.1 200 OK"
+2025-04-17 11:14:19,303 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/scroll "HTTP/1.1 200 OK"
+2025-04-17 11:14:19,717 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/scroll "HTTP/1.1 200 OK"
+2025-04-17 11:14:20,137 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/scroll "HTTP/1.1 200 OK"
+2025-04-17 11:14:20,564 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/scroll "HTTP/1.1 200 OK"
+2025-04-17 11:14:20,995 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/scroll "HTTP/1.1 200 OK"
+2025-04-17 11:14:21,451 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/scroll "HTTP/1.1 200 OK"
+2025-04-17 11:14:21,873 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/scroll "HTTP/1.1 200 OK"
+2025-04-17 11:14:22,347 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/scroll "HTTP/1.1 200 OK"
+2025-04-17 11:14:22,772 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/scroll "HTTP/1.1 200 OK"
+2025-04-17 11:14:23,218 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/scroll "HTTP/1.1 200 OK"
+2025-04-17 11:14:23,681 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/scroll "HTTP/1.1 200 OK"
+2025-04-17 11:14:24,119 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/scroll "HTTP/1.1 200 OK"
+2025-04-17 11:14:24,562 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/scroll "HTTP/1.1 200 OK"
+2025-04-17 11:14:24,964 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/scroll "HTTP/1.1 200 OK"
+2025-04-17 11:14:25,419 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/scroll "HTTP/1.1 200 OK"
+2025-04-17 11:14:25,855 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/scroll "HTTP/1.1 200 OK"
+2025-04-17 11:14:26,087 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/scroll "HTTP/1.1 200 OK"
+2025-04-17 11:14:26,542 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/scroll "HTTP/1.1 200 OK"
+2025-04-17 11:14:26,614 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/scroll "HTTP/1.1 200 OK"
+2025-04-17 11:14:27,058 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/scroll "HTTP/1.1 200 OK"
+2025-04-17 11:14:27,493 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/scroll "HTTP/1.1 200 OK"
+2025-04-17 11:14:27,894 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/scroll "HTTP/1.1 200 OK"
+2025-04-17 11:14:28,314 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/scroll "HTTP/1.1 200 OK"
+2025-04-17 11:14:28,506 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/scroll "HTTP/1.1 200 OK"
+2025-04-17 11:14:28,854 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/scroll "HTTP/1.1 200 OK"
+2025-04-17 11:14:29,106 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/scroll "HTTP/1.1 200 OK"
+2025-04-17 11:14:29,531 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/scroll "HTTP/1.1 200 OK"
+2025-04-17 11:14:29,930 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/scroll "HTTP/1.1 200 OK"
+2025-04-17 11:16:57,841 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/delete?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:16:57,847 - INFO - Deleted current points in database
+2025-04-17 11:16:57,848 - INFO - Dividing to chunks
+2025-04-17 11:16:57,850 - INFO - Dividing to chunks Done
+2025-04-17 11:16:57,851 - INFO - Embedding chunks
+2025-04-17 11:17:02,380 - INFO - Embedding chunks Done
+2025-04-17 11:17:02,382 - INFO - Uploading Embeddings
+2025-04-17 11:17:02,385 - INFO - Chunk uppladdas: baabcb79-4273-8106-7e06-cb249475b41e, URL: https://kommun.falkenberg.se/nyheter/brand-pa-kilavaegens-tillfaelliga-boende
+2025-04-17 11:17:02,444 - INFO - HTTP Request: PUT https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:17:02,449 - INFO - Uploading Embeddings Done
+2025-04-17 11:17:02,450 - INFO - Total Qdrant URL Update Cost = 0.0008193899999999998 SEK
+2025-04-17 11:17:05,453 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/delete?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:17:05,458 - INFO - Deleted current points in database
+2025-04-17 11:17:05,459 - INFO - Dividing to chunks
+2025-04-17 11:17:05,460 - INFO - Dividing to chunks Done
+2025-04-17 11:17:05,461 - INFO - Embedding chunks
+2025-04-17 11:17:07,557 - INFO - Embedding chunks Done
+2025-04-17 11:17:07,559 - INFO - Uploading Embeddings
+2025-04-17 11:17:07,562 - INFO - Chunk uppladdas: f22961b0-2171-1d8b-834d-daf77dba06d2, URL: https://kommun.falkenberg.se/nyheter/fa-gratis-radgivning-om-vaermepumpar-solceller-och-batterilagring
+2025-04-17 11:17:07,616 - INFO - HTTP Request: PUT https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:17:07,619 - INFO - Uploading Embeddings Done
+2025-04-17 11:17:07,620 - INFO - Total Qdrant URL Update Cost = 0.00151294 SEK
+2025-04-17 11:17:10,566 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/delete?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:17:10,567 - INFO - Deleted current points in database
+2025-04-17 11:17:10,567 - INFO - Dividing to chunks
+2025-04-17 11:17:10,568 - INFO - Dividing to chunks Done
+2025-04-17 11:17:10,568 - INFO - Embedding chunks
+2025-04-17 11:17:12,222 - INFO - Embedding chunks Done
+2025-04-17 11:17:12,224 - INFO - Uploading Embeddings
+2025-04-17 11:17:12,226 - INFO - Chunk uppladdas: 332107d5-777a-530e-f024-e2397ef137ec, URL: https://kommun.falkenberg.se/nyheter/falkenbergs-kommun-satsar-pa-kultur-foer-barn-och-unga-i-skolor
+2025-04-17 11:17:12,267 - INFO - HTTP Request: PUT https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:17:12,270 - INFO - Uploading Embeddings Done
+2025-04-17 11:17:12,271 - INFO - Total Qdrant URL Update Cost = 0.00144144 SEK
+2025-04-17 11:17:15,180 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/delete?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:17:15,183 - INFO - Deleted current points in database
+2025-04-17 11:17:15,184 - INFO - Dividing to chunks
+2025-04-17 11:17:15,185 - INFO - Dividing to chunks Done
+2025-04-17 11:17:15,186 - INFO - Embedding chunks
+2025-04-17 11:17:17,369 - INFO - Embedding chunks Done
+2025-04-17 11:17:17,371 - INFO - Uploading Embeddings
+2025-04-17 11:17:17,373 - INFO - Chunk uppladdas: b9669948-ae40-b326-7e9c-1ac974c7fd42, URL: https://kommun.falkenberg.se/nyheter/sa-ska-falkenbergs-kulturskolas-webbsidor-foerbaettras-haer-aer-resultatet-av-enkaeten
+2025-04-17 11:17:17,721 - INFO - HTTP Request: PUT https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:17:17,724 - INFO - Uploading Embeddings Done
+2025-04-17 11:17:17,726 - INFO - Total Qdrant URL Update Cost = 0.0016816799999999999 SEK
+2025-04-17 11:17:20,583 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/delete?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:17:20,586 - INFO - Deleted current points in database
+2025-04-17 11:17:20,587 - INFO - Dividing to chunks
+2025-04-17 11:17:20,587 - INFO - Dividing to chunks Done
+2025-04-17 11:17:20,588 - INFO - Embedding chunks
+2025-04-17 11:17:22,246 - INFO - Embedding chunks Done
+2025-04-17 11:17:22,247 - INFO - Uploading Embeddings
+2025-04-17 11:17:22,249 - INFO - Chunk uppladdas: 1f0e9fa4-34e9-25e6-7c81-b38c78ff6410, URL: https://kommun.falkenberg.se/nyheter/nytt-besked-falkenberg-far-16-miljoner-i-elstoed
+2025-04-17 11:17:22,285 - INFO - HTTP Request: PUT https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:17:22,288 - INFO - Uploading Embeddings Done
+2025-04-17 11:17:22,289 - INFO - Total Qdrant URL Update Cost = 0.00133562 SEK
+2025-04-17 11:17:25,198 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/delete?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:17:25,202 - INFO - Deleted current points in database
+2025-04-17 11:17:25,203 - INFO - Dividing to chunks
+2025-04-17 11:17:25,204 - INFO - Dividing to chunks Done
+2025-04-17 11:17:25,205 - INFO - Embedding chunks
+2025-04-17 11:17:27,560 - INFO - Embedding chunks Done
+2025-04-17 11:17:27,560 - INFO - Uploading Embeddings
+2025-04-17 11:17:27,560 - INFO - Chunk uppladdas: 99990b3b-e2d6-03ca-56f8-84a680984f41, URL: https://kommun.falkenberg.se/nyheter/utoekade-narkotikainsatser-i-offentliga-miljoeer-i-falkenberg
+2025-04-17 11:17:27,587 - INFO - HTTP Request: PUT https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:17:27,591 - INFO - Uploading Embeddings Done
+2025-04-17 11:17:27,592 - INFO - Total Qdrant URL Update Cost = 0.0019376499999999997 SEK
+2025-04-17 11:17:30,437 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/delete?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:17:30,440 - INFO - Deleted current points in database
+2025-04-17 11:17:30,442 - INFO - Dividing to chunks
+2025-04-17 11:17:30,443 - INFO - Dividing to chunks Done
+2025-04-17 11:17:30,445 - INFO - Embedding chunks
+2025-04-17 11:17:32,113 - INFO - Embedding chunks Done
+2025-04-17 11:17:32,114 - INFO - Uploading Embeddings
+2025-04-17 11:17:32,116 - INFO - Chunk uppladdas: 6ae932a2-94a5-cde2-1398-081bb4971a5b, URL: https://kommun.falkenberg.se/nyheter/sa-gick-det-foer-falkenberg-2024
+2025-04-17 11:17:32,117 - INFO - Chunk uppladdas: d316081b-00bf-e000-e7b7-a958de237bb3, URL: https://kommun.falkenberg.se/nyheter/sa-gick-det-foer-falkenberg-2024
+2025-04-17 11:17:32,185 - INFO - HTTP Request: PUT https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:17:32,190 - INFO - Uploading Embeddings Done
+2025-04-17 11:17:32,191 - INFO - Total Qdrant URL Update Cost = 0.0034691799999999997 SEK
+2025-04-17 11:17:35,054 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/delete?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:17:35,057 - INFO - Deleted current points in database
+2025-04-17 11:17:35,058 - INFO - Dividing to chunks
+2025-04-17 11:17:35,059 - INFO - Dividing to chunks Done
+2025-04-17 11:17:35,060 - INFO - Embedding chunks
+2025-04-17 11:17:36,814 - INFO - Embedding chunks Done
+2025-04-17 11:17:36,816 - INFO - Uploading Embeddings
+2025-04-17 11:17:36,818 - INFO - Chunk uppladdas: 8fe1adcb-1008-d898-525b-3af6f739bf1f, URL: https://kommun.falkenberg.se/nyheter/falkenberg-ansluter-sig-till-viable-cities-foer-en-hallbar-framtid
+2025-04-17 11:17:36,820 - INFO - Chunk uppladdas: 253b40b3-35a6-c30f-e0d6-97c4787e1b4d, URL: https://kommun.falkenberg.se/nyheter/falkenberg-ansluter-sig-till-viable-cities-foer-en-hallbar-framtid
+2025-04-17 11:17:36,885 - INFO - HTTP Request: PUT https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:17:36,888 - INFO - Uploading Embeddings Done
+2025-04-17 11:17:36,890 - INFO - Total Qdrant URL Update Cost = 0.0022579699999999998 SEK
+2025-04-17 11:17:39,879 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/delete?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:17:39,882 - INFO - Deleted current points in database
+2025-04-17 11:17:39,883 - INFO - Dividing to chunks
+2025-04-17 11:17:39,884 - INFO - Dividing to chunks Done
+2025-04-17 11:17:39,884 - INFO - Embedding chunks
+2025-04-17 11:17:42,115 - INFO - Embedding chunks Done
+2025-04-17 11:17:42,116 - INFO - Uploading Embeddings
+2025-04-17 11:17:42,117 - INFO - Chunk uppladdas: 92426fb7-250c-e30d-4cf4-1394b825f3fe, URL: https://kommun.falkenberg.se/nyheter/kommunens-nya-saekerhetschef-alla-kan-bidra
+2025-04-17 11:17:42,119 - INFO - Chunk uppladdas: 5ff82b42-5e35-f524-da70-c535fa820e6d, URL: https://kommun.falkenberg.se/nyheter/kommunens-nya-saekerhetschef-alla-kan-bidra
+2025-04-17 11:17:42,175 - INFO - HTTP Request: PUT https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:17:42,178 - INFO - Uploading Embeddings Done
+2025-04-17 11:17:42,179 - INFO - Total Qdrant URL Update Cost = 0.0027598999999999996 SEK
+2025-04-17 11:17:45,003 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/delete?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:17:45,006 - INFO - Deleted current points in database
+2025-04-17 11:17:45,007 - INFO - Dividing to chunks
+2025-04-17 11:17:45,008 - INFO - Dividing to chunks Done
+2025-04-17 11:17:45,009 - INFO - Embedding chunks
+2025-04-17 11:17:46,950 - INFO - Embedding chunks Done
+2025-04-17 11:17:46,951 - INFO - Uploading Embeddings
+2025-04-17 11:17:46,954 - INFO - Chunk uppladdas: 2f78e591-d3cd-7b6b-10ef-e5a4568b7dc0, URL: https://kommun.falkenberg.se/nyheter/ny-sysselsaettning-tillgaenglig-i-kommunen-4
+2025-04-17 11:17:46,990 - INFO - HTTP Request: PUT https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:17:46,992 - INFO - Uploading Embeddings Done
+2025-04-17 11:17:46,994 - INFO - Total Qdrant URL Update Cost = 0.0012154999999999998 SEK
+2025-04-17 11:17:50,063 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/delete?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:17:50,065 - INFO - Deleted current points in database
+2025-04-17 11:17:50,066 - INFO - Dividing to chunks
+2025-04-17 11:17:50,066 - INFO - Dividing to chunks Done
+2025-04-17 11:17:50,068 - INFO - Embedding chunks
+2025-04-17 11:17:51,461 - INFO - Embedding chunks Done
+2025-04-17 11:17:51,463 - INFO - Uploading Embeddings
+2025-04-17 11:17:51,466 - INFO - Chunk uppladdas: 44aa47ec-cc27-caf5-6c1f-2656c0a9d116, URL: https://kommun.falkenberg.se/nyheter/falkenbergs-befolkning-forsaetter-att-oeka
+2025-04-17 11:17:51,546 - INFO - HTTP Request: PUT https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:17:51,555 - INFO - Uploading Embeddings Done
+2025-04-17 11:17:51,557 - INFO - Total Qdrant URL Update Cost = 0.0017059900000000001 SEK
+2025-04-17 11:17:54,477 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/delete?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:17:54,485 - INFO - Deleted current points in database
+2025-04-17 11:17:54,486 - INFO - Dividing to chunks
+2025-04-17 11:17:54,487 - INFO - Dividing to chunks Done
+2025-04-17 11:17:54,488 - INFO - Embedding chunks
+2025-04-17 11:17:56,563 - INFO - Embedding chunks Done
+2025-04-17 11:17:56,563 - INFO - Uploading Embeddings
+2025-04-17 11:17:56,564 - INFO - Chunk uppladdas: 7afd24da-3bea-84ee-c600-e350bc86bd07, URL: https://kommun.falkenberg.se/nyheter/stort-engagemang-i-enkaet-om-straket-aetran-447-svar-ger-vaerdefulla-insikter
+2025-04-17 11:17:56,564 - INFO - Chunk uppladdas: e733adc8-3a6b-518c-970e-5bf69b0912d2, URL: https://kommun.falkenberg.se/nyheter/stort-engagemang-i-enkaet-om-straket-aetran-447-svar-ger-vaerdefulla-insikter
+2025-04-17 11:17:56,565 - INFO - Chunk uppladdas: 4f7c4ab4-c5f4-ec26-0fbf-f93b6a97c143, URL: https://kommun.falkenberg.se/nyheter/stort-engagemang-i-enkaet-om-straket-aetran-447-svar-ger-vaerdefulla-insikter
+2025-04-17 11:17:56,630 - INFO - HTTP Request: PUT https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:17:56,632 - INFO - Uploading Embeddings Done
+2025-04-17 11:17:56,633 - INFO - Total Qdrant URL Update Cost = 0.00465751 SEK
+2025-04-17 11:17:59,765 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/delete?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:17:59,768 - INFO - Deleted current points in database
+2025-04-17 11:17:59,769 - INFO - Dividing to chunks
+2025-04-17 11:17:59,770 - INFO - Dividing to chunks Done
+2025-04-17 11:17:59,770 - INFO - Embedding chunks
+2025-04-17 11:18:01,204 - INFO - Embedding chunks Done
+2025-04-17 11:18:01,206 - INFO - Uploading Embeddings
+2025-04-17 11:18:01,207 - INFO - Chunk uppladdas: 5a316bd6-5373-c067-f465-889e2f99d428, URL: https://kommun.falkenberg.se/nyheter/staemmor-foer-kommunala-bolag-den-4-april
+2025-04-17 11:18:01,246 - INFO - HTTP Request: PUT https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:18:01,249 - INFO - Uploading Embeddings Done
+2025-04-17 11:18:01,251 - INFO - Total Qdrant URL Update Cost = 0.0014857699999999995 SEK
+2025-04-17 11:18:04,422 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/delete?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:18:04,426 - INFO - Deleted current points in database
+2025-04-17 11:18:04,428 - INFO - Dividing to chunks
+2025-04-17 11:18:04,429 - INFO - Dividing to chunks Done
+2025-04-17 11:18:04,430 - INFO - Embedding chunks
+2025-04-17 11:18:05,834 - INFO - Embedding chunks Done
+2025-04-17 11:18:05,835 - INFO - Uploading Embeddings
+2025-04-17 11:18:05,837 - INFO - Chunk uppladdas: ab053f46-e025-3719-ef35-561b1d41c16b, URL: https://kommun.falkenberg.se/nyheter/framtidens-socialtjaenst-halland-inleder-samverkan
+2025-04-17 11:18:05,883 - INFO - HTTP Request: PUT https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:18:05,887 - INFO - Uploading Embeddings Done
+2025-04-17 11:18:05,888 - INFO - Total Qdrant URL Update Cost = 0.0015973099999999998 SEK
+2025-04-17 11:18:08,774 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/delete?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:18:08,777 - INFO - Deleted current points in database
+2025-04-17 11:18:08,779 - INFO - Dividing to chunks
+2025-04-17 11:18:08,780 - INFO - Dividing to chunks Done
+2025-04-17 11:18:08,781 - INFO - Embedding chunks
+2025-04-17 11:18:10,349 - INFO - Embedding chunks Done
+2025-04-17 11:18:10,351 - INFO - Uploading Embeddings
+2025-04-17 11:18:10,352 - INFO - Chunk uppladdas: c777a50c-fd40-7b35-c231-d809730f4648, URL: https://kommun.falkenberg.se/nyheter/socialfoervaltningen-foeraendrar-sin-organisation
+2025-04-17 11:18:10,419 - INFO - HTTP Request: PUT https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:18:10,422 - INFO - Uploading Embeddings Done
+2025-04-17 11:18:10,423 - INFO - Total Qdrant URL Update Cost = 0.00140569 SEK
+2025-04-17 11:18:13,320 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/delete?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:18:13,322 - INFO - Deleted current points in database
+2025-04-17 11:18:13,322 - INFO - Dividing to chunks
+2025-04-17 11:18:13,323 - INFO - Dividing to chunks Done
+2025-04-17 11:18:13,323 - INFO - Embedding chunks
+2025-04-17 11:18:15,078 - INFO - Embedding chunks Done
+2025-04-17 11:18:15,080 - INFO - Uploading Embeddings
+2025-04-17 11:18:15,081 - INFO - Chunk uppladdas: a71e82d1-5985-7a5e-242b-1e9680cdb03c, URL: https://kommun.falkenberg.se/nyheter/vi-slaecker-ljuset-foer-klimatet
+2025-04-17 11:18:15,125 - INFO - HTTP Request: PUT https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:18:15,128 - INFO - Uploading Embeddings Done
+2025-04-17 11:18:15,129 - INFO - Total Qdrant URL Update Cost = 0.0017059900000000001 SEK
+2025-04-17 11:18:17,973 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/delete?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:18:17,975 - INFO - Deleted current points in database
+2025-04-17 11:18:17,975 - INFO - Dividing to chunks
+2025-04-17 11:18:17,976 - INFO - Dividing to chunks Done
+2025-04-17 11:18:17,976 - INFO - Embedding chunks
+2025-04-17 11:18:19,814 - INFO - Embedding chunks Done
+2025-04-17 11:18:19,816 - INFO - Uploading Embeddings
+2025-04-17 11:18:19,817 - INFO - Chunk uppladdas: 14d76c25-6c25-291c-2be5-6f8f3d404e6a, URL: https://kommun.falkenberg.se/nyheter/kommunstyrelsen-vill-aendra-lokala-ordningsfoereskrifter-vill-stoppa-anvaendandet-av-lustgas
+2025-04-17 11:18:19,849 - INFO - HTTP Request: PUT https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:18:19,851 - INFO - Uploading Embeddings Done
+2025-04-17 11:18:19,852 - INFO - Total Qdrant URL Update Cost = 0.0016044599999999998 SEK
+2025-04-17 11:18:22,674 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/delete?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:18:22,677 - INFO - Deleted current points in database
+2025-04-17 11:18:22,678 - INFO - Dividing to chunks
+2025-04-17 11:18:22,680 - INFO - Dividing to chunks Done
+2025-04-17 11:18:22,681 - INFO - Embedding chunks
+2025-04-17 11:18:24,035 - INFO - Embedding chunks Done
+2025-04-17 11:18:24,037 - INFO - Uploading Embeddings
+2025-04-17 11:18:24,039 - INFO - Chunk uppladdas: 8a5408a9-fff5-c10c-b106-6efc39e965a5, URL: https://kommun.falkenberg.se/nyheter/falkenbergs-kommun-oeverklagar-beslut-om-elstoed
+2025-04-17 11:18:24,067 - INFO - HTTP Request: PUT https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:18:24,068 - INFO - Uploading Embeddings Done
+2025-04-17 11:18:24,069 - INFO - Total Qdrant URL Update Cost = 0.0016988399999999999 SEK
+2025-04-17 11:18:26,946 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/delete?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:18:26,950 - INFO - Deleted current points in database
+2025-04-17 11:18:26,952 - INFO - Dividing to chunks
+2025-04-17 11:18:26,953 - INFO - Dividing to chunks Done
+2025-04-17 11:18:26,954 - INFO - Embedding chunks
+2025-04-17 11:18:28,747 - INFO - Embedding chunks Done
+2025-04-17 11:18:28,749 - INFO - Uploading Embeddings
+2025-04-17 11:18:28,750 - INFO - Chunk uppladdas: f95df30f-9051-b45e-6b72-0a14ddf7bc42, URL: https://kommun.falkenberg.se/nyheter/nytt-arbetssaett-ger-vinster-foer-bade-brukare-och-medarbetare
+2025-04-17 11:18:28,752 - INFO - Chunk uppladdas: e5c257d8-cbc0-406d-0e4e-a2b524d79f21, URL: https://kommun.falkenberg.se/nyheter/nytt-arbetssaett-ger-vinster-foer-bade-brukare-och-medarbetare
+2025-04-17 11:18:28,813 - INFO - HTTP Request: PUT https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:18:28,815 - INFO - Uploading Embeddings Done
+2025-04-17 11:18:28,817 - INFO - Total Qdrant URL Update Cost = 0.0029172 SEK
+2025-04-17 11:18:31,761 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/delete?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:18:31,764 - INFO - Deleted current points in database
+2025-04-17 11:18:31,765 - INFO - Dividing to chunks
+2025-04-17 11:18:31,767 - INFO - Dividing to chunks Done
+2025-04-17 11:18:31,768 - INFO - Embedding chunks
+2025-04-17 11:18:33,209 - INFO - Embedding chunks Done
+2025-04-17 11:18:33,211 - INFO - Uploading Embeddings
+2025-04-17 11:18:33,213 - INFO - Chunk uppladdas: 3a68ce50-ea41-f70d-84b6-4c3f788520f6, URL: https://kommun.falkenberg.se/nyheter/ny-lager-och-logistikanlaeggning-planeras-vid-falkenbergsmotet
+2025-04-17 11:18:33,249 - INFO - HTTP Request: PUT https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:18:33,253 - INFO - Uploading Embeddings Done
+2025-04-17 11:18:33,255 - INFO - Total Qdrant URL Update Cost = 0.0014013999999999997 SEK
+2025-04-17 11:18:36,745 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/delete?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:18:36,748 - INFO - Deleted current points in database
+2025-04-17 11:18:36,750 - INFO - Dividing to chunks
+2025-04-17 11:18:36,751 - INFO - Dividing to chunks Done
+2025-04-17 11:18:36,753 - INFO - Embedding chunks
+2025-04-17 11:18:38,383 - INFO - Embedding chunks Done
+2025-04-17 11:18:38,384 - INFO - Uploading Embeddings
+2025-04-17 11:18:38,385 - INFO - Chunk uppladdas: fa58d4fd-0004-1628-055e-9f1135a12b3e, URL: https://kommun.falkenberg.se/nyheter/arsredovisning-2024-barn-och-utbildningsnaemnden
+2025-04-17 11:18:38,386 - INFO - Chunk uppladdas: c6e755c2-88d9-55ad-b8a0-2b4e3e5cd6ba, URL: https://kommun.falkenberg.se/nyheter/arsredovisning-2024-barn-och-utbildningsnaemnden
+2025-04-17 11:18:38,445 - INFO - HTTP Request: PUT https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:18:38,449 - INFO - Uploading Embeddings Done
+2025-04-17 11:18:38,451 - INFO - Total Qdrant URL Update Cost = 0.0021664499999999995 SEK
+2025-04-17 11:18:41,799 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/delete?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:18:41,802 - INFO - Deleted current points in database
+2025-04-17 11:18:41,804 - INFO - Dividing to chunks
+2025-04-17 11:18:41,806 - INFO - Dividing to chunks Done
+2025-04-17 11:18:41,809 - INFO - Embedding chunks
+2025-04-17 11:18:43,210 - INFO - Embedding chunks Done
+2025-04-17 11:18:43,211 - INFO - Uploading Embeddings
+2025-04-17 11:18:43,212 - INFO - Chunk uppladdas: d7b49eca-3b93-5019-469c-76f3ac4874ad, URL: https://kommun.falkenberg.se/nyheter/kommunen-ser-oever-detaljplaner-ska-ge-tydlighet-kring-badstugor
+2025-04-17 11:18:43,264 - INFO - HTTP Request: PUT https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:18:43,270 - INFO - Uploading Embeddings Done
+2025-04-17 11:18:43,272 - INFO - Total Qdrant URL Update Cost = 0.00128414 SEK
+2025-04-17 11:18:46,428 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/delete?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:18:46,431 - INFO - Deleted current points in database
+2025-04-17 11:18:46,432 - INFO - Dividing to chunks
+2025-04-17 11:18:46,434 - INFO - Dividing to chunks Done
+2025-04-17 11:18:46,435 - INFO - Embedding chunks
+2025-04-17 11:18:47,935 - INFO - Embedding chunks Done
+2025-04-17 11:18:47,937 - INFO - Uploading Embeddings
+2025-04-17 11:18:47,938 - INFO - Chunk uppladdas: e7a4d349-0064-638c-98cf-aa44c21054c9, URL: https://kommun.falkenberg.se/nyheter/beslut-om-foerstudie-foer-nytt-badhus-i-falkenberg
+2025-04-17 11:18:47,974 - INFO - HTTP Request: PUT https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:18:47,979 - INFO - Uploading Embeddings Done
+2025-04-17 11:18:47,980 - INFO - Total Qdrant URL Update Cost = 0.00179036 SEK
+2025-04-17 11:18:50,876 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/delete?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:18:50,879 - INFO - Deleted current points in database
+2025-04-17 11:18:50,881 - INFO - Dividing to chunks
+2025-04-17 11:18:50,882 - INFO - Dividing to chunks Done
+2025-04-17 11:18:50,883 - INFO - Embedding chunks
+2025-04-17 11:18:52,358 - INFO - Embedding chunks Done
+2025-04-17 11:18:52,360 - INFO - Uploading Embeddings
+2025-04-17 11:18:52,362 - INFO - Chunk uppladdas: f12c1318-d08f-4dca-3084-f3098a9db60a, URL: https://kommun.falkenberg.se/nyheter/sommartorg-skapar-en-ny-moetesplats-sensommaren-2025
+2025-04-17 11:18:52,399 - INFO - HTTP Request: PUT https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:18:52,402 - INFO - Uploading Embeddings Done
+2025-04-17 11:18:52,403 - INFO - Total Qdrant URL Update Cost = 0.0017188599999999996 SEK
+2025-04-17 11:18:55,383 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/delete?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:18:55,386 - INFO - Deleted current points in database
+2025-04-17 11:18:55,388 - INFO - Dividing to chunks
+2025-04-17 11:18:55,389 - INFO - Dividing to chunks Done
+2025-04-17 11:18:55,391 - INFO - Embedding chunks
+2025-04-17 11:18:57,354 - INFO - Embedding chunks Done
+2025-04-17 11:18:57,357 - INFO - Uploading Embeddings
+2025-04-17 11:18:57,359 - INFO - Chunk uppladdas: 2276d702-606c-cff6-871e-8b763c24b6f6, URL: https://kommun.falkenberg.se/nyheter/falkenbergs-kommun-besoeker-sydafrika-igen-nu-med-ny-projektledare
+2025-04-17 11:18:57,360 - INFO - Chunk uppladdas: 95c01be1-f342-31a8-7c64-884dffdee673, URL: https://kommun.falkenberg.se/nyheter/falkenbergs-kommun-besoeker-sydafrika-igen-nu-med-ny-projektledare
+2025-04-17 11:18:57,417 - INFO - HTTP Request: PUT https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:18:57,420 - INFO - Uploading Embeddings Done
+2025-04-17 11:18:57,421 - INFO - Total Qdrant URL Update Cost = 0.0019319299999999997 SEK
+2025-04-17 11:19:00,714 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/delete?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:19:00,717 - INFO - Deleted current points in database
+2025-04-17 11:19:00,718 - INFO - Dividing to chunks
+2025-04-17 11:19:00,719 - INFO - Dividing to chunks Done
+2025-04-17 11:19:00,720 - INFO - Embedding chunks
+2025-04-17 11:19:02,387 - INFO - Embedding chunks Done
+2025-04-17 11:19:02,389 - INFO - Uploading Embeddings
+2025-04-17 11:19:02,391 - INFO - Chunk uppladdas: 2ffd13e2-ec6d-6a9a-976e-ebaad35215eb, URL: https://kommun.falkenberg.se/nyheter/ny-foeretagsetablering-skapar-minst-100-jobb-i-falkenberg
+2025-04-17 11:19:02,421 - INFO - HTTP Request: PUT https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:19:02,422 - INFO - Uploading Embeddings Done
+2025-04-17 11:19:02,422 - INFO - Total Qdrant URL Update Cost = 0.0013427699999999999 SEK
+2025-04-17 11:19:05,845 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/delete?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:19:05,849 - INFO - Deleted current points in database
+2025-04-17 11:19:05,850 - INFO - Dividing to chunks
+2025-04-17 11:19:05,851 - INFO - Dividing to chunks Done
+2025-04-17 11:19:05,852 - INFO - Embedding chunks
+2025-04-17 11:19:07,394 - INFO - Embedding chunks Done
+2025-04-17 11:19:07,395 - INFO - Uploading Embeddings
+2025-04-17 11:19:07,398 - INFO - Chunk uppladdas: ea9c6886-a046-ec83-2def-027d6316e0c8, URL: https://kommun.falkenberg.se/nyheter/ny-detaljplan-moejliggoer-35-bostaeder-i-centrumnaera-laege
+2025-04-17 11:19:07,438 - INFO - HTTP Request: PUT https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:19:07,441 - INFO - Uploading Embeddings Done
+2025-04-17 11:19:07,443 - INFO - Total Qdrant URL Update Cost = 0.00157872 SEK
+2025-04-17 11:19:10,580 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/delete?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:19:10,582 - INFO - Deleted current points in database
+2025-04-17 11:19:10,583 - INFO - Dividing to chunks
+2025-04-17 11:19:10,583 - INFO - Dividing to chunks Done
+2025-04-17 11:19:10,584 - INFO - Embedding chunks
+2025-04-17 11:19:12,182 - INFO - Embedding chunks Done
+2025-04-17 11:19:12,184 - INFO - Uploading Embeddings
+2025-04-17 11:19:12,186 - INFO - Chunk uppladdas: 45bd03ec-fdb8-a805-4737-34c02f1012d6, URL: https://kommun.falkenberg.se/nyheter/tyst-minut-11-februari-klockan-12-00
+2025-04-17 11:19:12,221 - INFO - HTTP Request: PUT https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:19:12,223 - INFO - Uploading Embeddings Done
+2025-04-17 11:19:12,225 - INFO - Total Qdrant URL Update Cost = 0.0008093799999999998 SEK
+2025-04-17 11:19:15,284 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/delete?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:19:15,288 - INFO - Deleted current points in database
+2025-04-17 11:19:15,289 - INFO - Dividing to chunks
+2025-04-17 11:19:15,290 - INFO - Dividing to chunks Done
+2025-04-17 11:19:15,290 - INFO - Embedding chunks
+2025-04-17 11:19:16,779 - INFO - Embedding chunks Done
+2025-04-17 11:19:16,780 - INFO - Uploading Embeddings
+2025-04-17 11:19:16,782 - INFO - Chunk uppladdas: ef5ad86b-da1b-b03c-74c7-fca4baa9d52b, URL: https://kommun.falkenberg.se/nyheter/falkenberg-framgangsexempel-i-ny-bok-fran-foeretagarna
+2025-04-17 11:19:16,784 - INFO - Chunk uppladdas: e7deb519-4486-3c3a-4a09-8b74aebb0a9b, URL: https://kommun.falkenberg.se/nyheter/falkenberg-framgangsexempel-i-ny-bok-fran-foeretagarna
+2025-04-17 11:19:16,853 - INFO - HTTP Request: PUT https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:19:16,857 - INFO - Uploading Embeddings Done
+2025-04-17 11:19:16,858 - INFO - Total Qdrant URL Update Cost = 0.0022837099999999996 SEK
+2025-04-17 11:19:19,744 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/delete?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:19:19,748 - INFO - Deleted current points in database
+2025-04-17 11:19:19,749 - INFO - Dividing to chunks
+2025-04-17 11:19:19,749 - INFO - Dividing to chunks Done
+2025-04-17 11:19:19,751 - INFO - Embedding chunks
+2025-04-17 11:19:21,296 - INFO - Embedding chunks Done
+2025-04-17 11:19:21,298 - INFO - Uploading Embeddings
+2025-04-17 11:19:21,300 - INFO - Chunk uppladdas: 8e051c8a-185e-2ac2-f1ce-195dfe19cf62, URL: https://kommun.falkenberg.se/nyheter/vi-hedrar-offren-och-fortsaetter-vart-arbete-foer-trygga-skolor
+2025-04-17 11:19:21,342 - INFO - HTTP Request: PUT https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:19:21,345 - INFO - Uploading Embeddings Done
+2025-04-17 11:19:21,346 - INFO - Total Qdrant URL Update Cost = 0.0013756599999999997 SEK
+2025-04-17 11:19:24,394 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/delete?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:19:24,413 - INFO - Deleted current points in database
+2025-04-17 11:19:24,415 - INFO - Dividing to chunks
+2025-04-17 11:19:24,416 - INFO - Dividing to chunks Done
+2025-04-17 11:19:24,417 - INFO - Embedding chunks
+2025-04-17 11:19:26,347 - INFO - Embedding chunks Done
+2025-04-17 11:19:26,349 - INFO - Uploading Embeddings
+2025-04-17 11:19:26,350 - INFO - Chunk uppladdas: 23514417-e728-bb69-46f9-a51e6dd5931a, URL: https://kommun.falkenberg.se/nyheter/efter-tre-ars-arbete-nu-oeppnar-kvarteret-traedgarden
+2025-04-17 11:19:26,352 - INFO - Chunk uppladdas: 798684ea-c771-fe55-5af5-23c78aefd267, URL: https://kommun.falkenberg.se/nyheter/efter-tre-ars-arbete-nu-oeppnar-kvarteret-traedgarden
+2025-04-17 11:19:26,353 - INFO - Chunk uppladdas: 53308d17-abd3-88cf-ace1-2b6eb89486ae, URL: https://kommun.falkenberg.se/nyheter/efter-tre-ars-arbete-nu-oeppnar-kvarteret-traedgarden
+2025-04-17 11:19:26,418 - INFO - HTTP Request: PUT https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:19:26,420 - INFO - Uploading Embeddings Done
+2025-04-17 11:19:26,421 - INFO - Total Qdrant URL Update Cost = 0.004109819999999999 SEK
+2025-04-17 11:19:29,399 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/delete?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:19:29,402 - INFO - Deleted current points in database
+2025-04-17 11:19:29,403 - INFO - Dividing to chunks
+2025-04-17 11:19:29,404 - INFO - Dividing to chunks Done
+2025-04-17 11:19:29,404 - INFO - Embedding chunks
+2025-04-17 11:19:30,954 - INFO - Embedding chunks Done
+2025-04-17 11:19:30,956 - INFO - Uploading Embeddings
+2025-04-17 11:19:30,957 - INFO - Chunk uppladdas: 5905ee42-b0b1-f9b2-6fa2-217e9d57de0b, URL: https://kommun.falkenberg.se/nyheter/falkenbergs-kommun-hyllas-i-premiaeravsnitt-av-fiskarnas-rike
+2025-04-17 11:19:30,988 - INFO - HTTP Request: PUT https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:19:30,991 - INFO - Uploading Embeddings Done
+2025-04-17 11:19:30,992 - INFO - Total Qdrant URL Update Cost = 0.0017732 SEK
+2025-04-17 11:19:34,031 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/delete?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:19:34,035 - INFO - Deleted current points in database
+2025-04-17 11:19:34,037 - INFO - Dividing to chunks
+2025-04-17 11:19:34,038 - INFO - Dividing to chunks Done
+2025-04-17 11:19:34,040 - INFO - Embedding chunks
+2025-04-17 11:19:35,647 - INFO - Embedding chunks Done
+2025-04-17 11:19:35,649 - INFO - Uploading Embeddings
+2025-04-17 11:19:35,651 - INFO - Chunk uppladdas: 3c0e1f9d-ad51-a06b-c65b-ac5ec840eb97, URL: https://kommun.falkenberg.se/nyheter/de-aer-vinnare-av-kommunens-arkitekturpris-2024
+2025-04-17 11:19:35,686 - INFO - HTTP Request: PUT https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:19:35,689 - INFO - Uploading Embeddings Done
+2025-04-17 11:19:35,691 - INFO - Total Qdrant URL Update Cost = 0.00164307 SEK
+2025-04-17 11:19:38,913 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/delete?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:19:38,916 - INFO - Deleted current points in database
+2025-04-17 11:19:38,917 - INFO - Dividing to chunks
+2025-04-17 11:19:38,919 - INFO - Dividing to chunks Done
+2025-04-17 11:19:38,920 - INFO - Embedding chunks
+2025-04-17 11:19:40,366 - INFO - Embedding chunks Done
+2025-04-17 11:19:40,367 - INFO - Uploading Embeddings
+2025-04-17 11:19:40,369 - INFO - Chunk uppladdas: 0f1ca47c-ab5c-5041-47b3-38f85db6537a, URL: https://kommun.falkenberg.se/nyheter/kommunen-oeppnar-inte-ritningsarkivet-igen-efter-utredning
+2025-04-17 11:19:40,420 - INFO - HTTP Request: PUT https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:19:40,423 - INFO - Uploading Embeddings Done
+2025-04-17 11:19:40,425 - INFO - Total Qdrant URL Update Cost = 0.0011711699999999998 SEK
+2025-04-17 11:19:43,426 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/delete?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:19:43,430 - INFO - Deleted current points in database
+2025-04-17 11:19:43,432 - INFO - Dividing to chunks
+2025-04-17 11:19:43,433 - INFO - Dividing to chunks Done
+2025-04-17 11:19:43,434 - INFO - Embedding chunks
+2025-04-17 11:19:44,819 - INFO - Embedding chunks Done
+2025-04-17 11:19:44,820 - INFO - Uploading Embeddings
+2025-04-17 11:19:44,821 - INFO - Chunk uppladdas: e85a32a3-6b63-0605-ca2d-cd6a99edcd43, URL: https://kommun.falkenberg.se/nyheter/falkenbergs-kommun-antar-program-mot-vald-i-naera-relationer
+2025-04-17 11:19:44,859 - INFO - HTTP Request: PUT https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:19:44,861 - INFO - Uploading Embeddings Done
+2025-04-17 11:19:44,862 - INFO - Total Qdrant URL Update Cost = 0.00156442 SEK
+2025-04-17 11:19:47,776 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/delete?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:19:47,780 - INFO - Deleted current points in database
+2025-04-17 11:19:47,781 - INFO - Dividing to chunks
+2025-04-17 11:19:47,783 - INFO - Dividing to chunks Done
+2025-04-17 11:19:47,784 - INFO - Embedding chunks
+2025-04-17 11:19:49,136 - INFO - Embedding chunks Done
+2025-04-17 11:19:49,138 - INFO - Uploading Embeddings
+2025-04-17 11:19:49,139 - INFO - Chunk uppladdas: 1f7ac83d-e34e-a5f6-2fa7-6abbc55068b1, URL: https://kommun.falkenberg.se/trafik-och-driftmeddelanden/vivab-byter-ut-gamla-vattenledningar-pa-storgatan-i-centrala-falkenberg
+2025-04-17 11:19:49,184 - INFO - HTTP Request: PUT https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:19:49,187 - INFO - Uploading Embeddings Done
+2025-04-17 11:19:49,188 - INFO - Total Qdrant URL Update Cost = 0.0005291 SEK
+2025-04-17 11:19:52,204 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/delete?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:19:52,208 - INFO - Deleted current points in database
+2025-04-17 11:19:52,209 - INFO - Dividing to chunks
+2025-04-17 11:19:52,210 - INFO - Dividing to chunks Done
+2025-04-17 11:19:52,211 - INFO - Embedding chunks
+2025-04-17 11:19:53,678 - INFO - Embedding chunks Done
+2025-04-17 11:19:53,680 - INFO - Uploading Embeddings
+2025-04-17 11:19:53,682 - INFO - Chunk uppladdas: 792f3ec5-5d0b-04d3-2fb7-25b7a0f72528, URL: https://kommun.falkenberg.se/nyheter/dags-foer-beslut-om-budget-2025
+2025-04-17 11:19:53,684 - INFO - Chunk uppladdas: 692b4dd1-b895-dbee-53b6-8b04b7e5aa38, URL: https://kommun.falkenberg.se/nyheter/dags-foer-beslut-om-budget-2025
+2025-04-17 11:19:53,744 - INFO - HTTP Request: PUT https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:19:53,748 - INFO - Uploading Embeddings Done
+2025-04-17 11:19:53,750 - INFO - Total Qdrant URL Update Cost = 0.0035449699999999997 SEK
+2025-04-17 11:19:56,735 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/delete?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:19:56,739 - INFO - Deleted current points in database
+2025-04-17 11:19:56,740 - INFO - Dividing to chunks
+2025-04-17 11:19:56,741 - INFO - Dividing to chunks Done
+2025-04-17 11:19:56,742 - INFO - Embedding chunks
+2025-04-17 11:19:58,066 - INFO - Embedding chunks Done
+2025-04-17 11:19:58,069 - INFO - Uploading Embeddings
+2025-04-17 11:19:58,071 - INFO - Chunk uppladdas: de9ba95f-12b4-8a2b-7b57-702147dce55d, URL: https://kommun.falkenberg.se/nyheter/fynd-patraeffades-vid-narkotikasoek-med-hund
+2025-04-17 11:19:58,124 - INFO - HTTP Request: PUT https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:19:58,127 - INFO - Uploading Embeddings Done
+2025-04-17 11:19:58,129 - INFO - Total Qdrant URL Update Cost = 0.00126269 SEK
+2025-04-17 11:20:01,197 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/delete?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:20:01,200 - INFO - Deleted current points in database
+2025-04-17 11:20:01,201 - INFO - Dividing to chunks
+2025-04-17 11:20:01,202 - INFO - Dividing to chunks Done
+2025-04-17 11:20:01,204 - INFO - Embedding chunks
+2025-04-17 11:20:02,812 - INFO - Embedding chunks Done
+2025-04-17 11:20:02,813 - INFO - Uploading Embeddings
+2025-04-17 11:20:02,815 - INFO - Chunk uppladdas: 9ddc7f43-7301-5da4-ae6e-d0b179186f3c, URL: https://kommun.falkenberg.se/nyheter/kommunen-foerbereder-foersaeljning-av-vindkraftverk-i-loevstaviken
+2025-04-17 11:20:02,882 - INFO - HTTP Request: PUT https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:20:02,886 - INFO - Uploading Embeddings Done
+2025-04-17 11:20:02,887 - INFO - Total Qdrant URL Update Cost = 0.00175461 SEK
+2025-04-17 11:20:06,238 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/delete?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:20:06,242 - INFO - Deleted current points in database
+2025-04-17 11:20:06,243 - INFO - Dividing to chunks
+2025-04-17 11:20:06,246 - INFO - Dividing to chunks Done
+2025-04-17 11:20:06,247 - INFO - Embedding chunks
+2025-04-17 11:20:07,761 - INFO - Embedding chunks Done
+2025-04-17 11:20:07,763 - INFO - Uploading Embeddings
+2025-04-17 11:20:07,765 - INFO - Chunk uppladdas: b3a31ecf-79a9-eeaf-7e8f-146e3731716a, URL: https://kommun.falkenberg.se/nyheter/beslut-om-barn-och-utbildningsnaemndens-budget-2025
+2025-04-17 11:20:07,810 - INFO - HTTP Request: PUT https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:20:07,813 - INFO - Uploading Embeddings Done
+2025-04-17 11:20:07,814 - INFO - Total Qdrant URL Update Cost = 0.0016616599999999997 SEK
+2025-04-17 11:20:10,748 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/delete?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:20:10,791 - INFO - Deleted current points in database
+2025-04-17 11:20:10,793 - INFO - Dividing to chunks
+2025-04-17 11:20:10,794 - INFO - Dividing to chunks Done
+2025-04-17 11:20:10,796 - INFO - Embedding chunks
+2025-04-17 11:20:12,336 - INFO - Embedding chunks Done
+2025-04-17 11:20:12,338 - INFO - Uploading Embeddings
+2025-04-17 11:20:12,340 - INFO - Chunk uppladdas: 726a9426-7e86-fd74-1ead-fac82838e708, URL: https://kommun.falkenberg.se/nyheter/markbyte-moejliggoer-ny-raeddningsstation-i-vessigebro-dela-via-facebook-dela-via-linkedin-dela-via-twitter
+2025-04-17 11:20:12,374 - INFO - HTTP Request: PUT https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:20:12,376 - INFO - Uploading Embeddings Done
+2025-04-17 11:20:12,377 - INFO - Total Qdrant URL Update Cost = 0.0017517499999999998 SEK
+2025-04-17 11:20:15,559 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/delete?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:20:15,560 - INFO - Deleted current points in database
+2025-04-17 11:20:15,561 - INFO - Dividing to chunks
+2025-04-17 11:20:15,562 - INFO - Dividing to chunks Done
+2025-04-17 11:20:15,562 - INFO - Embedding chunks
+2025-04-17 11:20:17,100 - INFO - Embedding chunks Done
+2025-04-17 11:20:17,102 - INFO - Uploading Embeddings
+2025-04-17 11:20:17,104 - INFO - Chunk uppladdas: 23343cb9-ae94-d7f3-cf56-0f1578d371b3, URL: https://kommun.falkenberg.se/nyheter/tillsammans-skapar-vi-trygghet-i-falkenberg
+2025-04-17 11:20:17,106 - INFO - Chunk uppladdas: efd9b2fc-49ca-9e07-0990-96b8222fa652, URL: https://kommun.falkenberg.se/nyheter/tillsammans-skapar-vi-trygghet-i-falkenberg
+2025-04-17 11:20:17,145 - INFO - HTTP Request: PUT https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:20:17,149 - INFO - Uploading Embeddings Done
+2025-04-17 11:20:17,150 - INFO - Total Qdrant URL Update Cost = 0.0025997399999999997 SEK
+2025-04-17 11:20:20,265 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/delete?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:20:20,268 - INFO - Deleted current points in database
+2025-04-17 11:20:20,270 - INFO - Dividing to chunks
+2025-04-17 11:20:20,271 - INFO - Dividing to chunks Done
+2025-04-17 11:20:20,272 - INFO - Embedding chunks
+2025-04-17 11:20:21,804 - INFO - Embedding chunks Done
+2025-04-17 11:20:21,805 - INFO - Uploading Embeddings
+2025-04-17 11:20:21,808 - INFO - Chunk uppladdas: f1bf032f-f1d6-f5d3-e558-847e052e4bea, URL: https://kommun.falkenberg.se/nyheter/nio-foereningar-med-social-inriktning-far-foereningsbidrag
+2025-04-17 11:20:21,851 - INFO - HTTP Request: PUT https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:20:21,853 - INFO - Uploading Embeddings Done
+2025-04-17 11:20:21,854 - INFO - Total Qdrant URL Update Cost = 0.0015072199999999999 SEK
+2025-04-17 11:20:24,985 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/delete?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:20:24,991 - INFO - Deleted current points in database
+2025-04-17 11:20:24,992 - INFO - Dividing to chunks
+2025-04-17 11:20:24,993 - INFO - Dividing to chunks Done
+2025-04-17 11:20:24,994 - INFO - Embedding chunks
+2025-04-17 11:20:26,554 - INFO - Embedding chunks Done
+2025-04-17 11:20:26,556 - INFO - Uploading Embeddings
+2025-04-17 11:20:26,558 - INFO - Chunk uppladdas: 7aa44f0b-490c-7c6c-feb4-1063247743ad, URL: https://kommun.falkenberg.se/nyheter/bygget-av-troeingeskolan-och-tullbroskolan-igang-igen
+2025-04-17 11:20:26,611 - INFO - HTTP Request: PUT https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:20:26,620 - INFO - Uploading Embeddings Done
+2025-04-17 11:20:26,622 - INFO - Total Qdrant URL Update Cost = 0.0014371499999999997 SEK
+2025-04-17 11:20:31,965 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/delete?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:20:31,970 - INFO - Deleted current points in database
+2025-04-17 11:20:31,971 - INFO - Dividing to chunks
+2025-04-17 11:20:31,972 - INFO - Dividing to chunks Done
+2025-04-17 11:20:31,972 - INFO - Embedding chunks
+2025-04-17 11:20:33,571 - INFO - Embedding chunks Done
+2025-04-17 11:20:33,572 - INFO - Uploading Embeddings
+2025-04-17 11:20:33,574 - INFO - Chunk uppladdas: d8e2f4b2-4f4e-8451-bd91-12efc3c85069, URL: https://kommun.falkenberg.se/nyheter/viktigt-foer-dig-som-foeretagare-soek-polistillstand-foer-trottoarpratare-utsmyckning-och-varuexponering
+2025-04-17 11:20:33,576 - INFO - Chunk uppladdas: 5838c79d-fb47-6909-1852-d5a5b25138b1, URL: https://kommun.falkenberg.se/nyheter/viktigt-foer-dig-som-foeretagare-soek-polistillstand-foer-trottoarpratare-utsmyckning-och-varuexponering
+2025-04-17 11:20:33,642 - INFO - HTTP Request: PUT https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:20:33,645 - INFO - Uploading Embeddings Done
+2025-04-17 11:20:33,645 - INFO - Dividing to chunks
+2025-04-17 11:20:33,646 - INFO - Dividing to chunks Done
+2025-04-17 11:20:33,646 - INFO - Embedding chunks
+2025-04-17 11:20:35,404 - INFO - Embedding chunks Done
+2025-04-17 11:20:35,406 - INFO - Uploading Embeddings
+2025-04-17 11:20:35,408 - INFO - Chunk uppladdas: f01b34b0-351b-bf45-7d89-ec017c6f7570, URL: https://kommun.falkenberg.se/media/evolution/50d8c5f4-b4e4-4c7d-9a24-a543b7a752c5/fe4a650b-8ead-41fb-899c-efe3785be441.pdf
+2025-04-17 11:20:35,411 - INFO - Chunk uppladdas: 8724f4d8-9949-d0b2-ac75-d2aea2b6f8af, URL: https://kommun.falkenberg.se/media/evolution/50d8c5f4-b4e4-4c7d-9a24-a543b7a752c5/fe4a650b-8ead-41fb-899c-efe3785be441.pdf
+2025-04-17 11:20:35,412 - INFO - Chunk uppladdas: 409ce957-6c40-8c8b-4ad6-3787df4535b8, URL: https://kommun.falkenberg.se/media/evolution/50d8c5f4-b4e4-4c7d-9a24-a543b7a752c5/fe4a650b-8ead-41fb-899c-efe3785be441.pdf
+2025-04-17 11:20:35,414 - INFO - Chunk uppladdas: 0cc3ef59-0587-bc8d-80a5-a44c32a6b4b4, URL: https://kommun.falkenberg.se/media/evolution/50d8c5f4-b4e4-4c7d-9a24-a543b7a752c5/fe4a650b-8ead-41fb-899c-efe3785be441.pdf
+2025-04-17 11:20:35,416 - INFO - Chunk uppladdas: 7027f6f6-4d24-b6e3-4c8b-c8a19ef0bc57, URL: https://kommun.falkenberg.se/media/evolution/50d8c5f4-b4e4-4c7d-9a24-a543b7a752c5/fe4a650b-8ead-41fb-899c-efe3785be441.pdf
+2025-04-17 11:20:35,419 - INFO - Chunk uppladdas: b985c314-479b-2ccd-52a1-ff4aacf42212, URL: https://kommun.falkenberg.se/media/evolution/50d8c5f4-b4e4-4c7d-9a24-a543b7a752c5/fe4a650b-8ead-41fb-899c-efe3785be441.pdf
+2025-04-17 11:20:35,421 - INFO - Chunk uppladdas: 333a5f73-9489-f8a8-153c-0e7496d1aec4, URL: https://kommun.falkenberg.se/media/evolution/50d8c5f4-b4e4-4c7d-9a24-a543b7a752c5/fe4a650b-8ead-41fb-899c-efe3785be441.pdf
+2025-04-17 11:20:35,589 - INFO - HTTP Request: PUT https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:20:35,596 - INFO - Uploading Embeddings Done
+2025-04-17 11:20:35,598 - INFO - Total Qdrant URL Update Cost = 0.015303859999999999 SEK
+2025-04-17 11:20:38,567 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/delete?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:20:38,570 - INFO - Deleted current points in database
+2025-04-17 11:20:38,572 - INFO - Dividing to chunks
+2025-04-17 11:20:38,574 - INFO - Dividing to chunks Done
+2025-04-17 11:20:38,575 - INFO - Embedding chunks
+2025-04-17 11:20:40,086 - INFO - Embedding chunks Done
+2025-04-17 11:20:40,087 - INFO - Uploading Embeddings
+2025-04-17 11:20:40,090 - INFO - Chunk uppladdas: c953219f-a194-d0a7-70ec-ec50a3f08765, URL: https://kommun.falkenberg.se/nyheter/nu-oeppnar-hundrastgarden-pa-vaestra-gaerdet-foer-hundar-och-aegare
+2025-04-17 11:20:40,147 - INFO - HTTP Request: PUT https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:20:40,151 - INFO - Uploading Embeddings Done
+2025-04-17 11:20:40,152 - INFO - Total Qdrant URL Update Cost = 0.00131846 SEK
+2025-04-17 11:20:43,407 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/delete?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:20:43,410 - INFO - Deleted current points in database
+2025-04-17 11:20:43,411 - INFO - Dividing to chunks
+2025-04-17 11:20:43,413 - INFO - Dividing to chunks Done
+2025-04-17 11:20:43,415 - INFO - Embedding chunks
+2025-04-17 11:20:44,960 - INFO - Embedding chunks Done
+2025-04-17 11:20:44,962 - INFO - Uploading Embeddings
+2025-04-17 11:20:44,964 - INFO - Chunk uppladdas: 25fa6b78-cdf9-7792-5bb8-91d2cb13b1ac, URL: https://kommun.falkenberg.se/nyheter/kultur-fritids-och-tekniknaemndens-internbudget-foer-2025-aer-beslutad
+2025-04-17 11:20:44,966 - INFO - Chunk uppladdas: 854a8995-f33c-9cd1-4a56-1471af255939, URL: https://kommun.falkenberg.se/nyheter/kultur-fritids-och-tekniknaemndens-internbudget-foer-2025-aer-beslutad
+2025-04-17 11:20:45,041 - INFO - HTTP Request: PUT https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:20:45,045 - INFO - Uploading Embeddings Done
+2025-04-17 11:20:45,047 - INFO - Total Qdrant URL Update Cost = 0.0030487599999999998 SEK
+2025-04-17 11:20:48,284 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/delete?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:20:48,286 - INFO - Deleted current points in database
+2025-04-17 11:20:48,286 - INFO - Dividing to chunks
+2025-04-17 11:20:48,287 - INFO - Dividing to chunks Done
+2025-04-17 11:20:48,288 - INFO - Embedding chunks
+2025-04-17 11:20:49,826 - INFO - Embedding chunks Done
+2025-04-17 11:20:49,828 - INFO - Uploading Embeddings
+2025-04-17 11:20:49,831 - INFO - Chunk uppladdas: b7986a71-160b-6634-b6b9-a7ca8adfb5f4, URL: https://kommun.falkenberg.se/nyheter/beslut-om-socialnaemndens-internbudget-foer-2025
+2025-04-17 11:20:49,865 - INFO - HTTP Request: PUT https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:20:49,872 - INFO - Uploading Embeddings Done
+2025-04-17 11:20:49,874 - INFO - Total Qdrant URL Update Cost = 0.0016802499999999999 SEK
+2025-04-17 11:20:53,185 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/delete?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:20:53,188 - INFO - Deleted current points in database
+2025-04-17 11:20:53,190 - INFO - Dividing to chunks
+2025-04-17 11:20:53,191 - INFO - Dividing to chunks Done
+2025-04-17 11:20:53,192 - INFO - Embedding chunks
+2025-04-17 11:20:54,910 - INFO - Embedding chunks Done
+2025-04-17 11:20:54,911 - INFO - Uploading Embeddings
+2025-04-17 11:20:54,911 - INFO - Chunk uppladdas: 395295c6-9397-96e2-4e1f-8211f743a120, URL: https://kommun.falkenberg.se/nyheter/falkenbergs-kommun-uppmaerksammas-foer-inkoep-och-upphandling
+2025-04-17 11:20:54,942 - INFO - HTTP Request: PUT https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:20:54,943 - INFO - Uploading Embeddings Done
+2025-04-17 11:20:54,943 - INFO - Total Qdrant URL Update Cost = 0.00173745 SEK
+2025-04-17 11:20:58,091 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/delete?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:20:58,096 - INFO - Deleted current points in database
+2025-04-17 11:20:58,097 - INFO - Dividing to chunks
+2025-04-17 11:20:58,099 - INFO - Dividing to chunks Done
+2025-04-17 11:20:58,100 - INFO - Embedding chunks
+2025-04-17 11:20:59,745 - INFO - Embedding chunks Done
+2025-04-17 11:20:59,747 - INFO - Uploading Embeddings
+2025-04-17 11:20:59,749 - INFO - Chunk uppladdas: 6fa6e0b6-b520-046e-b52a-5b1c8406afc2, URL: https://kommun.falkenberg.se/nyheter/kommunen-anmaeler-ny-insulinfoervaexling-enligt-lex-maria
+2025-04-17 11:20:59,782 - INFO - HTTP Request: PUT https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:20:59,785 - INFO - Uploading Embeddings Done
+2025-04-17 11:20:59,786 - INFO - Total Qdrant URL Update Cost = 0.00166881 SEK
+2025-04-17 11:21:02,878 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/delete?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:21:02,881 - INFO - Deleted current points in database
+2025-04-17 11:21:02,882 - INFO - Dividing to chunks
+2025-04-17 11:21:02,883 - INFO - Dividing to chunks Done
+2025-04-17 11:21:02,884 - INFO - Embedding chunks
+2025-04-17 11:21:04,431 - INFO - Embedding chunks Done
+2025-04-17 11:21:04,432 - INFO - Uploading Embeddings
+2025-04-17 11:21:04,434 - INFO - Chunk uppladdas: a81d172b-317b-9dfc-5c7d-84be183b9f46, URL: https://kommun.falkenberg.se/nyheter/anvaendandet-av-reflexvaestar-med-dragkedja-stoppas-i-foerskoleverksamheten
+2025-04-17 11:21:04,475 - INFO - HTTP Request: PUT https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:21:04,477 - INFO - Uploading Embeddings Done
+2025-04-17 11:21:04,479 - INFO - Total Qdrant URL Update Cost = 0.0008737299999999999 SEK
+2025-04-17 11:21:07,865 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/delete?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:21:07,867 - INFO - Deleted current points in database
+2025-04-17 11:21:07,868 - INFO - Dividing to chunks
+2025-04-17 11:21:07,869 - INFO - Dividing to chunks Done
+2025-04-17 11:21:07,870 - INFO - Embedding chunks
+2025-04-17 11:21:09,678 - INFO - Embedding chunks Done
+2025-04-17 11:21:09,680 - INFO - Uploading Embeddings
+2025-04-17 11:21:09,682 - INFO - Chunk uppladdas: f18e2433-d0f8-0a65-ae89-809e87e14a38, URL: https://kommun.falkenberg.se/nyheter/falkenberg-krokar-arm-med-kalmar-deltar-i-kraftsamling-foer-klimatet
+2025-04-17 11:21:09,684 - INFO - Chunk uppladdas: 41045f23-2d2e-a8e2-5144-f8469683f612, URL: https://kommun.falkenberg.se/nyheter/falkenberg-krokar-arm-med-kalmar-deltar-i-kraftsamling-foer-klimatet
+2025-04-17 11:21:09,768 - INFO - HTTP Request: PUT https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:21:09,771 - INFO - Uploading Embeddings Done
+2025-04-17 11:21:09,773 - INFO - Total Qdrant URL Update Cost = 0.0020620599999999997 SEK
+2025-04-17 11:21:12,824 - INFO - HTTP Request: POST https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points/delete?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:21:12,828 - INFO - Deleted current points in database
+2025-04-17 11:21:12,830 - INFO - Dividing to chunks
+2025-04-17 11:21:12,831 - INFO - Dividing to chunks Done
+2025-04-17 11:21:12,832 - INFO - Embedding chunks
+2025-04-17 11:21:16,598 - INFO - Embedding chunks Done
+2025-04-17 11:21:16,600 - INFO - Uploading Embeddings
+2025-04-17 11:21:16,601 - INFO - Chunk uppladdas: 9b548c1a-ccd8-1d5f-e621-609aa2b59f62, URL: https://kommun.falkenberg.se/nyheter/vinnare-av-kommunens-priser-inom-kultur-idrott-och-hallbarhet-2024
+2025-04-17 11:21:16,603 - INFO - Chunk uppladdas: 6fadd1a9-4b45-fc55-2573-4855dd09065d, URL: https://kommun.falkenberg.se/nyheter/vinnare-av-kommunens-priser-inom-kultur-idrott-och-hallbarhet-2024
+2025-04-17 11:21:16,672 - INFO - HTTP Request: PUT https://qdrant.utvecklingfalkenberg.se/collections/FalkenbergsKommunsHemsida/points?wait=true "HTTP/1.1 200 OK"
+2025-04-17 11:21:16,675 - INFO - Uploading Embeddings Done
+2025-04-17 11:21:16,676 - INFO - Total Qdrant URL Update Cost = 0.0031131099999999997 SEK
+2025-04-17 11:21:16,678 - INFO - Total Kostnad för uppdateringar:, 0.11201047SEK
