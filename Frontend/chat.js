@@ -756,13 +756,13 @@ function openCloseBot(doAnimation) {
     chatContainer.style.transition = "height 0.5s ease, width 0.5s ease";
   }
   let windowWidth = document.documentElement.clientWidth;
-  let windowHeight = window.innerHeight;
   if (allowClickHeader) {
     allowClickHeader = false;
     if (windowWidth < 450) {
-      if (!isUp) {
-        chatContainer.style.width = windowWidth + "px";
+      if (!isUp) { 
+        chatContainer.style.width = "100dvw";
         setTimeout(() => {
+          chatContainer.style.minWidth = "340px";
           chatContainer.style.height = "100dvh";
           showHeaderIcon(true);
         }, delayTime);
@@ -772,6 +772,7 @@ function openCloseBot(doAnimation) {
         showHeaderIcon(false);
         setTimeout(() => {
           chatContainer.style.width = "200px";
+          chatContainer.style.minWidth = "0";
         }, delayTime);
         isUp = false;
       }
@@ -786,6 +787,7 @@ function openCloseBot(doAnimation) {
       chatContainer.style.height = "56px";
       showHeaderIcon(false);
       setTimeout(() => {
+        chatContainer.style.minWidth = "0";
         chatContainer.style.width = "200px";
       }, delayTime);
       isUp = false;
