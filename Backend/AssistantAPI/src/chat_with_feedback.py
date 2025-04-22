@@ -4,7 +4,8 @@ import re
 import json
 import tiktoken
 from dotenv import load_dotenv
-from datetime import datetime
+from datetime import datetime, timezone
+from zoneinfo import ZoneInfo
 
 import openai
 from qdrant_client import QdrantClient
@@ -230,7 +231,8 @@ def get_result(
         for result in search_results
     ]
     #Send in current datetime so it knows
-    current_date_time = datetime.now().strftime("%Y-%m-%d %H:%M")
+    utc_time = datetime.now(timezone.utc).replace(microsecond=0)
+    current_date_time= utc_time.astimezone(ZoneInfo("Europe/Stockholm"))
     # Prepare the prompt for GPT-4o in Swedish
     instructions_prompt = f"""
     Du är en hjälpsam assistent med namnet Falkis, du är en gullig liten falk-assistent som hjälper användaren att hitta information om Falkenbergs kommun. 

@@ -3,7 +3,7 @@ services:
     build: .
     container_name: qdrant_api
     ports:
-      - "3004:3004"
+      - "3013:3013"
     volumes:
       - ./app:/app # Scripts
       - ../data:/app/data # Data

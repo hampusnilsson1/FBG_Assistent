@@ -3,6 +3,8 @@ import time
 import uuid
 import hashlib
 from datetime import datetime
+from datetime import datetime, timezone
+from zoneinfo import ZoneInfo
 from dotenv import load_dotenv
 from qdrant_client import QdrantClient
 from qdrant_client.http import models
@@ -27,7 +29,7 @@ QDRANT_URL = "https://qdrant.utvecklingfalkenberg.se"
 QDRANT_PORT = 443
 EMBEDDING_MODEL = "text-embedding-3-large"  # Using the larger model
 BATCH_SIZE = 1000
-SLEEP_TIME = 1
+SLEEP_TIME = 2
 VECTOR_SIZE = 3072  # Updated vector size for large embeddings
 COLLECTION_NAME = "FalkenbergsKommunsHemsida"
 
@@ -40,7 +42,6 @@ if not os.path.exists(log_dir):
 
 if not os.path.exists(log_file):
     open(log_file, "w").close()
-
 # Konfigurera logging för att skriva till en fil
 logging.basicConfig(
     filename=log_file,
@@ -76,7 +77,6 @@ def count_tokens(texts, model="text-embedding-3-large"):
 
 def calculate_cost_sek(texts, model="text-embedding-3-large"):
     SEK_per_USD = 11
-    # Hämta antalet tokens
     num_tokens = count_tokens(texts, model)
 
     # Kostnadsberäkningar per 1000 tokens
@@ -86,7 +86,7 @@ def calculate_cost_sek(texts, model="text-embedding-3-large"):
         raise ValueError("Unsupported model")
 
     # Beräkna kostnaden
-    cost = ((num_tokens / 1000) * cost_per_1000_tokens) * SEK_per_USD  # to return SEK
+    cost = ((num_tokens / 1000) * cost_per_1000_tokens) * SEK_per_USD
     return cost
 
 
@@ -142,40 +142,55 @@ def fetch_sitemap(url):
 
 def get_page_details(url, driver):
     # Fetch the page content
-    driver.get(url)
-    time.sleep(1)  # Wait for JavaScript to render
-    soup = BeautifulSoup(driver.page_source, "html.parser")
-    title = soup.title.string if soup.title else "No title found"
-    main_content = soup.find("main")
-    if main_content:
-        for cookie_div in main_content.find_all(
-            "div", id=re.compile("cookie", re.IGNORECASE)
-        ):
-            cookie_div.decompose()
         texts = " ".join(main_content.stripped_strings)
-    else:
-        texts = "Main tag not found or empty"
-
-    results = []
-
-    results.append({"url": url, "title": title, "texts": texts})
-
-    pdf_links = soup.find_all("a", href=re.compile(r"\.pdf$", re.IGNORECASE))
-    for link in pdf_links:
-        pdf_url = link["href"]
-        if pdf_url.startswith("/"):
-            pdf_url = "https://kommun.falkenberg.se" + pdf_url
-
-        pdf_text = fetch_pdf_content(pdf_url)
+    if url.lower().endswith(".pdf"):
+        pdf_text = fetch_pdf_content(url)
+        title = url.split('/')[-1]
+        results = []
         results.append(
             {
-                "url": pdf_url,
-                "title": link.text.strip() or "No title",
-                "texts": pdf_text,
-                "source_url": url,
+                "url": url,
+                "title": title,
+                "texts": pdf_text
             }
         )
-    return results
+        return results
+    else:
+        driver.get(url)
+        time.sleep(1)  # Wait for JavaScript to render
+        soup = BeautifulSoup(driver.page_source, "html.parser")
+        title = soup.title.string if soup.title else "No title found"
+        main_content = soup.find("main")
+        if main_content:
+            for cookie_div in main_content.find_all(
+                "div", id=re.compile("cookie", re.IGNORECASE)
+            ):
+                cookie_div.decompose()
+            texts = " ".join(main_content.stripped_strings)
+        else:
+            texts = "Main tag not found or empty"
+
+        results = []
+
+        results.append({"url": url, "title": title, "texts": texts})
+
+        pdf_links = soup.find_all("a", href=re.compile(r"\.pdf$", re.IGNORECASE))
+        for link in pdf_links:
+            pdf_url = link["href"]
+            if "evolution" not in pdf_url:  # Om det inte är en evolution pdf
+                if pdf_url.startswith("/"):
+                    pdf_url = "https://kommun.falkenberg.se" + pdf_url
+
+                pdf_text = fetch_pdf_content(pdf_url)
+                results.append(
+                    {
+                        "url": pdf_url,
+                        "title": link.text.strip() or "No title",
+                        "texts": pdf_text,
+                        "source_url": url,
+                    }
+                )
+        return results
 
 
 # Processa en datapunkt
@@ -192,25 +207,37 @@ def process_item_qdrant(item):
     return chunk_cost_SEK
 
 
-## 2. Om något i de olika "texter" för url ändrats så dela scrappade datan in till nya chunks och Embedda dessa.
-def delete_qdrant_embedd(new_item):
-    # Med "new_item" ta bort gamla datapunkter med samma url.
-    new_item_url = new_item["url"]
-
-    qdrant_filter = models.Filter(
-        should=[
+## 2. Ta bort datapunkter kopplade till inmatade url
+def delete_qdrant_embedd(url):
+    # Ta bort datapunkt med url
+    default_url_filter = models.Filter(
+        must=[
+            models.IsEmptyCondition(is_empty=models.PayloadField(key="source_url")),
             models.FieldCondition(
-                key="url", match=models.MatchValue(value=new_item_url)
-            ),
-            models.FieldCondition(
-                key="source_url",
-                match=models.MatchValue(value=new_item_url),
+                key="url", match=models.MatchValue(value=url)
             ),
         ]
     )
 
-    points_selector = models.FilterSelector(filter=qdrant_filter)
+    # Har den source_url som url så ta bort den kopplade pdf/sida
+    pdf_link_filter = models.Filter(
+        must_not=[
+            models.IsEmptyCondition(is_empty=models.PayloadField(key="source_url"))
+        ],
+        must=[
+            models.FieldCondition(
+                key="source_url", match=models.MatchValue(value=url)
+            ),
+        ],
+    )
 
+    # Kombinera ett ska stämma
+    qdrant_filter = models.Filter(
+        should=[default_url_filter, pdf_link_filter]
+    )
+
+    points_selector = models.FilterSelector(filter=qdrant_filter)
+    
     qdrant_client.delete(
         collection_name=COLLECTION_NAME, points_selector=points_selector
     )
@@ -230,6 +257,8 @@ def get_item_chunks(item):
         }
         if "source_url" in item:
             chunk_data["source_url"] = item["source_url"]
+        if "version" in item:
+            chunk_data["version"] = item["version"]
 
         all_chunks.append(chunk_data)
     return all_chunks
@@ -274,7 +303,8 @@ def upsert_to_qdrant(chunks, embeddings):
     points = []
     for i, chunk in enumerate(chunks):
         doc_uuid = generate_uuid(chunk["chunk"])
-        update_time = datetime.now().replace(microsecond=0)
+        utc_time = datetime.now(timezone.utc).replace(microsecond=0)
+        update_time = utc_time.astimezone(ZoneInfo("Europe/Stockholm"))
         payload = {
             "url": chunk["url"],
             "title": chunk["title"],
@@ -284,6 +314,9 @@ def upsert_to_qdrant(chunks, embeddings):
         }
         if "source_url" in chunk:
             payload["source_url"] = chunk["source_url"]
+            
+        if "version" in chunk:
+            payload["version"] = chunk["version"]
 
         point = PointStruct(id=doc_uuid, vector=embeddings[i], payload=payload)
 
@@ -297,18 +330,22 @@ def upsert_to_qdrant(chunks, embeddings):
 
 # Main function, Update a url and its pdfs(For multiusage setup driver outside)
 def update_url_qdrant(url):
-    total_update_cost_SEK = 0
-
     page_data = get_page_details(url, driver)
+
     # Delete old datapoint in database
     try:
-        delete_qdrant_embedd(page_data[0])
+        delete_qdrant_embedd(url)
         logging.info("Deleted current points in database")
     except:
         logging.info("Deleting failed, List is empty!")
 
+    point_count = 0
+    total_update_cost_SEK = 0
     for data_point in page_data:
+        point_count += 1
+        logging.info(f"{point_count} av {len(page_data)}")
         total_update_cost_SEK += process_item_qdrant(data_point)
+
     logging.info(f"Total Qdrant URL Update Cost = {total_update_cost_SEK} SEK")
     return total_update_cost_SEK
 
@@ -334,5 +371,3 @@ except Exception:
     qdrant_client.recreate_collection(
         collection_name=COLLECTION_NAME, vectors_config=vectors_config
     )
-
-# update_url_qdrant("URL_HERE")
