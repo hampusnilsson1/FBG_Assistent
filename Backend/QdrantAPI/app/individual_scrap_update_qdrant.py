@@ -2,7 +2,6 @@ import os
 import time
 import uuid
 import hashlib
-from datetime import datetime
 from datetime import datetime, timezone
 from zoneinfo import ZoneInfo
 from dotenv import load_dotenv
@@ -142,7 +141,6 @@ def fetch_sitemap(url):
 
 def get_page_details(url, driver):
     # Fetch the page content
-        texts = " ".join(main_content.stripped_strings)
     if url.lower().endswith(".pdf"):
         pdf_text = fetch_pdf_content(url)
         title = url.split('/')[-1]
