@@ -7,7 +7,7 @@ from qdrant_client import QdrantClient
 from qdrant_client.http import models
 
 # Ladda API-nyckel från .env-fil
-load_dotenv(dotenv_path="../data/API_KEYS.env")
+load_dotenv(dotenv_path="../../data/API_KEYS.env")
 qdrant_api_key = os.getenv("QDRANT_API_KEY")
 
 QDRANT_URL = "https://qdrant.utvecklingfalkenberg.se/"

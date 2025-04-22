@@ -15,7 +15,7 @@ QDRANT_PORT = 443
 COLLECTION_NAME = "FalkenbergsKommunsHemsida"
 
 # LOGGING------------------
-log_file = "../data/price_update.txt"
+log_file = "../../data/price_update.txt"
 
 log_dir = os.path.dirname(log_file)
 if not os.path.exists(log_dir):
@@ -195,7 +195,7 @@ def add_urls(urls, new_list, message):
 ## Main Execution
 
 # Setup
-load_dotenv(dotenv_path="../data/API_KEYS.env")
+load_dotenv(dotenv_path="../../data/API_KEYS.env")
 qdrant_api_key = os.getenv("QDRANT_API_KEY")
 
 qdrant_client = QdrantClient(

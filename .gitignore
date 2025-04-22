@@ -4,3 +4,4 @@
 /Backend/src/__pycache__
 Backend/QdrantAPI/data/update_logg.txt
 *.pyc
+Backend/data/update_logg.txt

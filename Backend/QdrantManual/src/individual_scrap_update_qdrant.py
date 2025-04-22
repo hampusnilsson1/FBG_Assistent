@@ -33,7 +33,7 @@ COLLECTION_NAME = "FalkenbergsKommunsHemsida"
 # LOGGING------------------
 # Konfigurera logging för att skriva till en fil
 logging.basicConfig(
-    filename="../data/update_logg.txt",
+    filename="../../data/update_logg.txt",
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
 )
@@ -94,7 +94,7 @@ def setup_driver():
 
 
 def fetch_pdf_content(pdf_url):
-    pdf_file_path = "../data/temp.pdf"
+    pdf_file_path = "../../data/temp.pdf"
     try:
         response = requests.get(pdf_url)
         response.raise_for_status()
@@ -300,7 +300,7 @@ def update_url_qdrant(url):
 
 
 # Main execution starts here
-load_dotenv(dotenv_path="../data/API_KEYS.env")
+load_dotenv(dotenv_path="../../data/API_KEYS.env")
 qdrant_api_key = os.getenv("QDRANT_API_KEY")
 openai_api_key = os.getenv("OPENAI_API_KEY")
 
