@@ -23,7 +23,12 @@ def update_qdrant():
             return jsonify({"error": "URL is required"}), 400
 
         url = data["url"]
-        result = update_url_qdrant(url)
+
+        kwargs = {}
+        if "title" in data:
+            kwargs["providedTitle"] = data["title"]
+
+        result = update_url_qdrant(url, **kwargs)
 
         return (
             jsonify(

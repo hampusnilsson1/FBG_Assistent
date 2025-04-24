@@ -123,7 +123,6 @@ def fetch_pdf_content(pdf_url):
                 page_text = page.extract_text()
                 if page_text:
                     text_content.append(page_text)
-
         return " ".join(text_content) if text_content else "No text found in PDF"
     except (requests.exceptions.RequestException, Exception) as e:
         logging.info(f"Error fetching or processing PDF from {pdf_url}: {str(e)}")
@@ -139,19 +138,16 @@ def fetch_sitemap(url):
     return response.content
 
 
-def get_page_details(url, driver):
+def get_page_details(url, driver, providedTitle=None):
     # Fetch the page content
     if url.lower().endswith(".pdf"):
         pdf_text = fetch_pdf_content(url)
-        title = url.split('/')[-1]
+        if providedTitle == None:
+            title = url.split("/")[-1]
+        else:
+            title = providedTitle
         results = []
-        results.append(
-            {
-                "url": url,
-                "title": title,
-                "texts": pdf_text
-            }
-        )
+        results.append({"url": url, "title": title, "texts": pdf_text})
         return results
     else:
         driver.get(url)
@@ -211,9 +207,7 @@ def delete_qdrant_embedd(url):
     default_url_filter = models.Filter(
         must=[
             models.IsEmptyCondition(is_empty=models.PayloadField(key="source_url")),
-            models.FieldCondition(
-                key="url", match=models.MatchValue(value=url)
-            ),
+            models.FieldCondition(key="url", match=models.MatchValue(value=url)),
         ]
     )
 
@@ -223,19 +217,15 @@ def delete_qdrant_embedd(url):
             models.IsEmptyCondition(is_empty=models.PayloadField(key="source_url"))
         ],
         must=[
-            models.FieldCondition(
-                key="source_url", match=models.MatchValue(value=url)
-            ),
+            models.FieldCondition(key="source_url", match=models.MatchValue(value=url)),
         ],
     )
 
     # Kombinera ett ska stämma
-    qdrant_filter = models.Filter(
-        should=[default_url_filter, pdf_link_filter]
-    )
+    qdrant_filter = models.Filter(should=[default_url_filter, pdf_link_filter])
 
     points_selector = models.FilterSelector(filter=qdrant_filter)
-    
+
     qdrant_client.delete(
         collection_name=COLLECTION_NAME, points_selector=points_selector
     )
@@ -312,7 +302,7 @@ def upsert_to_qdrant(chunks, embeddings):
         }
         if "source_url" in chunk:
             payload["source_url"] = chunk["source_url"]
-            
+
         if "version" in chunk:
             payload["version"] = chunk["version"]
 
@@ -327,8 +317,12 @@ def upsert_to_qdrant(chunks, embeddings):
 
 
 # Main function, Update a url and its pdfs(For multiusage setup driver outside)
-def update_url_qdrant(url):
-    page_data = get_page_details(url, driver)
+def update_url_qdrant(url, providedTitle=None):
+    kwargs = {}
+    if providedTitle is not None:
+        kwargs["providedTitle"] = providedTitle
+
+    page_data = get_page_details(url, driver, **kwargs)
 
     # Delete old datapoint in database
     try:
