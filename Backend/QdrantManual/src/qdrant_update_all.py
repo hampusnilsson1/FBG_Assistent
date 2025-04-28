@@ -108,34 +108,38 @@ def get_evolution_pdf_update(sitemap_url, remove_nonexist=False):
             if not ev_pdf["url"].endswith(".pdf"):
                 logging.info("Not a PDF")
                 continue
-            
+
             matching_qdrant = next(
                 (
                     qdrant_pdf
                     for qdrant_pdf in qdrant_pdfs
                     if ev_pdf["url"] == qdrant_pdf["url"]
-                ), None
+                ),
+                None,
             )
             if (
                 any(ev_pdf["url"] == qdrant_pdf["url"] for qdrant_pdf in qdrant_pdfs)
-                and ev_pdf["version"] != matching_qdrant["version"] and ev_pdf["version"] != "0.1"
+                and ev_pdf["version"] != matching_qdrant["version"]
+                and ev_pdf["version"] != "0.1"
             ):
-                logging.info("matching_qdrant",matching_qdrant["version"])
-                logging.info("matching_qdrant",type(matching_qdrant["version"]))
                 logging.info("Update")
-                logging.info("ev_pdf",ev_pdf["version"])
-                logging.info("ev_pdf",type(ev_pdf["version"]))
                 # Ta bort gammal
                 remove_url_qdrant(ev_pdf["url"])
                 # Uppdatera till den nya
                 update_url_qdrant(
-                    ev_pdf["url"], evolution_pdf=True, pdf_title=ev_pdf["title"],pdf_version=ev_pdf["version"]
+                    ev_pdf["url"],
+                    evolution_pdf=True,
+                    pdf_title=ev_pdf["title"],
+                    pdf_version=ev_pdf["version"],
                 )
             elif matching_qdrant is None:
                 # Lägg till ny datapunkt
                 logging.info("New")
                 update_url_qdrant(
-                    ev_pdf["url"], evolution_pdf=True, pdf_title=ev_pdf["title"],pdf_version=ev_pdf["version"]
+                    ev_pdf["url"],
+                    evolution_pdf=True,
+                    pdf_title=ev_pdf["title"],
+                    pdf_version=ev_pdf["version"],
                 )
             else:
                 logging.info("Ingen uppdatering behövs")
@@ -286,11 +290,7 @@ def update_qdrant_since(update_since):
         # Uppdatera tillagda.
         if urls:
             logging.info(
-                "Uppdaterar efter",
-                update_since,
-                ",",
-                len(urls),
-                "stycken sidor markerade för uppdatering.",
+                f"Uppdaterar efter {update_since} och {len(urls)} sidor i databasen."
             )
             are_u_sure = input("Är du säker på att starta uppdateringen, (y/n)")
             if urls and are_u_sure.lower() == "y":
@@ -309,20 +309,18 @@ def add_urls(urls, new_list, message):
         logging.info("---------------------------------")
         for url in new_list:
             logging.info(url["url"])
-        logging.info("Nuvarande totala urls:", len(urls))
-        logging.info("Dessa urls:", len(new_list))
+        logging.info(f"Nuvarande totala urls: {len(urls)}")
+        logging.info(f"Dessa urls: {len(new_list)}")
         apply_new_urls = input(f"{len(new_list)} {message}(y/n)")
         if apply_new_urls.lower() == "y":
             urls += new_list
 
-#Används endast för att rensa de gamla sättet att spara Evolution pdferna(Genom att ta bort kolumnen source_url på dessa datapunkter)
-def clear_source_url_evolution():    
+
+# Används endast för att rensa de gamla sättet att spara Evolution pdferna(Genom att ta bort kolumnen source_url på dessa datapunkter)
+def clear_source_url_evolution():
     filter_condition = models.Filter(
         must=[
-            models.FieldCondition(
-                key="url",
-                match=models.MatchText(text="evolution")
-            )
+            models.FieldCondition(key="url", match=models.MatchText(text="evolution"))
         ]
     )
 
@@ -330,7 +328,7 @@ def clear_source_url_evolution():
     response = qdrant_client.delete_payload(
         collection_name=COLLECTION_NAME,
         keys=["source_url"],
-        points=models.FilterSelector(filter=filter_condition)
+        points=models.FilterSelector(filter=filter_condition),
     )
     logging.info(response)
 

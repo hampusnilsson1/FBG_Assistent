@@ -1,0 +1,10 @@
+services:
+  falkis_backend:
+    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3003:3003"
+    volumes:
+      - ../data:/app/data

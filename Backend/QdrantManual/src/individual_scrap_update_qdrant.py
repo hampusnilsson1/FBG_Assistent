@@ -2,7 +2,8 @@ import os
 import time
 import uuid
 import hashlib
-from datetime import datetime
+from datetime import datetime, timezone
+from zoneinfo import ZoneInfo
 from dotenv import load_dotenv
 from qdrant_client import QdrantClient
 from qdrant_client.http import models
@@ -163,7 +164,7 @@ def get_page_details(url, driver):
     return results
 
 
-def get_pdf_detail(pdf_url, title=None, pdf_version = None):
+def get_pdf_detail(pdf_url, title=None, pdf_version=None):
     if pdf_url.startswith("/"):
         pdf_url = "https://kommun.falkenberg.se" + pdf_url
 
@@ -212,9 +213,7 @@ def delete_qdrant_embedd(new_item):
     pdf_not_old_evolution_filter = models.Filter(
         must_not=[
             models.IsEmptyCondition(is_empty=models.PayloadField(key="source_url")),
-            models.FieldCondition(
-                key="url", match=models.MatchText(text="evolution")
-            ),
+            models.FieldCondition(key="url", match=models.MatchText(text="evolution")),
         ],
         must=[
             models.FieldCondition(
@@ -229,7 +228,7 @@ def delete_qdrant_embedd(new_item):
     )
 
     points_selector = models.FilterSelector(filter=qdrant_filter)
-    
+
     qdrant_client.delete(
         collection_name=COLLECTION_NAME, points_selector=points_selector
     )
@@ -295,17 +294,19 @@ def upsert_to_qdrant(chunks, embeddings):
     points = []
     for i, chunk in enumerate(chunks):
         doc_uuid = generate_uuid(chunk["chunk"])
-        update_time = datetime.now().replace(microsecond=0)
+        utc_time = datetime.now(timezone.utc).replace(microsecond=0)
+        update_time = utc_time.astimezone(ZoneInfo("Europe/Stockholm"))
+        update_time_str = update_time.strftime("%Y-%m-%dT%H:%M:%S")
         payload = {
             "url": chunk["url"],
             "title": chunk["title"],
             "chunk": chunk["chunk"],
             "chunk_info": chunk["chunk_info"],
-            "update_date": update_time,
+            "update_date": update_time_str,
         }
         if "source_url" in chunk:
             payload["source_url"] = chunk["source_url"]
-            
+
         if "version" in chunk:
             payload["version"] = chunk["version"]
 
@@ -320,13 +321,12 @@ def upsert_to_qdrant(chunks, embeddings):
 
 
 # Main function, Update a url and its pdfs(For multiusage setup driver outside)
-def update_url_qdrant(url, evolution_pdf=False, pdf_title=None, pdf_version = None):
+def update_url_qdrant(url, evolution_pdf=False, pdf_title=None, pdf_version=None):
     total_update_cost_SEK = 0
     if not evolution_pdf:
         page_data = get_page_details(url, driver)
     else:
         page_data = get_pdf_detail(url, pdf_title, pdf_version)
-        
 
     # Delete old datapoint in database
     try:

@@ -180,9 +180,7 @@ def check_personal_info(text, contain=False):
 
 
 # Start
-def get_result(
-    user_input, user_history, chat_id, MAX_INPUT_CHAR
-):
+def get_result(user_input, user_history, chat_id, MAX_INPUT_CHAR):
     question_cost = 0
     # Loopa igenom user_historys alla frågor.
     user_input_combo = ""
@@ -230,14 +228,15 @@ def get_result(
         }
         for result in search_results
     ]
-    #Send in current datetime so it knows
+    # Send in current datetime so it knows
     utc_time = datetime.now(timezone.utc).replace(microsecond=0)
-    current_date_time= utc_time.astimezone(ZoneInfo("Europe/Stockholm"))
+    current_date_time = utc_time.astimezone(ZoneInfo("Europe/Stockholm"))
+    current_date_time_str = current_date_time.strftime("%Y-%m-%dT%H:%M:%S")
     # Prepare the prompt for GPT-4o in Swedish
     instructions_prompt = f"""
     Du är en hjälpsam assistent med namnet Falkis, du är en gullig liten falk-assistent som hjälper användaren att hitta information om Falkenbergs kommun. 
 
-    Här är information som skulle kunna vara till hjälp för att hjälpa användaren kring frågan (datum och tid för denna förfrågan: {current_date_time}):
+    Här är information som skulle kunna vara till hjälp för att hjälpa användaren kring frågan:
     Dokument:
     {similar_texts[0]['chunk']}
     URL: {similar_texts[0]['url']}
@@ -263,11 +262,12 @@ def get_result(
 
     Hjälp användaren att få svar på sin fråga.
     Redovisa endast om dokumenten är relevant. 
-    Om du använder dokument, hänvisa alltid med länk till källan
+    Om du använder dokument, hänvisa alltid med länk till källan,
+    Efterfrågas tid/datum eller om det behövs i beslut av relevanta dokument så är den just nu {current_date_time_str}.
     Reply in the same language as: {user_input}.
     """
     sources = []
-    for qdrant_text in similar_texts: # For future development?
+    for qdrant_text in similar_texts:  # For future development?
         if qdrant_text["score"] >= 0.70 and qdrant_text["url"] not in [
             source["url"] for source in sources
         ]:
@@ -395,6 +395,7 @@ CORS(app)
 limiter = Limiter(app=app, key_func=lambda: "global", storage_uri="memory://")
 
 asgi_app = WsgiToAsgi(app)
+
 
 # Kontroll av user_input
 @app.route("/check_pii", methods=["POST"])

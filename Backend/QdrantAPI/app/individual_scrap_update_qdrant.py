@@ -293,12 +293,13 @@ def upsert_to_qdrant(chunks, embeddings):
         doc_uuid = generate_uuid(chunk["chunk"])
         utc_time = datetime.now(timezone.utc).replace(microsecond=0)
         update_time = utc_time.astimezone(ZoneInfo("Europe/Stockholm"))
+        update_time_str = update_time.strftime("%Y-%m-%dT%H:%M:%S")
         payload = {
             "url": chunk["url"],
             "title": chunk["title"],
             "chunk": chunk["chunk"],
             "chunk_info": chunk["chunk_info"],
-            "update_date": update_time,
+            "update_date": update_time_str,
         }
         if "source_url" in chunk:
             payload["source_url"] = chunk["source_url"]

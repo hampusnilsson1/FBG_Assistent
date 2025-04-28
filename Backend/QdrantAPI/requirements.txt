@@ -11,3 +11,4 @@ pdfplumber
 flask
 asgiref
 uvicorn
+tzdata

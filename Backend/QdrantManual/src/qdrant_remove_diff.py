@@ -61,11 +61,13 @@ def get_qdrant_urls():
             try:
                 payload = point.get("payload", {})
                 url = payload.get("url", None)
+                source_url = payload.get("source_url", None)
                 if not url:
                     print("Varning: Punkt saknar URL. Hoppar över.")
                     continue
-                if url.endswith(".pdf"):
-                    continue  # Ignorera URL:er som slutar på .pdf
+                if source_url or "evolution" in url:
+                    continue  # Ignorera URL:er som slutar på .pdf , är länkade document eller evolution document
+
                 results.append(url)
             except Exception as e:
                 print(f"Fel vid bearbetning av punkt: {e}. Hoppar över.")
@@ -133,6 +135,7 @@ def main():
         print(f"Antal URL:er hittade i Qdrant: {len(qdrant_urls)}")
         print(f"Antal URL:er i sitemap: {len(sitemap_urls)}")
         print(f"Antal saknade URL:er: {len(missing_urls)}")
+        print(missing_urls)
 
         agree_remove = input("Är du säker på att du vill ta bort dessa?(y/n)")
         if agree_remove.lower() == "y":
