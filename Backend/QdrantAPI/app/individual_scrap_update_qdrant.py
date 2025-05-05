@@ -172,10 +172,39 @@ def get_page_details(url, driver, providedTitle=None):
         for link in pdf_links:
             pdf_url = link["href"]
             if "evolution" not in pdf_url:  # Om det inte är en evolution pdf
+                
                 if pdf_url.startswith("/"):
                     pdf_url = "https://kommun.falkenberg.se" + pdf_url
-
+                
                 pdf_text = fetch_pdf_content(pdf_url)
+                
+               # Kolla om/Hämta pdfer redan finns i Qdrant
+                pdf_exists, pdf_points = qdrant_pdf_exists(pdf_url)
+                old_source_url = pdf_points[0].payload["source_url"] | ""
+                # Om pdf redan finns
+                if pdf_exists:
+                    # Om Source_url innehåller urln
+                    if url in old_source_url:
+                        # Uppdatera datapunkter fast behåll source_url
+                        logging.info(f"PDF already exists in Qdrant, Linked with same site: {pdf_url},{pdf_points[0].payload['source_url']}")
+                        new_source_url = old_source_url
+                    else:
+                        # PDF Existerar och url inte finns i source_url redan
+                        logging.info(f"PDF already exists in Qdrant, Linked to another site: {pdf_url},{pdf_points[0].payload['source_url']}")
+                        #Uppdatera source_url med tillägg av den nya länk
+                        new_source_url = old_source_url + "," + url
+                        
+                    results.append(
+                        {
+                            "url": pdf_url,
+                            "title": link.text.strip() or "No title",
+                            "texts": pdf_text,
+                            "source_url": new_source_url,
+                            "old_source_url": old_source_url,
+                        }
+                    )
+                    continue
+                    
                 results.append(
                     {
                         "url": pdf_url,
@@ -185,6 +214,12 @@ def get_page_details(url, driver, providedTitle=None):
                     }
                 )
         return results
+    
+def qdrant_pdf_exists(url):
+    # Hämta pdfns datapunkter
+    scroll_filter = models.Filter(must=[models.FieldCondition(key="url", match=models.MatchValue(value=url))])
+    results, _ = qdrant_client.scroll(collection_name=COLLECTION_NAME, scroll_filter=scroll_filter)
+    return len(results) > 0, results | None
 
 
 # Processa en datapunkt
@@ -203,7 +238,7 @@ def process_item_qdrant(item):
 
 ## 2. Ta bort datapunkter kopplade till inmatade url
 def delete_qdrant_embedd(url):
-    # Ta bort datapunkt med url
+    
     default_url_filter = models.Filter(
         must=[
             models.IsEmptyCondition(is_empty=models.PayloadField(key="source_url")),
@@ -229,6 +264,37 @@ def delete_qdrant_embedd(url):
     qdrant_client.delete(
         collection_name=COLLECTION_NAME, points_selector=points_selector
     )
+    
+    # Sedan de som inte tagits bort som också är länkade ändrar vi source_url
+    scroll_filter = models.Filter(
+        must=[
+            models.FieldCondition(
+                key="source_url",
+                match=models.MatchText(text=url),
+            )
+        ]
+    )
+    results, _ = qdrant_client.scroll(collection_name=COLLECTION_NAME, scroll_filter=scroll_filter)
+    for point in results:
+        old_source_url = point.payload.get("source_url", "")
+        new_source_url = ",".join(
+            [link for link in old_source_url.split(",") if link != url]
+        )
+        point.payload["source_url"] = new_source_url
+        try:
+            qdrant_client.update(
+                collection_name=COLLECTION_NAME,
+                points=[
+                    PointStruct(
+                        id=point.id,
+                        vector=point.vector,
+                        payload=point.payload,
+                    )
+                ],
+            )
+            logging.info(f"Updated point: {point.id}, old source_url: {old_source_url}, new source_url: {new_source_url}")
+        except Exception as e:
+            logging.error(f"Failed to update point: {point.id}, error: {e}")
 
 
 ## 3. Dela in texten i chunks/batches indexerade och formaterade
