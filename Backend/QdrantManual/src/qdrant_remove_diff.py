@@ -18,9 +18,9 @@ qdrant_client = QdrantClient(
     url=QDRANT_URL, port=QDRANT_PORT, https=True, api_key=qdrant_api_key
 )
 
-
+## Web Sitemap Process Remove Diff
 # Hämta alla punkter från Qdrant
-def get_qdrant_urls():
+def get_web_qdrant_urls():
     url = f"{QDRANT_URL}collections/{COLLECTION_NAME}/points/scroll"
     headers = {"api-key": qdrant_api_key, "Content-Type": "application/json"}
     payload = {"with_payload": True, "limit": 50000}
@@ -62,11 +62,14 @@ def get_qdrant_urls():
                 payload = point.get("payload", {})
                 url = payload.get("url", None)
                 source_url = payload.get("source_url", None)
-                if not url:
-                    print("Varning: Punkt saknar URL. Hoppar över.")
+                # Filter out empty URLs and PDF files
+                if not url or "evolution" in url:
+                    print("Punkt saknar URL eller är en Evolution PDF. Hoppar över.")
                     continue
-                if source_url or "evolution" in url:
-                    continue  # Ignorera URL:er som slutar på .pdf , är länkade document eller evolution document
+                # Filter out Linked Documents
+                if source_url:
+                    print("Punkt är ett länkat dokument. Hoppar över.")
+                    continue
 
                 results.append(url)
             except Exception as e:
@@ -80,9 +83,8 @@ def get_qdrant_urls():
 
     return set(results)
 
-
 # Hämta URL:er från sitemap
-def get_sitemap_urls(sitemap_url):
+def get_web_sitemap_urls(sitemap_url):
     response = requests.get(sitemap_url)
     if response.status_code == 200:
         sitemap = ET.fromstring(response.content)
@@ -95,6 +97,109 @@ def get_sitemap_urls(sitemap_url):
         return urls
     else:
         raise Exception(f"Failed to fetch sitemap from {sitemap_url}")
+
+def remove_web_sitemap_url_diff():
+    sitemap_url = (
+        "https://kommun.falkenberg.se/index.php?option=com_jmap&view=sitemap&format=xml"
+    )
+
+    try:
+        qdrant_urls = get_web_qdrant_urls()
+        sitemap_urls = get_web_sitemap_urls(sitemap_url)
+
+        # Hitta URL:er som finns i Qdrant men inte i sitemap
+        missing_urls = qdrant_urls - sitemap_urls
+        print( f"Totalt {len(missing_urls)} URL:er saknas i sitemap.")
+        if missing_urls:
+            print("URL:er som finns i Qdrant men inte i sitemap:")
+            for url in missing_urls:
+                print(url)
+            print("Tas bort från Qdrant...")
+            remove_qdrant_urls(missing_urls)
+        else:
+            print("Alla Webb URL:er i Qdrant finns också i sitemap.")
+            
+    except Exception as e:
+        print(f"Ett fel inträffade: {e}")
+    
+    
+#Evolution Process Remove Diff
+def get_evo_qdrant_urls():
+    # Hämta alla evolution pdfer i databasen
+    qdrant_filter = models.Filter(
+        must=[
+            models.FieldCondition(key="url", match=models.MatchText(text="evolution"))
+        ]
+    )
+
+    obj_qdrant_pdfs, next_page_offset = qdrant_client.scroll(
+        collection_name=COLLECTION_NAME,
+        limit=100,
+        scroll_filter=qdrant_filter,
+    )
+
+    while next_page_offset is not None:
+        new_points, next_page_offset = qdrant_client.scroll(
+            collection_name=COLLECTION_NAME,
+            scroll_filter=qdrant_filter,
+            limit=100,
+            offset=next_page_offset,
+        )
+        obj_qdrant_pdfs.extend(new_points)
+
+    qdrant_pdfs = []
+    if obj_qdrant_pdfs[0]:
+        for pdf in obj_qdrant_pdfs:
+            url = pdf.payload.get("url")
+            version = pdf.payload.get("version")
+            if not version:
+                version = "0.1"
+            qdrant_pdfs.append({"url": url, "version": version})
+            
+    return qdrant_pdfs
+
+def get_evo_sitemap_urls(sitemap_url):
+    response = requests.get(sitemap_url)
+
+    if response.status_code == 200:
+        data = response.json()
+
+        evolution_pdfs = []
+        for item in data["data"]:
+            version = item["version"]
+            url = item["url"]
+            title = item["name"]
+            if version and url:
+                evolution_pdfs.append({"url": url, "version": version, "title": title})
+        return evolution_pdfs
+
+def remove_evo_sitemap_url_diff():
+    qdrant_pdfs = get_evo_qdrant_urls()
+    evolution_pdfs = get_evo_sitemap_urls("https://intranet.falkenberg.se/fbg_apps/services/evolution/documents.php")
+    
+    qdrant_evolution_urls = set(pdf["url"] for pdf in qdrant_pdfs)
+    sitemap_evolution_urls = set(pdf["url"] for pdf in evolution_pdfs)
+    
+    # Find URLs to remove
+    urls_to_remove = qdrant_evolution_urls - sitemap_evolution_urls
+    print(
+        f"Tar bort {len(urls_to_remove)} stycken gamla evolution pdfer."
+    )
+    qdrant_filter = models.Filter(
+        must=[
+            models.FieldCondition(
+                key="url", match=models.MatchAny(any=urls_to_remove)
+            ),
+        ]
+    )
+    points_selector = models.FilterSelector(filter=qdrant_filter)
+    qdrant_client.delete(
+        collection_name=COLLECTION_NAME, points_selector=points_selector
+    )
+    
+    
+
+
 
 
 def remove_qdrant_urls(urls):
@@ -114,36 +219,10 @@ def remove_qdrant_urls(urls):
 
 # Huvudfunktion för att jämföra URL:er
 def main():
-    sitemap_url = (
-        "https://kommun.falkenberg.se/index.php?option=com_jmap&view=sitemap&format=xml"
-    )
-
-    try:
-        qdrant_urls = get_qdrant_urls()
-        sitemap_urls = get_sitemap_urls(sitemap_url)
-
-        # Hitta URL:er som finns i Qdrant men inte i sitemap
-        missing_urls = qdrant_urls - sitemap_urls
-
-        if missing_urls:
-            print("URL:er som finns i Qdrant men inte i sitemap:")
-            for url in missing_urls:
-                print(url)
-        else:
-            print("Alla URL:er i Qdrant finns också i sitemap.")
-
-        print(f"Antal URL:er hittade i Qdrant: {len(qdrant_urls)}")
-        print(f"Antal URL:er i sitemap: {len(sitemap_urls)}")
-        print(f"Antal saknade URL:er: {len(missing_urls)}")
-        print(missing_urls)
-
-        agree_remove = input("Är du säker på att du vill ta bort dessa?(y/n)")
-        if agree_remove.lower() == "y":
-            remove_qdrant_urls(missing_urls)
-            print("Urls removed!")
-
-    except Exception as e:
-        print(f"Ett fel inträffade: {e}")
+    print("Tar bort gamla Webbsitemap URL:er...")
+    remove_web_sitemap_url_diff()
+    print("Tar bort gamla Evolution URL:er...")
+    remove_evo_sitemap_url_diff()
 
 
 if __name__ == "__main__":
