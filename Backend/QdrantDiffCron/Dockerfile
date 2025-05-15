@@ -5,6 +5,6 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install -r requirements.txt
 
-COPY qdrant_remove_diff.py .
+COPY app /app
 
 CMD ["python", "qdrant_remove_diff.py"]

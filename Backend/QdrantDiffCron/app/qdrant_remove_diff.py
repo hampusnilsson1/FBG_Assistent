@@ -7,7 +7,7 @@ from qdrant_client import QdrantClient
 from qdrant_client.http import models
 
 # Ladda API-nyckel från .env-fil
-load_dotenv(dotenv_path="../../data/API_KEYS.env")
+load_dotenv(dotenv_path="/app/data/API_KEYS.env")
 qdrant_api_key = os.getenv("QDRANT_API_KEY")
 
 QDRANT_URL = "https://qdrant.utvecklingfalkenberg.se/"
@@ -64,11 +64,11 @@ def get_web_qdrant_urls():
                 source_url = payload.get("source_url", None)
                 # Filter out empty URLs and PDF files
                 if not url or "evolution" in url:
-                    print("Punkt saknar URL eller är en Evolution PDF. Hoppar över.")
+                    #print("Punkt saknar URL eller är en Evolution PDF. Hoppar över.")
                     continue
                 # Filter out Linked Documents
                 if source_url:
-                    print("Punkt är ett länkat dokument. Hoppar över.")
+                    #print("Punkt är ett länkat dokument. Hoppar över.")
                     continue
 
                 results.append(url)
