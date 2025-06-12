@@ -12,13 +12,7 @@ from email.message import EmailMessage
 # Ladda API-nyckel från .env-fil
 load_dotenv(dotenv_path="/app/data/API_KEYS.env")
 qdrant_api_key = os.getenv("QDRANT_API_KEY")
-
-load_dotenv(dotenv_path="/app/data/EMAIL_INFO.env")
-EMAIL_USER = os.getenv("EMAIL_USER")
-EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")
-EMAIL_TO = os.getenv("EMAIL_TO")
-EMAIL_HOST = os.getenv("EMAIL_HOST")
-EMAIL_PORT = int(os.getenv("EMAIL_PORT", 587))
+ping_key = os.getenv("HEALTHCHECKS_KEY")
 
 QDRANT_URL = "https://qdrant.utvecklingfalkenberg.se/"
 QDRANT_PORT = 443
@@ -128,13 +122,21 @@ def remove_web_sitemap_url_diff(force=False):
                 print(
                     "För många URL:er skiljer sig från sitemap, vänligen kontrollera."
                 )
-                send_alert_email(len(missing_urls), "Webb")
+                requests.post(
+                    f"https://healthchecks.utvecklingfalkenberg.se/ping/{ping_key}/extern-qdrant-diff-remove/fail",
+                    data=f"Webb URL Difference Amount= {len(missing_urls)}, Handle manually!",
+                    timeout=10,
+                )
                 return
             print("URL:er som finns i Qdrant men inte i sitemap:")
             for url in missing_urls:
                 print(url)
             print("Tas bort från Qdrant...")
             remove_qdrant_urls(missing_urls)
+            requests.get(
+                f"https://healthchecks.utvecklingfalkenberg.se/ping/{ping_key}/extern-qdrant-diff-remove",
+                timeout=10,
+            )
         else:
             print("Alla Webb URL:er i Qdrant finns också i sitemap.")
 
@@ -209,7 +211,11 @@ def remove_evo_sitemap_url_diff(force=False):
         print(
             "För många evolution pdfer skiljer sig från sitemap, vänligen kontrollera."
         )  # Byt till True för att tvinga borttagning
-        send_alert_email(len(urls_to_remove), "Evolution")
+        requests.post(
+            f"https://healthchecks.utvecklingfalkenberg.se/ping/{ping_key}/evolution-qdrant-diff-remove/fail",
+            data=f"Evolution URL Difference Amount= {len(urls_to_remove)}, Handle manually!",
+            timeout=10,
+        )
         return
     print(f"Tar bort {len(urls_to_remove)} stycken gamla evolution pdfer.")
     qdrant_filter = models.Filter(
@@ -220,6 +226,10 @@ def remove_evo_sitemap_url_diff(force=False):
     points_selector = models.FilterSelector(filter=qdrant_filter)
     qdrant_client.delete(
         collection_name=COLLECTION_NAME, points_selector=points_selector
+    )
+    requests.get(
+        f"https://healthchecks.utvecklingfalkenberg.se/ping/{ping_key}/evolution-qdrant-diff-remove",
+        timeout=10,
     )
 
 
@@ -236,24 +246,6 @@ def remove_qdrant_urls(urls):
     qdrant_client.delete(
         collection_name=COLLECTION_NAME, points_selector=points_selector
     )
-
-
-def send_alert_email(count, urltype="Webb"):
-    msg = EmailMessage()
-    msg.set_content(
-        f"Antalet URL:er för {urltype} har överskridit 50 (nuvarande antal: {count}). Inga gamla datapunkter har raderats från Qdrant. Du måste hantera detta manuellt."
-    )
-    msg["Subject"] = "Varning: För många URL:er - Falkis Backend"
-    msg["From"] = EMAIL_USER
-    msg["To"] = EMAIL_TO
-
-    try:
-        with smtplib.SMTP_SSL(EMAIL_HOST, EMAIL_PORT) as smtp:
-            smtp.login(EMAIL_USER, EMAIL_PASSWORD)
-            smtp.send_message(msg)
-            print("Mail skickat.")
-    except Exception as e:
-        print("Kunde inte skicka mail:", e)
 
 
 # Huvudfunktion för att jämföra URL:er
