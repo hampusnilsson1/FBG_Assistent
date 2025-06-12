@@ -22,8 +22,7 @@ EMAIL_PORT = int(os.getenv("EMAIL_PORT", 587))
 
 QDRANT_URL = "https://qdrant.utvecklingfalkenberg.se/"
 QDRANT_PORT = 443
-# Configuera Vilken Collection som ska rensas via miljövariabel(Ändras vid configurering av cron/start av container)
-COLLECTION_NAME = os.getenv("COLLECTION_NAME", "FalkenbergsKommunsHemsida")
+COLLECTION_NAME = "FalkenbergsKommunsHemsida"
 
 qdrant_client = QdrantClient(
     url=QDRANT_URL, port=QDRANT_PORT, https=True, api_key=qdrant_api_key
@@ -113,14 +112,9 @@ def get_web_sitemap_urls(sitemap_url):
 
 
 def remove_web_sitemap_url_diff(force=False):
-    if COLLECTION_NAME == "IntranetFalkenbergHemsida":
-        sitemap_url = "https://intranet.falkenberg.se/index.php?option=com_jmap&view=sitemap&format=xml"
-    elif COLLECTION_NAME == "FalkenbergsKommunsHemsida":
-        sitemap_url = "https://kommun.falkenberg.se/index.php?option=com_jmap&view=sitemap&format=xml"
-    else:
-        raise ValueError(
-            f"Invalid COLLECTION_NAME: {COLLECTION_NAME}. Please check the environment variable."
-        )
+    sitemap_url = (
+        "https://kommun.falkenberg.se/index.php?option=com_jmap&view=sitemap&format=xml"
+    )
 
     try:
         qdrant_urls = get_web_qdrant_urls()
@@ -266,9 +260,8 @@ def send_alert_email(count, urltype="Webb"):
 def main():
     print("Tar bort gamla Webbsitemap URL:er...")
     remove_web_sitemap_url_diff(force=False)  # True för att tvinga borttagning
-    if COLLECTION_NAME == "FalkenbergsKommunsHemsida":
-        print("Tar bort gamla Evolution URL:er...")
-        remove_evo_sitemap_url_diff(force=False)
+    print("Tar bort gamla Evolution URL:er...")
+    remove_evo_sitemap_url_diff(force=False)  # True för att tvinga borttagning
 
 
 if __name__ == "__main__":
