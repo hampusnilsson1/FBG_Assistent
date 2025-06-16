@@ -3,6 +3,9 @@ import requests
 import xml.etree.ElementTree as ET
 from dotenv import load_dotenv
 
+from datetime import datetime, timezone
+from zoneinfo import ZoneInfo
+
 from qdrant_client import QdrantClient
 from qdrant_client.http import models
 
@@ -211,6 +214,7 @@ def remove_evo_sitemap_url_diff(force=False):
 
     # Find URLs to remove
     urls_to_remove = qdrant_evolution_urls - sitemap_evolution_urls
+    print(f"Totalt {len(urls_to_remove)} URL:er saknar i sitemap.")
     if len(urls_to_remove) > 50 and not force:
         print(
             "För många evolution pdfer skiljer sig från sitemap, vänligen kontrollera."
@@ -257,6 +261,9 @@ def remove_qdrant_urls(urls):
 
 # Huvudfunktion för att jämföra URL:er
 def main():
+    utc_time = datetime.now(timezone.utc).replace(microsecond=0)
+    current_date_time = utc_time.astimezone(ZoneInfo("Europe/Stockholm"))
+    print(f"Datetime: {current_date_time}")
     print("Tar bort gamla Webbsitemap URL:er...")
     remove_web_sitemap_url_diff(force=False)  # True för att tvinga borttagning
     print("Tar bort gamla Evolution URL:er...")
