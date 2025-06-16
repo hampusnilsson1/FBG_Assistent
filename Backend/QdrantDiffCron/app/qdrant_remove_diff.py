@@ -139,6 +139,10 @@ def remove_web_sitemap_url_diff(force=False):
             )
         else:
             print("Alla Webb URL:er i Qdrant finns också i sitemap.")
+            requests.get(
+                f"https://healthchecks.utvecklingfalkenberg.se/ping/{ping_key}/extern-qdrant-diff-remove",
+                timeout=10,
+            )
 
     except Exception as e:
         print(f"Ett fel inträffade: {e}")
@@ -217,16 +221,19 @@ def remove_evo_sitemap_url_diff(force=False):
             timeout=10,
         )
         return
-    print(f"Tar bort {len(urls_to_remove)} stycken gamla evolution pdfer.")
-    qdrant_filter = models.Filter(
-        must=[
-            models.FieldCondition(key="url", match=models.MatchAny(any=urls_to_remove)),
-        ]
-    )
-    points_selector = models.FilterSelector(filter=qdrant_filter)
-    qdrant_client.delete(
-        collection_name=COLLECTION_NAME, points_selector=points_selector
-    )
+    if len(urls_to_remove) > 0:
+        print(f"Tar bort {len(urls_to_remove)} stycken gamla evolution pdfer.")
+        qdrant_filter = models.Filter(
+            must=[
+                models.FieldCondition(
+                    key="url", match=models.MatchAny(any=urls_to_remove)
+                ),
+            ]
+        )
+        points_selector = models.FilterSelector(filter=qdrant_filter)
+        qdrant_client.delete(
+            collection_name=COLLECTION_NAME, points_selector=points_selector
+        )
     requests.get(
         f"https://healthchecks.utvecklingfalkenberg.se/ping/{ping_key}/evolution-qdrant-diff-remove",
         timeout=10,
