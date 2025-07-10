@@ -26,7 +26,7 @@ ENV CHROME_BIN=/usr/bin/chromium-browser \
 # Skapa arbetskatalog
 WORKDIR /app
 
-EXPOSE 3013
+EXPOSE 3006
 
 # Kör scriptet
-CMD ["uvicorn", "qdrant_api:asgi_app", "--host", "0.0.0.0", "--port", "3013"]
+CMD ["uvicorn", "qdrant_api:asgi_app", "--host", "0.0.0.0", "--port", "3006"]
