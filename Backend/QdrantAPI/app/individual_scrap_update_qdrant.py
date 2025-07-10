@@ -249,10 +249,17 @@ def chunk_text(text, chunk_size, overlap):
     return chunks
 
 
+# 3. Retrieve existing chunk hashes from the database for comparison
+def get_db_chunk_hashes(chunks):
     db_hashes = []
+    chunk_source_url = chunks[0]["source_url"] if "source_url" in chunks[0] else None
+    url = chunks[0]["url"]
+
     logging.info(f"{url},{chunks[0]['chunk_hash']}")
 
     # if Site
+    url_filter = models.Filter(
+        must=[
             models.IsEmptyCondition(is_empty=models.PayloadField(key="source_url")),
             models.FieldCondition(key="url", match=models.MatchValue(value=url)),
         ]
