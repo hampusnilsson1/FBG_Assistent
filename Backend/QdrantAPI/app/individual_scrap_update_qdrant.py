@@ -188,50 +188,30 @@ def get_page_details(url, driver, providedTitle=None):
 
 
 # Processa en datapunkt
+# 1. Process a single data item (site or document)
 def process_item_qdrant(item):
     logging.info("Dividing to chunks")
     chunks = get_item_chunks(item)
     logging.info("Dividing to chunks Done")
+    logging.info(f"Getting chunks in need of update, url: {item['url']}")
+    db_hashes = get_db_chunk_hashes(chunks)
+    new_chunks = get_new_chunks(chunks, db_hashes)
+    if new_chunks == None or len(new_chunks) == 0:
+        logging.info("No Update needed for this item.")
+        return 0
+    old_urls = get_old_urls(chunks, db_hashes)
     logging.info("Embedding chunks")
-    embeddings, chunk_cost_SEK = create_embeddings(chunks)
+    embeddings, chunk_cost_SEK = create_embeddings(new_chunks)
     logging.info(f"Embedding chunks Done")
+    logging.info("Removing old chunks")
+    remove_old_datapoints(new_chunks, old_urls)
     logging.info("Uploading Embeddings")
-    upsert_to_qdrant(chunks, embeddings)
+    upsert_to_qdrant(new_chunks, embeddings)
     logging.info("Uploading Embeddings Done")
     return chunk_cost_SEK
 
 
-## 2. Ta bort datapunkter kopplade till inmatade url
-def delete_qdrant_embedd(url):
-    # Ta bort datapunkt med url
-    default_url_filter = models.Filter(
-        must=[
-            models.IsEmptyCondition(is_empty=models.PayloadField(key="source_url")),
-            models.FieldCondition(key="url", match=models.MatchValue(value=url)),
-        ]
-    )
-
-    # Har den source_url som url så ta bort den kopplade pdf/sida
-    pdf_link_filter = models.Filter(
-        must_not=[
-            models.IsEmptyCondition(is_empty=models.PayloadField(key="source_url"))
-        ],
-        must=[
-            models.FieldCondition(key="source_url", match=models.MatchValue(value=url)),
-        ],
-    )
-
-    # Kombinera ett ska stämma
-    qdrant_filter = models.Filter(should=[default_url_filter, pdf_link_filter])
-
-    points_selector = models.FilterSelector(filter=qdrant_filter)
-
-    qdrant_client.delete(
-        collection_name=COLLECTION_NAME, points_selector=points_selector
-    )
-
-
-## 3. Dela in texten i chunks/batches indexerade och formaterade
+# 2. Split the item's text into overlapping chunks
 def get_item_chunks(item):
     all_chunks = []
     text_chunks = chunk_text(item["texts"], 4000, 300)
@@ -241,6 +221,7 @@ def get_item_chunks(item):
             "url": item["url"],
             "title": item["title"],
             "chunk": chunk,
+            "chunk_hash": generate_uuid(chunk),
             "chunk_info": f"Chunk {index + 1} of {num_chunks}",
         }
         if "source_url" in item:
@@ -252,7 +233,7 @@ def get_item_chunks(item):
     return all_chunks
 
 
-# Delar in i chunks/batches
+# 2a. Helper: Split text into overlapping chunks
 def chunk_text(text, chunk_size, overlap):
     length = len(text)
     chunks = []
@@ -268,7 +249,95 @@ def chunk_text(text, chunk_size, overlap):
     return chunks
 
 
-## 4. Gör om chunks till embeddnings
+    db_hashes = []
+    logging.info(f"{url},{chunks[0]['chunk_hash']}")
+
+    # if Site
+            models.IsEmptyCondition(is_empty=models.PayloadField(key="source_url")),
+            models.FieldCondition(key="url", match=models.MatchValue(value=url)),
+        ]
+    )
+
+    # if Linked Document
+    link_filter = None
+    if chunk_source_url:
+        link_filter = models.Filter(
+            must=[
+                models.FieldCondition(
+                    key="source_url", match=models.MatchValue(value=chunk_source_url)
+                ),
+                models.FieldCondition(key="url", match=models.MatchValue(value=url)),
+            ]
+        )
+
+    # Hash filter
+    chunk_hashes = [chunk["chunk_hash"] for chunk in chunks]
+    hash_filter = models.Filter(
+        must=[
+            models.HasIdCondition(has_id=chunk_hashes),
+        ],
+    )
+
+    if link_filter:
+        qdrant_filter = models.Filter(should=[url_filter, link_filter, hash_filter])
+    else:
+        qdrant_filter = models.Filter(should=[url_filter, hash_filter])
+
+    db_points, _ = qdrant_client.scroll(
+        collection_name=COLLECTION_NAME, scroll_filter=qdrant_filter, limit=3000
+    )
+
+    for point in db_points:
+        point_id = point.id
+        point_url = point.payload.get("url")
+        db_hash = {"id": point_id, "url": point_url}
+        source_url = point.payload.get("source_url")
+        if source_url is not None:
+            db_hash["source_url"] = source_url
+        db_hashes.append(db_hash)
+
+    logging.info(
+        f"Database Hashes found for url: {db_hashes}, {len(db_hashes)} stycken"
+    )
+
+    return db_hashes
+
+
+# 4. Determine which chunks are new and need to be updated
+def get_new_chunks(new_chunks, db_hashes):
+    if not new_chunks:
+        logging.info("Empty input data - no chunks to update")
+        return
+
+    db_hashes_set = {db_point["id"] for db_point in db_hashes}
+
+    urls_needing_update = {
+        chunk["url"] for chunk in new_chunks if chunk["chunk_hash"] not in db_hashes_set
+    }
+
+    chunks_to_update = [
+        chunk for chunk in new_chunks if chunk["url"] in urls_needing_update
+    ]
+
+    logging.info(
+        f"Found {len(urls_needing_update)} URLs needing update with {len(chunks_to_update)} total chunks"
+    )
+    logging.info(f"URLs to update: {urls_needing_update}")
+
+    return chunks_to_update
+
+
+# 5. Find URLs/documents that are no longer present and should be removed
+def get_old_urls(new_chunks, db_hashes):
+    db_urls_set = {db_point["url"] for db_point in db_hashes}
+    new_urls_set = {chunk["url"] for chunk in new_chunks}
+
+    removed_urls = db_urls_set - new_urls_set
+
+    return removed_urls if removed_urls else None
+
+
+# 6. Create embeddings for the new chunks and calculate cost
 def create_embeddings(chunks):
     texts = [chunk["chunk"] for chunk in chunks]
     embeddings = []
@@ -286,11 +355,29 @@ def create_embeddings(chunks):
     return embeddings, total_cost_sek
 
 
-## 5. Sätt in i Qdrant.
+# 7. Remove old data points from Qdrant that has new/are updating
+def remove_old_datapoints(new_chunks, old_urls=None):
+    # Remove url datapoints
+    urls = [chunk["url"] for chunk in new_chunks]
+    if old_urls:
+        urls.extend(old_urls)
+
+    url_filter = models.Filter(
+        must=[models.FieldCondition(key="url", match=models.MatchAny(any=urls))]
+    )
+
+    points_selector = models.FilterSelector(filter=url_filter)
+
+    qdrant_client.delete(
+        collection_name=COLLECTION_NAME, points_selector=points_selector
+    )
+    logging.info("Removed OLD datapoints")
+
+
+# 8. Upsert (insert/update) the new/updated chunks and their embeddings into Qdrant
 def upsert_to_qdrant(chunks, embeddings):
     points = []
     for i, chunk in enumerate(chunks):
-        doc_uuid = generate_uuid(chunk["chunk"])
         utc_time = datetime.now(timezone.utc).replace(microsecond=0)
         update_time = utc_time.astimezone(ZoneInfo("Europe/Stockholm"))
         update_time_str = update_time.strftime("%Y-%m-%dT%H:%M:%S")
@@ -307,9 +394,11 @@ def upsert_to_qdrant(chunks, embeddings):
         if "version" in chunk:
             payload["version"] = chunk["version"]
 
-        point = PointStruct(id=doc_uuid, vector=embeddings[i], payload=payload)
+        point = PointStruct(
+            id=chunk["chunk_hash"], vector=embeddings[i], payload=payload
+        )
 
-        logging.info(f"Chunk uppladdas: {doc_uuid}, URL: {chunk['url']}")
+        logging.info(f"Chunk uppladdas: {chunk['chunk_hash']}, URL: {chunk['url']}")
         points.append(point)
     try:
         qdrant_client.upsert(collection_name=COLLECTION_NAME, points=points)
@@ -324,13 +413,6 @@ def update_url_qdrant(url, providedTitle=None):
         kwargs["providedTitle"] = providedTitle
 
     page_data = get_page_details(url, driver, **kwargs)
-
-    # Delete old datapoint in database
-    try:
-        delete_qdrant_embedd(url)
-        logging.info("Deleted current points in database")
-    except:
-        logging.info("Deleting failed, List is empty!")
 
     point_count = 0
     total_update_cost_SEK = 0
