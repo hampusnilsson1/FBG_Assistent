@@ -150,7 +150,7 @@ def get_page_details(url, driver, providedTitle=None):
         results.append({"url": url, "title": title, "texts": pdf_text})
         return results
     else:
-        driver.get(url)
+        driver.get(f"{url}?no_cache={int(time.time())}")
         time.sleep(1)  # Wait for JavaScript to render
         soup = BeautifulSoup(driver.page_source, "html.parser")
         title = soup.title.string if soup.title else "No title found"
