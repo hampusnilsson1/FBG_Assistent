@@ -415,21 +415,25 @@ def upsert_to_qdrant(chunks, embeddings):
 
 # Main function, Update a url and its pdfs(For multiusage setup driver outside)
 def update_url_qdrant(url, providedTitle=None):
-    kwargs = {}
-    if providedTitle is not None:
-        kwargs["providedTitle"] = providedTitle
+    driver = setup_driver()
+    try:
+        kwargs = {}
+        if providedTitle is not None:
+            kwargs["providedTitle"] = providedTitle
 
-    page_data = get_page_details(url, driver, **kwargs)
+        page_data = get_page_details(url, driver, **kwargs)
 
-    point_count = 0
-    total_update_cost_SEK = 0
-    for data_point in page_data:
-        point_count += 1
-        logging.info(f"{point_count} av {len(page_data)}")
-        total_update_cost_SEK += process_item_qdrant(data_point)
+        point_count = 0
+        total_update_cost_SEK = 0
+        for data_point in page_data:
+            point_count += 1
+            logging.info(f"{point_count} av {len(page_data)}")
+            total_update_cost_SEK += process_item_qdrant(data_point)
 
-    logging.info(f"Total Qdrant URL Update Cost = {total_update_cost_SEK} SEK")
-    return total_update_cost_SEK
+        logging.info(f"Total Qdrant URL Update Cost = {total_update_cost_SEK} SEK")
+        return total_update_cost_SEK
+    finally:
+        driver.quit()
 
 
 # Main execution starts here
@@ -441,9 +445,6 @@ qdrant_client = QdrantClient(
     url=QDRANT_URL, port=QDRANT_PORT, https=True, api_key=qdrant_api_key
 )
 openai.api_key = openai_api_key
-
-## WebDriver
-driver = setup_driver()
 
 # Skapa collection eller hämta till client
 try:
