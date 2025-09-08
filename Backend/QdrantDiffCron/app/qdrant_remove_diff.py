@@ -19,7 +19,7 @@ ping_key = os.getenv("HEALTHCHECKS_KEY")
 
 QDRANT_URL = "https://qdrant.utvecklingfalkenberg.se/"
 QDRANT_PORT = 443
-COLLECTION_NAME = "FalkenbergsKommunsHemsida"
+COLLECTION_NAME = "FalkenbergsKommunsHemsida_RAG"
 
 qdrant_client = QdrantClient(
     url=QDRANT_URL, port=QDRANT_PORT, https=True, api_key=qdrant_api_key
@@ -67,9 +67,9 @@ def get_web_qdrant_urls():
 
         for point in points:
             try:
-                payload = point.get("payload", {})
-                url = payload.get("url", None)
-                source_url = payload.get("source_url", None)
+                metadata = point.get("payload", {}).get("metadata", {})
+                url = metadata.get("url")
+                source_url = metadata.get("source_url")
                 # Filter out empty URLs and PDF files
                 if not url or "evolution" in url:
                     # print("Punkt saknar URL eller är en Evolution PDF. Hoppar över.")
@@ -156,7 +156,7 @@ def get_evo_qdrant_urls():
     # Hämta alla evolution pdfer i databasen
     qdrant_filter = models.Filter(
         must=[
-            models.FieldCondition(key="url", match=models.MatchText(text="evolution"))
+            models.FieldCondition(key="metadata.url", match=models.MatchText(text="evolution"))
         ]
     )
 
@@ -178,8 +178,9 @@ def get_evo_qdrant_urls():
     qdrant_pdfs = []
     if obj_qdrant_pdfs[0]:
         for pdf in obj_qdrant_pdfs:
-            url = pdf.payload.get("url")
-            version = pdf.payload.get("version")
+            metadata = pdf.payload.get("metadata", {})
+            url = metadata.get("url")
+            version = metadata.get("version")
             if not version:
                 version = "0.1"
             qdrant_pdfs.append({"url": url, "version": version})
@@ -230,7 +231,7 @@ def remove_evo_sitemap_url_diff(force=False):
         qdrant_filter = models.Filter(
             must=[
                 models.FieldCondition(
-                    key="url", match=models.MatchAny(any=urls_to_remove)
+                    key="metadata.url", match=models.MatchAny(any=urls_to_remove)
                 ),
             ]
         )
@@ -247,8 +248,8 @@ def remove_evo_sitemap_url_diff(force=False):
 def remove_qdrant_urls(urls):
     qdrant_filter = models.Filter(
         should=[
-            models.FieldCondition(key="url", match=models.MatchAny(any=urls)),
-            models.FieldCondition(key="source_url", match=models.MatchAny(any=urls)),
+            models.FieldCondition(key="metadata.url", match=models.MatchAny(any=urls)),
+            models.FieldCondition(key="metadata.source_url", match=models.MatchAny(any=urls)),
         ]
     )
 
