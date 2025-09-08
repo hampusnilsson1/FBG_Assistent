@@ -30,7 +30,7 @@ EMBEDDING_MODEL = "text-embedding-3-large"  # Using the larger model
 BATCH_SIZE = 1000
 SLEEP_TIME = 2
 VECTOR_SIZE = 3072  # Updated vector size for large embeddings
-COLLECTION_NAME = "FalkenbergsKommunsHemsida"
+COLLECTION_NAME = "FalkenbergsKommunsHemsida_RAG"
 
 # LOGGING------------------
 log_file = "/app/data/update_logg.txt"
@@ -260,8 +260,12 @@ def get_db_chunk_hashes(chunks):
     # if Site
     url_filter = models.Filter(
         must=[
-            models.IsEmptyCondition(is_empty=models.PayloadField(key="source_url")),
-            models.FieldCondition(key="url", match=models.MatchValue(value=url)),
+            models.IsEmptyCondition(
+                is_empty=models.PayloadField(key="metadata.source_url")
+            ),
+            models.FieldCondition(
+                key="metadata.url", match=models.MatchValue(value=url)
+            ),
         ]
     )
 
@@ -271,9 +275,12 @@ def get_db_chunk_hashes(chunks):
         link_filter = models.Filter(
             must=[
                 models.FieldCondition(
-                    key="source_url", match=models.MatchValue(value=chunk_source_url)
+                    key="metadata.source_url",
+                    match=models.MatchValue(value=chunk_source_url),
                 ),
-                models.FieldCondition(key="url", match=models.MatchValue(value=url)),
+                models.FieldCondition(
+                    key="metadata.url", match=models.MatchValue(value=url)
+                ),
             ]
         )
 
@@ -296,11 +303,10 @@ def get_db_chunk_hashes(chunks):
 
     for point in db_points:
         point_id = point.id
-        point_url = point.payload.get("url")
+        point_url = point.payload.get("metadata")["url"]
         db_hash = {"id": point_id, "url": point_url}
-        source_url = point.payload.get("source_url")
-        if source_url is not None:
-            db_hash["source_url"] = source_url
+        if "source_url" in point.payload.get("metadata"):
+            db_hash["source_url"] = point.payload.get("metadata")["source_url"]
         db_hashes.append(db_hash)
 
     logging.info(
@@ -370,7 +376,9 @@ def remove_old_datapoints(new_chunks, old_urls=None):
         urls.extend(old_urls)
 
     url_filter = models.Filter(
-        must=[models.FieldCondition(key="url", match=models.MatchAny(any=urls))]
+        must=[
+            models.FieldCondition(key="metadata.url", match=models.MatchAny(any=urls))
+        ]
     )
 
     points_selector = models.FilterSelector(filter=url_filter)
@@ -389,17 +397,19 @@ def upsert_to_qdrant(chunks, embeddings):
         update_time = utc_time.astimezone(ZoneInfo("Europe/Stockholm"))
         update_time_str = update_time.strftime("%Y-%m-%dT%H:%M:%S")
         payload = {
-            "url": chunk["url"],
-            "title": chunk["title"],
-            "chunk": chunk["chunk"],
-            "chunk_info": chunk["chunk_info"],
-            "update_date": update_time_str,
+            "content": chunk["chunk"],
+            "metadata": {
+                "chunk_info": chunk["chunk_info"],
+                "title": chunk["title"],
+                "update_date": update_time_str,
+                "url": chunk["url"],
+            },
         }
         if "source_url" in chunk:
-            payload["source_url"] = chunk["source_url"]
+            payload["metadata"]["source_url"] = chunk["source_url"]
 
         if "version" in chunk:
-            payload["version"] = chunk["version"]
+            payload["metadata"]["version"] = chunk["version"]
 
         point = PointStruct(
             id=chunk["chunk_hash"], vector=embeddings[i], payload=payload

@@ -36,7 +36,7 @@ def load_api_key(key_variable):
 
 
 # Qdrant
-collection_name = "FalkenbergsKommunsHemsida"
+collection_name = "FalkenbergsKommunsHemsida_RAG"
 qdrant_api_key = load_api_key("QDRANT_API_KEY")
 qdrant_url = "https://qdrant.utvecklingfalkenberg.se"
 qdrant_client = QdrantClient(
@@ -216,6 +216,7 @@ def get_result(user_input, user_history, chat_id, MAX_INPUT_CHAR):
         if role == "user":
             content = message.get("content")
             user_input_combo += "," + str(content)
+    user_input_combo += "," + str(user_input)
     user_input_combo = user_input_combo[:MAX_INPUT_CHAR]
 
     # Här ska GPT generera en relevant fråga som vi kan söka efter information i QDRANT
@@ -243,7 +244,7 @@ def get_result(user_input, user_history, chat_id, MAX_INPUT_CHAR):
         "Vem är Hampus Nilsson?",Hampus Nilsson
         "Var ligger Tångaskolan?",Tångaskolan  
         "När är Kulturnatta 2025?",Kulturnatta,2025  
-        "Vem kan jag kontakta angående bygglov?",  
+        "Vem kan jag kontakta angående bygglov?",Bygglov, Kontakt  
 
         Generera endast en enda rad i CSV-format - Ingen yttligare text eller förklaring.
     """
@@ -269,7 +270,7 @@ def get_result(user_input, user_history, chat_id, MAX_INPUT_CHAR):
         keyword_filter = models.Filter(
             should=[
                 models.FieldCondition(
-                    key="chunk",
+                    key="content",
                     match=models.MatchText(text=keyword),
                 )
                 for keyword in keywords
@@ -286,10 +287,10 @@ def get_result(user_input, user_history, chat_id, MAX_INPUT_CHAR):
     )
     similar_texts = [
         {
-            "chunk": result.payload["chunk"],
-            "title": result.payload["title"],
-            "url": result.payload["url"],
-            "score": getattr(result, "score", 0.55),
+            "chunk": result.payload["content"],
+            "title": result.payload["metadata"]["title"],
+            "url": result.payload["metadata"]["url"],
+            "score": getattr(result, "score", "Keyword Match"),
             "id": result.id,
         }
         for result in search_results
@@ -344,11 +345,7 @@ def get_result(user_input, user_history, chat_id, MAX_INPUT_CHAR):
         print(source["url"], source["score"])
 
     messages = [{"role": "system", "content": instructions_prompt}]
-    for (
-        message
-    ) in (
-        user_history
-    ):  # Här eventuellt hämta med chat_id alla konversations chatter: https://nav.utvecklingfalkenberg.se/items/falkenberg_kommun_messages?access_token=XXXXXXCODE&filter[chat_id][_eq]=CHAT_IDDDD
+    for message in user_history:
         role = message.get("role")
         content = message.get("content")
         messages.append({"role": role, "content": content})
@@ -481,7 +478,7 @@ def check_pii():
 @limiter.limit("100 per hour")
 def generate():
     data = request.get_json()
-    if not data or "user_input" not in data:  ## Här matas historiken in
+    if not data or "user_input" not in data:
         return jsonify({"error": "Ingen användarinput inmatad"}), 400
 
     user_input = data["user_input"]
