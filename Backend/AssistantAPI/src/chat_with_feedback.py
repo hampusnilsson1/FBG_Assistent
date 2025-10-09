@@ -36,7 +36,8 @@ def load_api_key(key_variable):
 
 
 # Qdrant
-collection_name = "FalkenbergsKommunsHemsida_RAG"
+collection_name_kommunsida = "FalkenbergsKommunsHemsida_RAG"
+collection_name_falkenbergsida = "FalkenbergSE_RAG"
 qdrant_api_key = load_api_key("QDRANT_API_KEY")
 qdrant_url = "https://qdrant.utvecklingfalkenberg.se"
 qdrant_client = QdrantClient(
@@ -67,12 +68,13 @@ def search_collection(
     collection_name,
     user_query_embedding,
     keyword_filter=None,
+    point_amount=5,
 ):
     if keyword_filter is None:
         response = qdrant_client.search(
             collection_name=collection_name,
             query_vector=user_query_embedding,
-            limit=5,
+            limit=point_amount,
             with_payload=True,
         )
         return response
@@ -81,12 +83,14 @@ def search_collection(
     vector_results = qdrant_client.search(
         collection_name=collection_name,
         query_vector=user_query_embedding,
-        limit=5,
+        limit=point_amount,
         with_payload=True,
     )
 
     filtered_results, _ = qdrant_client.scroll(
-        collection_name=collection_name, scroll_filter=keyword_filter, limit=3
+        collection_name=collection_name,
+        scroll_filter=keyword_filter,
+        limit=point_amount - point_amount // 2,  # Avrunda upp
     )
 
     filtered_ids = set(point.id for point in filtered_results)
@@ -95,10 +99,10 @@ def search_collection(
     for r in vector_results:
         if r.id not in filtered_ids:
             combined_results.append(r)
-        if len(combined_results) >= 5:
+        if len(combined_results) >= point_amount:
             break
 
-    return combined_results[:5]
+    return combined_results[:point_amount]
 
 
 # OpenAI Token Counter
