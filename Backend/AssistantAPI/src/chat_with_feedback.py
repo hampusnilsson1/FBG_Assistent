@@ -36,8 +36,7 @@ def load_api_key(key_variable):
 
 
 # Qdrant
-collection_name_kommunsida = "FalkenbergsKommunsHemsida_RAG"
-collection_name_falkenbergsida = "FalkenbergSE_RAG"
+collection_name = "FalkenbergsKommunsHemsida_RAG"
 qdrant_api_key = load_api_key("QDRANT_API_KEY")
 qdrant_url = "https://qdrant.utvecklingfalkenberg.se"
 qdrant_client = QdrantClient(
