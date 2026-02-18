@@ -1,5 +1,5 @@
 python-dotenv
-qdrant-client==1.6.1
+qdrant-client==1.16.0
 openai==0.28.0
 tiktoken
 python-dotenv

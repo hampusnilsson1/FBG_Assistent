@@ -457,10 +457,17 @@ qdrant_client = QdrantClient(
 openai.api_key = openai_api_key
 
 # Skapa collection eller hämta till client
-try:
-    qdrant_client.get_collection(COLLECTION_NAME)
-except Exception:
-    vectors_config = VectorParams(size=VECTOR_SIZE, distance=Distance.COSINE)
-    qdrant_client.recreate_collection(
-        collection_name=COLLECTION_NAME, vectors_config=vectors_config
+    
+if not qdrant_client.collection_exists(collection_name=COLLECTION_NAME):
+    logging.info(f"Collection {COLLECTION_NAME} not found. Creating...") 
+    vectors_config = models.VectorParams(
+        size=VECTOR_SIZE, distance=models.Distance.COSINE
     )
+    try:
+        qdrant_client.create_collection(
+            collection_name=COLLECTION_NAME, vectors_config=vectors_config
+        )
+    except Exception as e:
+        logging.error(f"Error creating collection: {e}")
+else:
+    logging.info(f"Collection {COLLECTION_NAME} exists. Proceeding.")
