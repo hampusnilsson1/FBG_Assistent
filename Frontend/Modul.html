@@ -373,6 +373,7 @@
   </form>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/showdown/dist/showdown.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
 <script>
   // **Initialization Code**
   // -----------------------
@@ -984,7 +985,7 @@
     feedback_state,
     nr_stars
   ) {
-    const chatHistory = JSON.parse(sessionStorage.getItem("chatHistory")) || [];
+    let chatHistory = JSON.parse(sessionStorage.getItem("chatHistory")) || [];
 
     const existingEntryIndex = chatHistory.findIndex(
       (entry) => entry.question === question && entry.answer === answer
@@ -1000,14 +1001,34 @@
       // Add new
       const newEntry = { question, answer };
 
-      if (feedback_state !== null) newEntry.feedback_state = feedback_state;
-      if (nr_stars !== null) newEntry.nr_stars = nr_stars;
+      if (feedback_state !== undefined && feedback_state !== null) newEntry.feedback_state = feedback_state;
+      if (nr_stars !== undefined && nr_stars !== null) newEntry.nr_stars = nr_stars;
 
       chatHistory.push(newEntry);
     }
+    
+    // Limit to the latest 30 questions to prevent extreme session sizes
+    if (chatHistory.length > 30) {
+      chatHistory = chatHistory.slice(-30);
+    }
 
-    sessionStorage.setItem("chatHistory", JSON.stringify(chatHistory));
-    sessionStorage.setItem("currentChatId", chat_id);
+    try {
+      sessionStorage.setItem("chatHistory", JSON.stringify(chatHistory));
+      if (chat_id) sessionStorage.setItem("currentChatId", chat_id);
+    } catch (e) {
+      console.warn("Session storage is getting full. Pruning older messages...");
+      // Safe fallback if it's still too large: cut old messages until it fits
+      while (chatHistory.length > 0) {
+        chatHistory.shift(); // Remove oldest
+        try {
+          sessionStorage.setItem("chatHistory", JSON.stringify(chatHistory));
+          if (chat_id) sessionStorage.setItem("currentChatId", chat_id);
+          break; // Saved successfully!
+        } catch (err) {
+          if (chatHistory.length <= 1) break; // Give up safely
+        }
+      }
+    }
   }
 
   // Function to load chat from session storage
@@ -1104,7 +1125,7 @@
   function makeTextMarkdown(text) {
     const converter = new showdown.Converter();
     const markedText = converter.makeHtml(text);
-    return markedText;
+    return DOMPurify.sanitize(markedText);
   }
 
   //Turn on/off header icon
