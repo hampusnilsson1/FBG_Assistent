@@ -699,13 +699,12 @@ class GoogleClient(LLMClient):
         if not grounding_chunks:
             return text
 
+        url_map = []
         for gc in grounding_chunks:
             web = getattr(gc, "web", None)
             if web:
                 uri = getattr(web, "uri", "")
                 title = getattr(web, "title", "") or uri
-            else:
-                chunks.append(("", ""))
                 if uri:
                     url_map.append((uri, title))
 
@@ -715,9 +714,12 @@ class GoogleClient(LLMClient):
         import re
 
         def replace_ref(m):
-            try:
-                idx = int(idx_str) - 1  # Google uses 1-based indices
-                pass
+            idx = int(m.group(1))
+            for offset in (0, -1):
+                check = idx + offset
+                if 0 <= check < len(url_map):
+                    uri, title = url_map[check]
+                    return f"[{title}]({uri})"
             return m.group(0)
 
         return re.sub(r"\[(\d+)\]", replace_ref, text)
