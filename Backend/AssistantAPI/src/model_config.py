@@ -6,7 +6,7 @@
 # ============================================================
 
 # ===== PROVIDER =====
-# Supported: "openai" | "google" (future)
+# Supported: "openai" | "google"
 CHAT_PROVIDER = "openai"
 EMBEDDING_PROVIDER = "openai"
 
@@ -15,11 +15,27 @@ CHAT_MODEL = "gpt-5.4-mini"
 EMBEDDING_MODEL = "text-embedding-3-large"
 
 # ===== PRICING (per 1M tokens, USD) =====
+# Add new models here when adding support for them.
 PRICING = {
     "gpt-5.4-mini": {
         "input": 0.75,
         "cached_input": 0.075,
         "output": 4.50,
+    },
+    "gpt-4o": {
+        "input": 2.50,
+        "cached_input": 1.25,
+        "output": 10.00,
+    },
+    "gemini-3.1-flash-lite": {
+        "input": 0.25,
+        "cached_input": 0.0625,
+        "output": 1.50,
+    },
+    "gemini-3-flash-preview": {
+        "input": 0.50,
+        "cached_input": 0.125,
+        "output": 3.00,
     },
     "text-embedding-3-large": {
         "input": 0.13,

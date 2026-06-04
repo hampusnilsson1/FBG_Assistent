@@ -50,9 +50,9 @@ if not qdrant_client.collection_exists(collection_name):
     print(f"Varning: Qdrant-collection '{collection_name}' saknas!")
 
 # LLM Client (provider-agnostic)
-# You can load more API keys here if you use other providers
 api_keys = {
-    "openai": load_api_key("OPENAI_API_KEY")
+    "openai": load_api_key("OPENAI_API_KEY"),
+    "google": load_api_key("GOOGLE_API_KEY"),
 }
 llm = get_client(api_keys, qdrant_client, collection_name)
 
@@ -177,10 +177,18 @@ def build_system_prompt(user_input):
     1. Använd dina sökverktyg för att hitta relevant information innan du svarar på faktafrågor.
     2. Välj rätt verktyg baserat på frågan: t.ex. frågor om lägenheter/hyra → web_search (fabo.se), frågor om sopor/vatten → web_search (vivab.se), frågor om restauranger/evenemang → web_search (falkenberg.se), frågor om kommunala tjänster → search_knowledge_base.
     3. Om svaret inte hittas via verktygen, säg att du inte hittar informationen men hänvisa gärna till kontaktcenter tel:0346-88 60 00 / mail:kontaktcenter@falkenberg.se
-    4. Hänvisa alltid med länk till källan om du använder information från ett dokument eller en webbsida.
-    5. Svara på samma språk som användaren skriver på ({user_input}).
-    6. Dagens datum och tid är {current_date_time_str}.
-    7. För enkla hälsningar och uppföljningsfrågor som inte kräver ny information, svara direkt utan att använda verktyg.
+    4. Svara på samma språk som användaren skriver på ({user_input}).
+    5. Dagens datum och tid är {current_date_time_str}.
+    6. För enkla hälsningar och uppföljningsfrågor som inte kräver ny information, svara direkt utan att använda verktyg.
+    
+    KÄLLHANTERING:
+    - Varje faktapåstående ska ha en klickbar länk till exakt källa.
+    - Använd beskrivande text i länken, t.ex. [Falkenbergs kommuns bygglovssida](https://...)
+      eller [FABO - Betala hyra](https://fabo.se/hyresinformation/...).
+    - Ange aldrig bara domännamn som (https://fabo.se) — länka alltid till den specifika
+      undersidan där informationen finns.
+    - Ange aldrig fotnotsnummer som [1] eller [3] — de ska alltid ersättas med beskrivande länkar.
+    - Använd rena URL:er utan spårningsparametrar (?utm_source=...).
     """
 
 

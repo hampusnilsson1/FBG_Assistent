@@ -19,10 +19,10 @@ from qdrant_client import QdrantClient, models as qdrant_models
 
 import model_config
 
-
 # ============================================================
 # TOOL DEFINITIONS
 # ============================================================
+
 
 def build_tools():
     """Build the tools array for the Responses API."""
@@ -70,6 +70,7 @@ def build_tools():
 # ABSTRACT BASE CLASS
 # ============================================================
 
+
 class LLMClient(ABC):
     """
     Abstract base class for LLM providers.
@@ -95,7 +96,16 @@ class LLMClient(ABC):
         """
         pass
 
-    def calculate_cost(self, input_tokens, output_tokens, cached_tokens=0, model=None, input_price_per_m=None, output_price_per_m=None, cached_price_per_m=None):
+    def calculate_cost(
+        self,
+        input_tokens,
+        output_tokens,
+        cached_tokens=0,
+        model=None,
+        input_price_per_m=None,
+        output_price_per_m=None,
+        cached_price_per_m=None,
+    ):
         """
         Calculate cost in USD given token counts.
         Either use provided prices per million tokens, or look up the model in model_config.PRICING.
@@ -104,7 +114,7 @@ class LLMClient(ABC):
             if cached_price_per_m is None:
                 cached_price_per_m = input_price_per_m
             uncached_tokens = max(0, input_tokens - cached_tokens)
-            
+
             input_cost = (uncached_tokens / 1_000_000) * input_price_per_m
             cached_cost = (cached_tokens / 1_000_000) * cached_price_per_m
             output_cost = (output_tokens / 1_000_000) * output_price_per_m
@@ -115,13 +125,13 @@ class LLMClient(ABC):
             input_p = pricing.get("input", 0)
             cached_p = pricing.get("cached_input", input_p)
             output_p = pricing.get("output", 0)
-            
+
             uncached_tokens = max(0, input_tokens - cached_tokens)
             input_cost = (uncached_tokens / 1_000_000) * input_p
             cached_cost = (cached_tokens / 1_000_000) * cached_p
             output_cost = (output_tokens / 1_000_000) * output_p
             return input_cost + cached_cost + output_cost
-            
+
         return 0.0
 
 
@@ -144,6 +154,7 @@ class EmbeddingClient(ABC):
 # OPENAI IMPLEMENTATION (Responses API)
 # ============================================================
 
+
 class OpenAIEmbeddingClient(EmbeddingClient):
     """OpenAI provider for embeddings."""
 
@@ -157,6 +168,7 @@ class OpenAIEmbeddingClient(EmbeddingClient):
             model=model_config.EMBEDDING_MODEL,
         )
         return response.data[0].embedding
+
 
 class OpenAIClient(LLMClient):
     """OpenAI provider using the Responses API."""
@@ -221,12 +233,14 @@ class OpenAIClient(LLMClient):
         # Format results for the agent
         documents = []
         for result in results:
-            documents.append({
-                "content": result.payload.get("content", ""),
-                "title": result.payload.get("metadata", {}).get("title", ""),
-                "url": result.payload.get("metadata", {}).get("url", ""),
-                "score": getattr(result, "score", "keyword_match"),
-            })
+            documents.append(
+                {
+                    "content": result.payload.get("content", ""),
+                    "title": result.payload.get("metadata", {}).get("title", ""),
+                    "url": result.payload.get("metadata", {}).get("url", ""),
+                    "score": getattr(result, "score", "keyword_match"),
+                }
+            )
 
         return documents
 
@@ -249,10 +263,12 @@ class OpenAIClient(LLMClient):
         # Convert chat history to Responses API input format
         api_input = []
         for msg in messages:
-            api_input.append({
-                "role": msg["role"],
-                "content": msg["content"],
-            })
+            api_input.append(
+                {
+                    "role": msg["role"],
+                    "content": msg["content"],
+                }
+            )
 
         # Initial call with streaming
         stream = self.client.responses.create(
@@ -302,16 +318,28 @@ class OpenAIClient(LLMClient):
                     query = args.get("query", "")
                     keywords = args.get("keywords", [])
 
-                    print(f"[Agent] Searching knowledge base: query='{query}', keywords={keywords}")
+                    print(
+                        f"[Agent] Searching knowledge base: query='{query}', keywords={keywords}"
+                    )
                     results = self.search_knowledge_base(query, keywords)
 
                     # Send results back to the agent and stream the final answer
                     followup_stream = self.client.responses.create(
                         model=model_config.CHAT_MODEL,
                         instructions=system_prompt,
-                        input=api_input + [
-                            {"type": "function_call", "call_id": call_id, "name": "search_knowledge_base", "arguments": args_str},
-                            {"type": "function_call_output", "call_id": call_id, "output": json.dumps(results, ensure_ascii=False)},
+                        input=api_input
+                        + [
+                            {
+                                "type": "function_call",
+                                "call_id": call_id,
+                                "name": "search_knowledge_base",
+                                "arguments": args_str,
+                            },
+                            {
+                                "type": "function_call_output",
+                                "call_id": call_id,
+                                "output": json.dumps(results, ensure_ascii=False),
+                            },
                         ],
                         tools=self.tools,
                         stream=True,
@@ -322,13 +350,28 @@ class OpenAIClient(LLMClient):
                             collected_text.append(followup_event.delta)
                             stream_callback(followup_event.delta)
                         elif followup_event.type == "response.completed":
-                            if hasattr(followup_event.response, "usage") and followup_event.response.usage:
-                                total_input_tokens += getattr(followup_event.response.usage, "input_tokens", 0)
-                                total_output_tokens += getattr(followup_event.response.usage, "output_tokens", 0)
-                                
-                                details = getattr(followup_event.response.usage, "prompt_tokens_details", None)
+                            if (
+                                hasattr(followup_event.response, "usage")
+                                and followup_event.response.usage
+                            ):
+                                total_input_tokens += getattr(
+                                    followup_event.response.usage, "input_tokens", 0
+                                )
+                                total_output_tokens += getattr(
+                                    followup_event.response.usage, "output_tokens", 0
+                                )
+
+                                details = getattr(
+                                    followup_event.response.usage,
+                                    "prompt_tokens_details",
+                                    None,
+                                )
                                 if details:
-                                    total_cached_tokens += getattr(details, "cached_tokens", 0) if hasattr(details, "cached_tokens") else details.get("cached_tokens", 0)
+                                    total_cached_tokens += (
+                                        getattr(details, "cached_tokens", 0)
+                                        if hasattr(details, "cached_tokens")
+                                        else details.get("cached_tokens", 0)
+                                    )
 
                 # Reset for next potential call
                 current_call_id = None
@@ -337,15 +380,30 @@ class OpenAIClient(LLMClient):
             # Response completed — capture usage stats
             elif event.type == "response.completed":
                 if hasattr(event.response, "usage") and event.response.usage:
-                    total_input_tokens += getattr(event.response.usage, "input_tokens", 0)
-                    total_output_tokens += getattr(event.response.usage, "output_tokens", 0)
-                    
-                    details = getattr(event.response.usage, "prompt_tokens_details", None)
+                    total_input_tokens += getattr(
+                        event.response.usage, "input_tokens", 0
+                    )
+                    total_output_tokens += getattr(
+                        event.response.usage, "output_tokens", 0
+                    )
+
+                    details = getattr(
+                        event.response.usage, "prompt_tokens_details", None
+                    )
                     if details:
-                        total_cached_tokens += getattr(details, "cached_tokens", 0) if hasattr(details, "cached_tokens") else details.get("cached_tokens", 0)
+                        total_cached_tokens += (
+                            getattr(details, "cached_tokens", 0)
+                            if hasattr(details, "cached_tokens")
+                            else details.get("cached_tokens", 0)
+                        )
 
         full_response = "".join(collected_text)
-        cost_usd = self.calculate_cost(total_input_tokens, total_output_tokens, cached_tokens=total_cached_tokens, model=model_config.CHAT_MODEL)
+        cost_usd = self.calculate_cost(
+            total_input_tokens,
+            total_output_tokens,
+            cached_tokens=total_cached_tokens,
+            model=model_config.CHAT_MODEL,
+        )
 
         return {
             "full_response": full_response,
@@ -356,39 +414,325 @@ class OpenAIClient(LLMClient):
 
 
 # ============================================================
-# GOOGLE IMPLEMENTATION (Future placeholder)
+# GOOGLE IMPLEMENTATION (Gemini)
 # ============================================================
 
-# class GoogleClient(LLMClient):
-#     """Google Gemini provider — implement when needed."""
-#
-#     def __init__(self, api_key, qdrant_client, collection_name):
-#         # import google.generativeai as genai
-#         # genai.configure(api_key=api_key)
-#         pass
-#
-#     def run_agent(self, messages, system_prompt, stream_callback):
-#         raise NotImplementedError("Google provider not yet implemented")
-#
-#     def create_embedding(self, text):
-#         raise NotImplementedError("Google provider not yet implemented")
-#
-#     def calculate_cost(self, input_tokens, output_tokens, model=None):
-#         raise NotImplementedError("Google provider not yet implemented")
+
+class GoogleClient(LLMClient):
+    """Google Gemini provider using the generate_content API."""
+
+    def __init__(self, api_key, qdrant_client, collection_name, embedding_client):
+        from google import genai
+        from google.genai import types as genai_types
+
+        self.client = genai.Client(api_key=api_key)
+        self.genai_types = genai_types
+        self.qdrant_client = qdrant_client
+        self.collection_name = collection_name
+        self.embedding_client = embedding_client
+        self.model_name = model_config.CHAT_MODEL
+        self.tools = self._build_google_tools()
+
+    def _build_google_tools(self):
+        T = self.genai_types
+
+        kb_function = T.FunctionDeclaration(
+            name="search_knowledge_base",
+            description=(
+                "Search Falkenberg municipality's internal knowledge base "
+                "(indexed documents, PDFs, and web pages from kommun.falkenberg.se). "
+                "Use this for detailed municipal information like regulations, "
+                "contact details, services, events, and official documents."
+            ),
+            parameters=T.Schema(
+                type=T.Type.OBJECT,
+                properties={
+                    "query": T.Schema(
+                        type=T.Type.STRING,
+                        description="The search query in Swedish",
+                    ),
+                    "keywords": T.Schema(
+                        type=T.Type.ARRAY,
+                        items=T.Schema(type=T.Type.STRING),
+                        description=(
+                            "Optional specific keywords for filtering "
+                            "(names of people, places, dates, addresses)"
+                        ),
+                    ),
+                },
+                required=["query"],
+            ),
+        )
+
+        return [
+            T.Tool(function_declarations=[kb_function]),
+            T.Tool(google_search=T.GoogleSearch()),
+        ]
+
+    def search_knowledge_base(self, query, keywords=None):
+        """Execute a Qdrant knowledge base search (same as OpenAIClient)."""
+        query_embedding = self.embedding_client.create_embedding(query)
+
+        keyword_filter = None
+        if keywords and len(keywords) > 0:
+            keyword_filter = qdrant_models.Filter(
+                should=[
+                    qdrant_models.FieldCondition(
+                        key="content",
+                        match=qdrant_models.MatchText(text=kw),
+                    )
+                    for kw in keywords
+                ]
+            )
+
+        if keyword_filter is None:
+            results = self.qdrant_client.query_points(
+                collection_name=self.collection_name,
+                query=query_embedding,
+                limit=5,
+                with_payload=True,
+            ).points
+        else:
+            vector_results = self.qdrant_client.query_points(
+                collection_name=self.collection_name,
+                query=query_embedding,
+                limit=5,
+                with_payload=True,
+            ).points
+            filtered_results, _ = self.qdrant_client.scroll(
+                collection_name=self.collection_name,
+                scroll_filter=keyword_filter,
+                limit=3,
+            )
+            filtered_ids = set(point.id for point in filtered_results)
+            combined = list(filtered_results)
+            for r in vector_results:
+                if r.id not in filtered_ids:
+                    combined.append(r)
+                if len(combined) >= 5:
+                    break
+            results = combined[:5]
+
+        documents = []
+        for result in results:
+            documents.append(
+                {
+                    "content": result.payload.get("content", ""),
+                    "title": result.payload.get("metadata", {}).get("title", ""),
+                    "url": result.payload.get("metadata", {}).get("url", ""),
+                    "score": getattr(result, "score", "keyword_match"),
+                }
+            )
+
+        return documents
+
+    def run_agent(self, messages, system_prompt, stream_callback):
+        """
+        Run the agentic loop with Gemini.
+
+        Handles:
+        - google_search: automatic (handled server-side by Gemini)
+        - function_call (search_knowledge_base): we execute and feed back
+        - text output: streamed via callback
+        """
+        T = self.genai_types
+        total_input_tokens = 0
+        total_output_tokens = 0
+        collected_text = []
+
+        # Convert messages to Google Content format
+        contents = []
+        for msg in messages:
+            role = "user" if msg["role"] == "user" else "model"
+            contents.append(
+                T.Content(
+                    role=role,
+                    parts=[T.Part(text=msg["content"])],
+                )
+            )
+
+        # Track the latest function call for follow-up
+        function_call_name = None
+        function_call_args = None
+        function_call_content = None  # Full model Content (preserves thought_signature)
+
+        # Collect grounding metadata from the initial stream
+        grounding_chunks = []
+
+        # Initial streaming call
+        stream = self.client.models.generate_content_stream(
+            model=self.model_name,
+            contents=contents,
+            config=T.GenerateContentConfig(
+                system_instruction=system_prompt,
+                tools=self.tools,
+                toolConfig=T.ToolConfig(
+                    includeServerSideToolInvocations=True,
+                ),
+                automaticFunctionCalling=T.AutomaticFunctionCallingConfig(
+                    disable=True,
+                ),
+            ),
+        )
+
+        for chunk in stream:
+            has_text_part = False
+            has_function_call = False
+
+            if chunk.candidates and chunk.candidates[0].content.parts:
+                for part in chunk.candidates[0].content.parts:
+                    if part.text:
+                        has_text_part = True
+                    if part.function_call:
+                        has_function_call = True
+                        function_call_name = part.function_call.name
+                        function_call_args = part.function_call.args
+                        function_call_content = chunk.candidates[0].content
+
+                # Capture grounding metadata from the last candidate
+                gm = chunk.candidates[0].grounding_metadata
+                if gm and gm.grounding_chunks:
+                    grounding_chunks = gm.grounding_chunks
+
+            if has_text_part and chunk.text:
+                collected_text.append(chunk.text)
+                stream_callback(chunk.text)
+
+            if chunk.usage_metadata:
+                total_input_tokens = chunk.usage_metadata.prompt_token_count
+                total_output_tokens = chunk.usage_metadata.candidates_token_count
+
+        # If the model called our knowledge base function, execute and follow up
+        if function_call_name == "search_knowledge_base":
+            args = {k: v for k, v in function_call_args.items()}
+            query = args.get("query", "")
+            keywords = args.get("keywords", [])
+
+            print(
+                f"[Agent/Google] Searching knowledge base: query='{query}', keywords={keywords}"
+            )
+            results = self.search_knowledge_base(query, keywords)
+
+            function_response_content = T.Content(
+                role="tool",
+                parts=[
+                    T.Part.from_function_response(
+                        name=function_call_name,
+                        response={"result": results},
+                    )
+                ],
+            )
+
+            followup_contents = list(contents) + [
+                function_call_content,
+                function_response_content,
+            ]
+
+            followup_stream = self.client.models.generate_content_stream(
+                model=self.model_name,
+                contents=followup_contents,
+                config=T.GenerateContentConfig(
+                    system_instruction=system_prompt,
+                    tools=self.tools,
+                    toolConfig=T.ToolConfig(
+                        includeServerSideToolInvocations=True,
+                    ),
+                    automaticFunctionCalling=T.AutomaticFunctionCallingConfig(
+                        disable=True,
+                    ),
+                ),
+            )
+
+            for fu_chunk in followup_stream:
+                fu_has_text = False
+                if fu_chunk.candidates and fu_chunk.candidates[0].content.parts:
+                    for p in fu_chunk.candidates[0].content.parts:
+                        if p.text:
+                            fu_has_text = True
+                            break
+                    # Capture follow-up grounding metadata too
+                    gm = fu_chunk.candidates[0].grounding_metadata
+                    if gm and gm.grounding_chunks:
+                        grounding_chunks = gm.grounding_chunks
+
+                if fu_has_text and fu_chunk.text:
+                    collected_text.append(fu_chunk.text)
+                    stream_callback(fu_chunk.text)
+                if fu_chunk.usage_metadata:
+                    total_input_tokens = fu_chunk.usage_metadata.prompt_token_count
+                    total_output_tokens = fu_chunk.usage_metadata.candidates_token_count
+
+        full_response = "".join(collected_text)
+
+        # Replace footnote [N] references with actual clickable links
+        if grounding_chunks:
+            full_response = self._resolve_grounding_refs(
+                full_response, grounding_chunks
+            )
+
+        cost_usd = self.calculate_cost(
+            total_input_tokens,
+            total_output_tokens,
+            model=self.model_name,
+        )
+
+        return {
+            "full_response": full_response,
+            "input_tokens": total_input_tokens,
+            "output_tokens": total_output_tokens,
+            "cost_usd": cost_usd,
+        }
+
+    @staticmethod
+    def _resolve_grounding_refs(text, grounding_chunks):
+        """Replace [N] footnotes with markdown links from grounding metadata."""
+        if not grounding_chunks:
+            return text
+
+        chunks = []
+        for gc in grounding_chunks:
+            web = getattr(gc, "web", None)
+            if web:
+                uri = getattr(web, "uri", "")
+                title = getattr(web, "title", "") or uri
+                chunks.append((uri, title))
+            else:
+                chunks.append(("", ""))
+
+        if not chunks:
+            return text
+
+        import re
+
+        def replace_ref(m):
+            idx_str = m.group(1)
+            try:
+                idx = int(idx_str) - 1  # Google uses 1-based indices
+                if 0 <= idx < len(chunks):
+                    uri, title = chunks[idx]
+                    if uri:
+                        return f"[{title}]({uri})"
+            except (ValueError, IndexError):
+                pass
+            return m.group(0)
+
+        return re.sub(r"\[(\d+)\]", replace_ref, text)
 
 
 # ============================================================
 # FACTORY
 # ============================================================
 
+
 def get_embedding_client(api_keys):
     """Factory for embedding clients based on EMBEDDING_PROVIDER."""
     provider = getattr(model_config, "EMBEDDING_PROVIDER", "openai")
-    
+
     if provider == "openai":
         return OpenAIEmbeddingClient(api_keys.get("openai"))
     else:
         raise ValueError(f"Unsupported embedding provider: {provider}")
+
 
 def get_client(api_keys, qdrant_client, collection_name):
     """
@@ -397,10 +741,14 @@ def get_client(api_keys, qdrant_client, collection_name):
     """
     embedding_client = get_embedding_client(api_keys)
     provider = getattr(model_config, "CHAT_PROVIDER", "openai")
-    
+
     if provider == "openai":
-        return OpenAIClient(api_keys.get("openai"), qdrant_client, collection_name, embedding_client)
-    # elif provider == "google":
-    #     return GoogleClient(api_keys.get("google"), qdrant_client, collection_name, embedding_client)
+        return OpenAIClient(
+            api_keys.get("openai"), qdrant_client, collection_name, embedding_client
+        )
+    elif provider == "google":
+        return GoogleClient(
+            api_keys.get("google"), qdrant_client, collection_name, embedding_client
+        )
     else:
         raise ValueError(f"Unsupported chat provider: {provider}")

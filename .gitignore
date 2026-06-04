@@ -3,3 +3,5 @@
 *.pyc
 /Backend/data
 .vscode/settings.json
+Backend/AssistantAPI/src/benchmark_results_*.json
+Backend/AssistantAPI/src/benchmark_results_*.md
