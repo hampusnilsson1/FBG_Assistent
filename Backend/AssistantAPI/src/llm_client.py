@@ -26,15 +26,21 @@ import model_config
 
 def build_tools():
     """Build the tools array for the Responses API."""
-    return [
-        # Built-in web search — locked to allowed domains
-        {
-            "type": "web_search",
-            "filters": {
-                "allowed_domains": model_config.ALLOWED_DOMAINS,
-            },
-        },
-        # Custom Qdrant knowledge base search
+    tools = []
+
+    # Built-in web search — only added if toggled on
+    if model_config.WEB_SEARCH_ENABLED:
+        tools.append(
+            {
+                "type": "web_search",
+                "filters": {
+                    "allowed_domains": model_config.ALLOWED_DOMAINS,
+                },
+            }
+        )
+
+    # Custom Qdrant knowledge base search (always available)
+    tools.append(
         {
             "type": "function",
             "name": "search_knowledge_base",
@@ -63,7 +69,9 @@ def build_tools():
                 "required": ["query"],
             },
         },
-    ]
+    )
+
+    return tools
 
 
 # ============================================================
@@ -464,10 +472,12 @@ class GoogleClient(LLMClient):
             ),
         )
 
-        return [
-            T.Tool(function_declarations=[kb_function]),
-            T.Tool(google_search=T.GoogleSearch()),
-        ]
+        tools = [T.Tool(function_declarations=[kb_function])]
+
+        if model_config.WEB_SEARCH_ENABLED:
+            tools.append(T.Tool(google_search=T.GoogleSearch()))
+
+        return tools
 
     def search_knowledge_base(self, query, keywords=None):
         """Execute a Qdrant knowledge base search (same as OpenAIClient)."""
@@ -664,7 +674,7 @@ class GoogleClient(LLMClient):
 
         full_response = "".join(collected_text)
 
-        # Replace footnote [N] references with actual clickable links
+        # Replace citation markers with clickable links (final pass for Directus)
         if grounding_chunks:
             full_response = self._resolve_grounding_refs(
                 full_response, grounding_chunks
@@ -685,34 +695,28 @@ class GoogleClient(LLMClient):
 
     @staticmethod
     def _resolve_grounding_refs(text, grounding_chunks):
-        """Replace [N] footnotes with markdown links from grounding metadata."""
+        """Replace [N] citations with clickable markdown links."""
         if not grounding_chunks:
             return text
 
-        chunks = []
         for gc in grounding_chunks:
             web = getattr(gc, "web", None)
             if web:
                 uri = getattr(web, "uri", "")
                 title = getattr(web, "title", "") or uri
-                chunks.append((uri, title))
             else:
                 chunks.append(("", ""))
+                if uri:
+                    url_map.append((uri, title))
 
-        if not chunks:
+        if not url_map:
             return text
 
         import re
 
         def replace_ref(m):
-            idx_str = m.group(1)
             try:
                 idx = int(idx_str) - 1  # Google uses 1-based indices
-                if 0 <= idx < len(chunks):
-                    uri, title = chunks[idx]
-                    if uri:
-                        return f"[{title}]({uri})"
-            except (ValueError, IndexError):
                 pass
             return m.group(0)
 

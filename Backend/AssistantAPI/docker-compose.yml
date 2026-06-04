@@ -8,3 +8,4 @@ services:
       - "3003:3003"
     volumes:
       - ../data:/app/data
+      - ./src:/app/src

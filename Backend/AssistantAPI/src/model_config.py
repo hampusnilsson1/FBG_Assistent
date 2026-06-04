@@ -42,7 +42,7 @@ PRICING = {
     },
 }
 
-# ===== WEB SEARCH ALLOWED DOMAINS =====
+# ===== WEB SEARCH ALLOWED DOMAINS ===== #ENDAST OPENAI (GOOGLE SÖKER ALLT)
 # The agent's built-in web search will ONLY return results
 # from these domains (and their subdomains).
 # Each domain has a description to help the agent decide when to use it.
@@ -71,6 +71,11 @@ ALLOWED_DOMAINS_INFO = {
 
 # Plain list for the API filter (auto-generated from above)
 ALLOWED_DOMAINS = list(ALLOWED_DOMAINS_INFO.keys())
+
+# ===== WEB SEARCH TOGGLE =====
+# True: allow the agent to search the web (allowed domains only).
+# False: agent can ONLY search the vector database (Qdrant).
+WEB_SEARCH_ENABLED = False
 
 # ===== KNOWLEDGE BASE SOURCES (informational) =====
 # These are the sources indexed into the Qdrant knowledge base.
