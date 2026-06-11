@@ -11,6 +11,7 @@ from zoneinfo import ZoneInfo
 from flask import Flask, request, jsonify, Response, stream_with_context
 from flask_cors import CORS
 from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 from asgiref.wsgi import WsgiToAsgi
 
 from qdrant_client import QdrantClient
@@ -23,6 +24,27 @@ from llm_client import get_client
 
 api_keys_path = "../data/API_KEYS.env"
 STANZA_MODEL_PATH = "../data/stanza_resources"
+
+# Inputgränser för att förhindra kostnadsmissbruk (per anrop mot GPT)
+MAX_USER_INPUT_CHAR = 2000  # Max tecken för enskild användarfråga
+MAX_HISTORY_MSG_CHAR = 2000  # Max tecken per historikmeddelande
+MAX_HISTORY_MESSAGES = 12  # Max antal historikmeddelanden (6 frågor)
+
+
+def sanitize_history(history):
+    """Begränsa historikens antal meddelanden och längd per meddelande."""
+    cleaned = []
+    if not isinstance(history, list):
+        return cleaned
+    for message in history[-MAX_HISTORY_MESSAGES:]:
+        if not isinstance(message, dict):
+            continue
+        role = message.get("role")
+        content = message.get("content")
+        if role not in ("user", "assistant") or content is None:
+            continue
+        cleaned.append({"role": role, "content": str(content)[:MAX_HISTORY_MSG_CHAR]})
+    return cleaned
 
 
 def load_api_key(key_variable):
@@ -93,13 +115,13 @@ def directus_get_cost(chat_id):
 # Remove emojis from answer right before saving in database
 def remove_emojis(text):
     emoji_pattern = re.compile(
-        "[\U0001F600-\U0001F64F"  # Smiley
-        "\U0001F300-\U0001F5FF"  # Symbols & Pictographs
-        "\U0001F680-\U0001F6FF"  # Transport & Map
-        "\U0001F700-\U0001F77F"  # Alchemical Symbols
-        "\U0001F900-\U0001F9FF"  # Supplemental Symbols and Pictographs
-        "\U00002600-\U000027BF"  # Miscellaneous Symbols
-        "\U0001F1E0-\U0001F1FF"  # Flags (iOS)
+        "[\U0001f600-\U0001f64f"  # Smiley
+        "\U0001f300-\U0001f5ff"  # Symbols & Pictographs
+        "\U0001f680-\U0001f6ff"  # Transport & Map
+        "\U0001f700-\U0001f77f"  # Alchemical Symbols
+        "\U0001f900-\U0001f9ff"  # Supplemental Symbols and Pictographs
+        "\U00002600-\U000027bf"  # Miscellaneous Symbols
+        "\U0001f1e0-\U0001f1ff"  # Flags (iOS)
         "]+",
         flags=re.UNICODE,
     )
@@ -108,9 +130,7 @@ def remove_emojis(text):
 
 # Ladda ner och initiera svenska modellen, ignorera orelevanta varningar.
 warnings.filterwarnings("ignore", category=FutureWarning)
-if not os.path.exists(
-    f"{STANZA_MODEL_PATH}/sv"
-):
+if not os.path.exists(f"{STANZA_MODEL_PATH}/sv"):
     stanza.download("sv", model_dir=STANZA_MODEL_PATH)
 
 nlp = stanza.Pipeline("sv", model_dir=STANZA_MODEL_PATH)
@@ -143,6 +163,7 @@ def check_personal_info(text, contain=False):
 # ============================================================
 # SYSTEM PROMPT
 # ============================================================
+
 
 def build_system_prompt(user_input):
     """Build the system prompt for the Falkis assistant."""
@@ -211,6 +232,7 @@ def build_system_prompt(user_input):
 # MAIN LOGIC — Agentic RAG
 # ============================================================
 
+
 def get_result(user_input, user_history, chat_id, MAX_INPUT_CHAR):
     """
     Run the agentic RAG loop.
@@ -252,6 +274,7 @@ def get_result(user_input, user_history, chat_id, MAX_INPUT_CHAR):
 
     def _run_agent():
         """Run agent in background thread, push chunks to queue."""
+
         def stream_callback(text_chunk):
             chunk_queue.put(text_chunk)
 
@@ -297,12 +320,12 @@ def get_result(user_input, user_history, chat_id, MAX_INPUT_CHAR):
             )
 
             if message_response.status_code != 200:
+                # Logga inte headers/params – de innehåller DIRECTUS_KEY.
                 print(
-                    "Fel vid skickande av svaret i API:n. Hela request: ",
-                    message_api_url,
-                    message_data,
-                    headers,
-                    params,
+                    "Fel vid skickande av svaret i API:n. Status:",
+                    message_response.status_code,
+                    "chat_id:",
+                    chat_id,
                 )
 
             # Hämta nuvarande kostnad för chatt
@@ -326,7 +349,9 @@ def get_result(user_input, user_history, chat_id, MAX_INPUT_CHAR):
                 )
 
                 if response.status_code == 200:
-                    print(f"Directus cost_usd uppdaterad! ID: {chat_id}, Cost: ${question_cost:.6f}")
+                    print(
+                        f"Directus cost_usd uppdaterad! ID: {chat_id}, Cost: ${question_cost:.6f}"
+                    )
                 else:
                     print(f"Fel vid uppdatering av kostnad: {response.text}")
             except requests.exceptions.RequestException as e:
@@ -340,21 +365,42 @@ def get_result(user_input, user_history, chat_id, MAX_INPUT_CHAR):
 # ============================================================
 
 app = Flask(__name__)
-CORS(app)
-# Begränsar antalet requests
-limiter = Limiter(app=app, key_func=lambda: "global", storage_uri="memory://")
+# CORS-allowlist. Standard: kommun.falkenberg.se (där widgeten bäddas in).
+# Lägg till fler origins via env ALLOWED_ORIGINS (kommaseparerat) vid behov.
+ALLOWED_ORIGINS = [
+    o.strip()
+    for o in os.getenv("ALLOWED_ORIGINS", "https://kommun.falkenberg.se").split(",")
+    if o.strip()
+]
+CORS(app, resources={r"/*": {"origins": ALLOWED_ORIGINS}})
+
+
+def client_key():
+    """Identifiera anroparen per IP. Respekterar X-Forwarded-For bakom proxy."""
+    forwarded = request.headers.get("X-Forwarded-For", "")
+    if forwarded:
+        return forwarded.split(",")[0].strip()
+    return get_remote_address()
+
+
+# Begränsar antalet requests per klient (med globalt tak som extra skydd).
+# OBS: memory:// nollställs vid omstart och delas inte mellan workers –
+# byt till t.ex. Redis (storage_uri="redis://...") i produktion med flera workers.
+limiter = Limiter(app=app, key_func=client_key, storage_uri="memory://")
 
 asgi_app = WsgiToAsgi(app)
 
 
 # Kontroll av user_input
 @app.route("/check_pii", methods=["POST"])
+@limiter.limit("20 per minute")
+@limiter.limit("200 per hour")
 def check_pii():
     data = request.get_json()
     if not data or "user_input" not in data:
         return jsonify({"error": "Ingen användarinput inmatad"}), 400
 
-    user_input = str(data["user_input"])
+    user_input = str(data["user_input"])[:MAX_USER_INPUT_CHAR]
     print("Input:", user_input)
     pii_detected = check_personal_info(user_input, contain=True)
     print("Detected?:", pii_detected)
@@ -362,21 +408,18 @@ def check_pii():
 
 
 @app.route("/generate", methods=["POST"])
-@limiter.limit("100 per hour")
+@limiter.limit("8 per minute")  # per klient
+@limiter.limit("40 per hour")  # per klient
+@limiter.limit("300 per hour", key_func=lambda: "global")  # globalt skydd
 def generate():
     data = request.get_json()
     if not data or "user_input" not in data:
         return jsonify({"error": "Ingen användarinput inmatad"}), 400
 
-    user_input = data["user_input"]
+    user_input = str(data["user_input"])[:MAX_USER_INPUT_CHAR]
 
     if "user_history" in data and "chat_id" in data and data["chat_id"] != "":
-        history_list = data["user_history"]
-        if len(history_list) > 12:
-            # Begränsa till de senaste 12 objekten, 6 "frågor"
-            user_history = history_list[-12:]
-        else:
-            user_history = history_list
+        user_history = sanitize_history(data["user_history"])
 
         chat_id = data["chat_id"]
 
@@ -443,4 +486,4 @@ def send_feedback():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0", port=3003)
+    app.run(debug=False, host="0.0.0.0", port=3003)
