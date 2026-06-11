@@ -42,6 +42,20 @@ PRICING = {
     },
 }
 
+# ===== KNOWLEDGE BASE COLLECTIONS =====
+# Alla Qdrant-collections som search_knowledge_base kan söka i.
+# Varje collection innehåller indexerat innehåll från en specifik domän.
+# "primary": den huvudsakliga kommunala kunskapsbasen som ALLTID söks.
+# "secondary": ytterligare collections som söks när frågan är relevant.
+PRIMARY_COLLECTION = "FalkenbergsKommunsHemsida_RAG"
+
+SECONDARY_COLLECTIONS = {
+    "Vivab_RAG": "Vatten och Miljö i Väst AB (VIVAB) — vatten, avlopp, avfallshantering, sophämtning, återvinning och sorteringsguiden",
+    "Fabo_RAG": "Falkenbergs Bostads AB (FABO) — lediga lägenheter, bostadskö, hyror, felanmälan, boendeinformation",
+    "FalkenbergSE_RAG": "Falkenbergs besöks- och turistsida — evenemang, restauranger, aktiviteter, sevärdheter, turistboende",
+    "FEAB_RAG": "Falkenbergs Energi AB (FEAB) — energifrågor, elnät, fjärrvärme, elpriser, nätanslutning",
+}
+
 # ===== WEB SEARCH ALLOWED DOMAINS ===== #ENDAST OPENAI (GOOGLE SÖKER ALLT)
 # The agent's built-in web search will ONLY return results
 # from these domains (and their subdomains).
@@ -75,7 +89,7 @@ ALLOWED_DOMAINS = list(ALLOWED_DOMAINS_INFO.keys())
 # ===== WEB SEARCH TOGGLE =====
 # True: allow the agent to search the web (allowed domains only).
 # False: agent can ONLY search the vector database (Qdrant).
-WEB_SEARCH_ENABLED = False
+WEB_SEARCH_ENABLED = True
 
 # ===== KNOWLEDGE BASE SOURCES (informational) =====
 # These are the sources indexed into the Qdrant knowledge base.

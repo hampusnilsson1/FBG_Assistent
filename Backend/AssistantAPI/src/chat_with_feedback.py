@@ -181,8 +181,13 @@ def build_system_prompt(user_input):
         tools_section = (
             """    VERKTYG:
     Du har tillgång till två sökverktyg:
-    1. **search_knowledge_base** — Sök i Falkenbergs kommuns kunskapsbas (indexerade dokument, PDF:er och webbsidor från kommun.falkenberg.se). Använd detta för detaljerad kommunal information som regler, kontaktuppgifter och officiella dokument.
-    2. **web_search** — Sök på webben (begränsat till specifika domäner). Använd detta för aktuell/uppdaterad information som kanske inte finns i kunskapsbasen.
+    1. **search_knowledge_base** — Sök i Falkenbergs kommuns samlade kunskapsbas. Innehåller indexerade dokument från:
+       - **kommun.falkenberg.se** — bygglov, skola, omsorg, socialtjänst, detaljplaner
+       - **vivab.se** — sopor, vatten, avlopp, återvinning, sortering
+       - **fabo.se** — lägenheter, hyra, bostadskö
+       - **falkenberg.se** — evenemang, turism, restauranger, sevärdheter
+       - **falkenberg-energi.se** — el, fjärrvärme, energi
+    2. **web_search** — Sök på webben (begränsat till specifika domäner). Använd detta ENDAST för att hitta aktuell/uppdaterad information som kan ha ändrats efter senaste indexeringen.
 
     WEBBSÖKNINGENS DOMÄNER OCH INNEHÅLL:
 """
@@ -191,13 +196,14 @@ def build_system_prompt(user_input):
 
     VÄGLEDNING FÖR VERKTYGSVAL:
     - Bygglov, förskola, skola, socialtjänst, detaljplaner → search_knowledge_base
-    - Lägenheter/hyra (fabo.se), sopor/vatten (vivab.se), evenemang/turism (falkenberg.se) → web_search
+    - Sopor/vatten (vivab.se), lägenheter/hyra (fabo.se), evenemang/turism (falkenberg.se), energi (falkenberg-energi.se) → search_knowledge_base (finns redan indexerat!)
+    - Använd web_search ENDAST om informationen är mycket tidskänslig (t.ex. dagens driftstörning, veckans evenemang)
 """
         )
     else:
         tools_section = """    VERKTYG:
     Du har tillgång till ett sökverktyg:
-    1. **search_knowledge_base** — Sök i Falkenbergs kommuns kunskapsbas (indexerade dokument, PDF:er och webbsidor från kommun.falkenberg.se). Använd detta för detaljerad kommunal information som regler, kontaktuppgifter och officiella dokument.
+    1. **search_knowledge_base** — Sök i Falkenbergs kommuns samlade kunskapsbas som innehåller indexerade dokument från kommun.falkenberg.se, vivab.se, fabo.se, falkenberg.se och falkenberg-energi.se.
 """
 
     return f"""Ditt namn är Falkis. Du är en professionell, gullig och hjälpsam falk-assistent som ENBART svarar på frågor relaterade till Falkenbergs kommun och de tillhandahållna dokumenten.

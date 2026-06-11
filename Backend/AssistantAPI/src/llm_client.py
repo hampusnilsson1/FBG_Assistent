@@ -24,6 +24,16 @@ import model_config
 # ============================================================
 
 
+def build_collections_description():
+    """Build a human-readable description of available knowledge base collections."""
+    desc = "Söker i Falkenbergs kommuns interna kunskapsbas (primär källa: kommun.falkenberg.se)."
+    if model_config.SECONDARY_COLLECTIONS:
+        desc += " Söker automatiskt även i följande specialiserade källor:\n"
+        for coll_name, coll_desc in model_config.SECONDARY_COLLECTIONS.items():
+            desc += f"  - **{coll_name}**: {coll_desc}\n"
+    return desc
+
+
 def build_tools():
     """Build the tools array for the Responses API."""
     tools = []
@@ -44,12 +54,7 @@ def build_tools():
         {
             "type": "function",
             "name": "search_knowledge_base",
-            "description": (
-                "Search Falkenberg municipality's internal knowledge base "
-                "(indexed documents, PDFs, and web pages from kommun.falkenberg.se). "
-                "Use this for detailed municipal information like regulations, "
-                "contact details, services, events, and official documents."
-            ),
+            "description": build_collections_description(),
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -181,20 +186,18 @@ class OpenAIEmbeddingClient(EmbeddingClient):
 class OpenAIClient(LLMClient):
     """OpenAI provider using the Responses API."""
 
-    def __init__(self, api_key, qdrant_client, collection_name, embedding_client):
+    def __init__(self, api_key, qdrant_client, primary_collection, secondary_collections, embedding_client):
         self.client = openai.OpenAI(api_key=api_key)
         self.qdrant_client = qdrant_client
-        self.collection_name = collection_name
+        self.primary_collection = primary_collection
+        self.secondary_collections = secondary_collections
         self.embedding_client = embedding_client
         self.tools = build_tools()
 
     # ---- Knowledge base search (called when agent uses the tool) ----
 
-    def search_knowledge_base(self, query, keywords=None):
-        """Execute a Qdrant knowledge base search."""
-        # Generate embedding for the query using the injected embedding provider
-        query_embedding = self.embedding_client.create_embedding(query)
-
+    def _search_single_collection(self, collection_name, query_embedding, keywords=None, limit=5):
+        """Search a single Qdrant collection and return formatted results."""
         # Build keyword filter if keywords provided
         keyword_filter = None
         if keywords and len(keywords) > 0:
@@ -211,21 +214,20 @@ class OpenAIClient(LLMClient):
         # Search Qdrant
         if keyword_filter is None:
             results = self.qdrant_client.query_points(
-                collection_name=self.collection_name,
+                collection_name=collection_name,
                 query=query_embedding,
-                limit=5,
+                limit=limit,
                 with_payload=True,
             ).points
         else:
-            # Hybrid: vector search + keyword filter
             vector_results = self.qdrant_client.query_points(
-                collection_name=self.collection_name,
+                collection_name=collection_name,
                 query=query_embedding,
-                limit=5,
+                limit=limit,
                 with_payload=True,
             ).points
             filtered_results, _ = self.qdrant_client.scroll(
-                collection_name=self.collection_name,
+                collection_name=collection_name,
                 scroll_filter=keyword_filter,
                 limit=3,
             )
@@ -234,9 +236,9 @@ class OpenAIClient(LLMClient):
             for r in vector_results:
                 if r.id not in filtered_ids:
                     combined.append(r)
-                if len(combined) >= 5:
+                if len(combined) >= limit:
                     break
-            results = combined[:5]
+            results = combined[:limit]
 
         # Format results for the agent
         documents = []
@@ -247,10 +249,40 @@ class OpenAIClient(LLMClient):
                     "title": result.payload.get("metadata", {}).get("title", ""),
                     "url": result.payload.get("metadata", {}).get("url", ""),
                     "score": getattr(result, "score", "keyword_match"),
+                    "collection": collection_name,
                 }
             )
 
         return documents
+
+    def search_knowledge_base(self, query, keywords=None):
+        """Execute a Qdrant knowledge base search across all collections."""
+        query_embedding = self.embedding_client.create_embedding(query)
+
+        # Search primary collection (always)
+        results = self._search_single_collection(
+            self.primary_collection, query_embedding, keywords, limit=5
+        )
+
+        # Search secondary collections (limit 2 each)
+        for coll_name in self.secondary_collections:
+            secondary_results = self._search_single_collection(
+                coll_name, query_embedding, keywords, limit=2
+            )
+            results.extend(secondary_results)
+
+        # Deduplicate by URL
+        seen_urls = set()
+        unique_results = []
+        for doc in results:
+            url = doc.get("url", "")
+            if url and url not in seen_urls:
+                seen_urls.add(url)
+                unique_results.append(doc)
+            elif not url:
+                unique_results.append(doc)
+
+        return unique_results[:10]
 
     # ---- Agentic loop ----
 
@@ -429,14 +461,15 @@ class OpenAIClient(LLMClient):
 class GoogleClient(LLMClient):
     """Google Gemini provider using the generate_content API."""
 
-    def __init__(self, api_key, qdrant_client, collection_name, embedding_client):
+    def __init__(self, api_key, qdrant_client, primary_collection, secondary_collections, embedding_client):
         from google import genai
         from google.genai import types as genai_types
 
         self.client = genai.Client(api_key=api_key)
         self.genai_types = genai_types
         self.qdrant_client = qdrant_client
-        self.collection_name = collection_name
+        self.primary_collection = primary_collection
+        self.secondary_collections = secondary_collections
         self.embedding_client = embedding_client
         self.model_name = model_config.CHAT_MODEL
         self.tools = self._build_google_tools()
@@ -446,12 +479,7 @@ class GoogleClient(LLMClient):
 
         kb_function = T.FunctionDeclaration(
             name="search_knowledge_base",
-            description=(
-                "Search Falkenberg municipality's internal knowledge base "
-                "(indexed documents, PDFs, and web pages from kommun.falkenberg.se). "
-                "Use this for detailed municipal information like regulations, "
-                "contact details, services, events, and official documents."
-            ),
+            description=build_collections_description(),
             parameters=T.Schema(
                 type=T.Type.OBJECT,
                 properties={
@@ -479,10 +507,8 @@ class GoogleClient(LLMClient):
 
         return tools
 
-    def search_knowledge_base(self, query, keywords=None):
-        """Execute a Qdrant knowledge base search (same as OpenAIClient)."""
-        query_embedding = self.embedding_client.create_embedding(query)
-
+    def _search_single_collection(self, collection_name, query_embedding, keywords=None, limit=5):
+        """Search a single Qdrant collection and return formatted results."""
         keyword_filter = None
         if keywords and len(keywords) > 0:
             keyword_filter = qdrant_models.Filter(
@@ -497,20 +523,20 @@ class GoogleClient(LLMClient):
 
         if keyword_filter is None:
             results = self.qdrant_client.query_points(
-                collection_name=self.collection_name,
+                collection_name=collection_name,
                 query=query_embedding,
-                limit=5,
+                limit=limit,
                 with_payload=True,
             ).points
         else:
             vector_results = self.qdrant_client.query_points(
-                collection_name=self.collection_name,
+                collection_name=collection_name,
                 query=query_embedding,
-                limit=5,
+                limit=limit,
                 with_payload=True,
             ).points
             filtered_results, _ = self.qdrant_client.scroll(
-                collection_name=self.collection_name,
+                collection_name=collection_name,
                 scroll_filter=keyword_filter,
                 limit=3,
             )
@@ -519,9 +545,9 @@ class GoogleClient(LLMClient):
             for r in vector_results:
                 if r.id not in filtered_ids:
                     combined.append(r)
-                if len(combined) >= 5:
+                if len(combined) >= limit:
                     break
-            results = combined[:5]
+            results = combined[:limit]
 
         documents = []
         for result in results:
@@ -531,10 +557,37 @@ class GoogleClient(LLMClient):
                     "title": result.payload.get("metadata", {}).get("title", ""),
                     "url": result.payload.get("metadata", {}).get("url", ""),
                     "score": getattr(result, "score", "keyword_match"),
+                    "collection": collection_name,
                 }
             )
 
         return documents
+
+    def search_knowledge_base(self, query, keywords=None):
+        """Execute a Qdrant knowledge base search across all collections."""
+        query_embedding = self.embedding_client.create_embedding(query)
+
+        results = self._search_single_collection(
+            self.primary_collection, query_embedding, keywords, limit=5
+        )
+
+        for coll_name in self.secondary_collections:
+            secondary_results = self._search_single_collection(
+                coll_name, query_embedding, keywords, limit=2
+            )
+            results.extend(secondary_results)
+
+        seen_urls = set()
+        unique_results = []
+        for doc in results:
+            url = doc.get("url", "")
+            if url and url not in seen_urls:
+                seen_urls.add(url)
+                unique_results.append(doc)
+            elif not url:
+                unique_results.append(doc)
+
+        return unique_results[:10]
 
     def run_agent(self, messages, system_prompt, stream_callback):
         """
@@ -740,21 +793,23 @@ def get_embedding_client(api_keys):
         raise ValueError(f"Unsupported embedding provider: {provider}")
 
 
-def get_client(api_keys, qdrant_client, collection_name):
+def get_client(api_keys, qdrant_client, primary_collection):
     """
     Factory function — returns the correct LLMClient based on
     the CHAT_PROVIDER setting in model_config.py.
     """
     embedding_client = get_embedding_client(api_keys)
     provider = getattr(model_config, "CHAT_PROVIDER", "openai")
+    secondary_collections = getattr(model_config, "SECONDARY_COLLECTIONS", {})
+    secondary_names = list(secondary_collections.keys())
 
     if provider == "openai":
         return OpenAIClient(
-            api_keys.get("openai"), qdrant_client, collection_name, embedding_client
+            api_keys.get("openai"), qdrant_client, primary_collection, secondary_names, embedding_client
         )
     elif provider == "google":
         return GoogleClient(
-            api_keys.get("google"), qdrant_client, collection_name, embedding_client
+            api_keys.get("google"), qdrant_client, primary_collection, secondary_names, embedding_client
         )
     else:
         raise ValueError(f"Unsupported chat provider: {provider}")
