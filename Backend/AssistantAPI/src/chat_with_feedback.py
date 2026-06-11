@@ -115,13 +115,13 @@ def directus_get_cost(chat_id):
 # Remove emojis from answer right before saving in database
 def remove_emojis(text):
     emoji_pattern = re.compile(
-        "[\U0001f600-\U0001f64f"  # Smiley
-        "\U0001f300-\U0001f5ff"  # Symbols & Pictographs
-        "\U0001f680-\U0001f6ff"  # Transport & Map
-        "\U0001f700-\U0001f77f"  # Alchemical Symbols
-        "\U0001f900-\U0001f9ff"  # Supplemental Symbols and Pictographs
-        "\U00002600-\U000027bf"  # Miscellaneous Symbols
-        "\U0001f1e0-\U0001f1ff"  # Flags (iOS)
+        "[\U0001F600-\U0001F64F"  # Smiley
+        "\U0001F300-\U0001F5FF"  # Symbols & Pictographs
+        "\U0001F680-\U0001F6FF"  # Transport & Map
+        "\U0001F700-\U0001F77F"  # Alchemical Symbols
+        "\U0001F900-\U0001F9FF"  # Supplemental Symbols and Pictographs
+        "\U00002600-\U000027BF"  # Miscellaneous Symbols
+        "\U0001F1E0-\U0001F1FF"  # Flags (iOS)
         "]+",
         flags=re.UNICODE,
     )
